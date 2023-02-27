@@ -13,10 +13,13 @@ LiquidCrystal lcdScreen(12, 11, 5, 4, 3, 2);
 NewPing sonar(7,6,200);
 
 // Light sensor, LDR
-#define LDR A0;
+#define LDR A0
+
+// magnet sensor, MAG
+#define MAG A1
 
 // Button bus, which is used for 3 buttons on analogPin 2
-#define BUTTON_BUS A2;
+#define BUTTON_BUS A2
 
 // Bus for many digital signals on the bus
 #define ONE_WIRE_BUS 8
@@ -48,9 +51,16 @@ void printDistance(byte x, byte y){
 // mandatory sensor reading
 void printTemperature(byte x, byte y){
   tempSensor.requestTemperatures();
+  // neccesary to convert to int first, because it will be a double otherwise
   int tempValue = tempSensor.getTempCByIndex(0);
   String tempOutput = String(tempValue);
   printSensor("temp", tempOutput, x, y);
+}
+
+void printLDR(byte x, byte y){
+  int LDR_value = analogRead(LDR);
+  String output = String(LDR_value);
+  printSensor("LDR", output, x , y);
 }
 
 // setup and loop on the bottem, do not place voids below this comment pls thank you
@@ -69,9 +79,9 @@ void loop() {
     printTemperature(0,0);
   }
 
-  // print distance every half second on line 2
+  // print light-readings every half second on line 2
   if(myTime%500){
-    printDistance(0,1);
+    printLDR(0,1);
   }
 }
 
