@@ -3,10 +3,28 @@
 #include <NewPing.h>
 #include <DallasTemperature.h>
 
+// timeCount variable
+unsigned long myTime;
+
+// Display
+LiquidCrystal lcdScreen(12, 11, 5, 4, 3, 2);
+
+
+
+
+void updateTime(){
+  myTime = millis();
+}
+
 void setup() {
-  // put your setup code here, to run once:
+  myTime = millis();
+  lcdScreen.begin(2,16);
 }
 
 void loop() {
-  // put your main code here, to run repeatedly:
+  // the running timer is constantly updated
+  updateTime();
+  
 }
+
+
