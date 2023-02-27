@@ -68,6 +68,8 @@ void printLDR(byte x, byte y){
 void setup() {
   myTime = millis();
   lcdScreen.begin(2,16);
+  pinMode(LED_BUILTIN, OUTPUT);
+  digitalWrite(LED_BUILTIN,HIGH);
 }
 
 void loop() {
@@ -75,13 +77,20 @@ void loop() {
   updateTime();
   
   // print temperate every 2 seconds on line 1
-  if(myTime%2000){
+  if(myTime%2000 == 0){
     printTemperature(0,0);
   }
 
   // print light-readings every half second on line 2
-  if(myTime%500){
+  if(myTime%500 == 0){
     printLDR(0,1);
+  }
+
+  // Blink on pin13 and builtin led every half second
+  if(myTime%1000 == 0){
+    digitalWrite(LED_BUILTIN, HIGH);
+  } else if(myTime%500 == 0){
+    digitalWrite(LED_BUILTIN, LOW);
   }
 }
 
