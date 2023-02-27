@@ -32,6 +32,29 @@ void updateTime(){
   myTime = millis();
 }
 
+void printSensor(String name, String value, byte line_x, byte line_y){
+  lcdScreen.setCursor(line_x,line_y);
+  name.concat(": " + value);
+  lcdScreen.print(name);
+}
+
+// debug purposes for now
+void printDistance(byte x, byte y){
+  String value = String(sonar.ping_cm());
+  value.concat(" cm");
+  printSensor("dist", value, x, y);
+}
+
+// mandatory sensor reading
+void printTemperature(byte x, byte y){
+  tempSensor.requestTemperatures();
+  int tempValue = tempSensor.getTempCByIndex(0);
+  String tempOutput = String(tempValue);
+  printSensor("temp", tempOutput, x, y);
+}
+
+// setup and loop on the bottem, do not place voids below this comment pls thank you
+
 void setup() {
   myTime = millis();
   lcdScreen.begin(2,16);
@@ -40,7 +63,16 @@ void setup() {
 void loop() {
   // the running timer is constantly updated
   updateTime();
+  
+  // print temperate every 2 seconds on line 1
+  if(myTime%2000){
+    printTemperature(0,0);
+  }
 
+  // print distance every half second on line 2
+  if(myTime%500){
+    printDistance(0,1);
+  }
 }
 
 
