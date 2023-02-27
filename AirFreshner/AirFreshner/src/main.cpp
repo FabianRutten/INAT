@@ -1,4 +1,7 @@
 #include <Arduino.h>
+#include <LiquidCrystal.h>
+#include <NewPing.h>
+#include <DallasTemperature.h>
 
 void setup() {
   // put your setup code here, to run once:
