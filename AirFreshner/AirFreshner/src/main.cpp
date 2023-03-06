@@ -71,14 +71,12 @@ byte menuSelection;
 /////////////////////////////////////////////////////
 // Sensor variables;
 bool door;
-
-
-
+bool override;
 
 // update the myTime value with the current time
 void updateTime() {
   // no roll-over protection necessary since the rest is safe code
-  unsigned long currentTime = millis();
+  myTime = millis();
 }
 
 // Write to EEPROM and also update the value in memory
@@ -144,6 +142,28 @@ void printMotion(byte x, byte y){
   int motionValue = digitalRead(MOTION);
   String output = String(motionValue);
   printSensor("Motion", output, x, y);
+}
+
+void spray(unsigned long time, byte x, bool isLow) {
+  if (override){
+    return;
+  }
+
+  if (isLow){
+    digitalWrite(MOS, HIGH);
+  }
+  unsigned long currentTime = millis();
+  if ((currentTime - time) < 16){
+    spray(time, x, true);
+  }
+  else {
+    digitalWrite(MOS,LOW);
+    writeEEPROM_SPRAYS(sprays--);
+    if( x > 1){    
+      unsigned long newTime = millis();
+      spray(newTime, x--, true);
+    }
+  }
 }
 
 void setup() {
