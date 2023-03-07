@@ -18,10 +18,10 @@ unsigned long myTime;
 int sprays;
 
 // Display
-LiquidCrystal lcdScreen(12, 11, 5, 4, 3, 2);
+LiquidCrystal lcdScreen(7,6,5,4,3,2);
 
 // Distance Sensor, which is sonar based
-NewPing sonar(7,6,200);
+NewPing sonar(10,9,200);
 
 // Light sensor, LDR
 #define LDR A0
@@ -127,7 +127,7 @@ void printDistance(byte x, byte y){
 void printTemperature(byte x, byte y){
   tempSensor.requestTemperatures();
   // neccesary to convert to int first, because it will be a double otherwise
-  int tempValue = tempSensor.getTempCByIndex(0);
+  double tempValue = tempSensor.getTempCByIndex(0);
   String tempOutput = String(tempValue);
   printSensor("temp", tempOutput, x, y);
 }
@@ -171,6 +171,7 @@ void setup() {
   lcdScreen.begin(2,16);
   pinMode(LED_BUILTIN, OUTPUT);
   pinMode(MOTION, INPUT);
+  pinMode(LDR, INPUT);
   digitalWrite(LED_BUILTIN,HIGH);
 
 
@@ -184,27 +185,36 @@ void setup() {
 void loop() {
   // the running timer is constantly updated
   updateTime();
+
+  // clear LCD? maybe -> quickfix for now
+  if(myTime%500 == 0){
+    lcdScreen.clear();
+  }
   
   // print temperate every 2 seconds on line 1
-  if(myTime%2000 == 0){
-    printTemperature(0,0);
-  }
-
-  // print light-readings every half second on line 2
-  // if(myTime%500 == 0){
-  //   printLDR(0,1);
+  // if(myTime%2000 == 0){
+  //   printTemperature(0,0);
   // }
 
-  // print motion-readings every half second on line 2
-  if(myTime%500 == 0){
-    printMotion(0,1);
+  // print light-readings every half second on line 2
+  if(myTime%500 == 0 & true){
+    printLDR(0,1);
   }
+
+  // print motion-readings every half second on line 2
+  // if(myTime%500 == 0){
+  //   printMotion(0,1);
+  // }
 
   // Blink on pin13 and builtin led every half second
   if(myTime%1000 == 0){
     digitalWrite(LED_BUILTIN, HIGH);
   } else if(myTime%500 == 0){
     digitalWrite(LED_BUILTIN, LOW);
+  }
+
+  if(myTime%500 == 0){
+    printTemperature(0,0);
   }
 }
 
