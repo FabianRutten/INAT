@@ -309,7 +309,7 @@ void nonMenuButtonAction() {
 void menuOverviewButtonAction() {
   switch (buttonState) {
     case 2:
-      menuSelection = iterateMenu(2);
+      menuSelection = iterateMenu(3);
       break;
     case 3:
       submenu = menuSelection;
@@ -397,7 +397,32 @@ void actOnStateWithButton() {
 }
 
 void printMenuOveriewToLCD() {
-  
+  char arrowChar = '<';
+  String arrow = String(arrowChar);
+  String delay = "delay";
+  String sprays = "sprays";
+  String reset = "reset";
+  String exit = "exit";
+  switch (menuSelection) {
+    case 0:
+      exit.concat(arrow);
+      break;
+    case 1:
+      delay.concat(arrow);
+      break;
+    case 2:
+      sprays.concat(arrow);
+      break;
+    case 3:
+      reset.concat(arrow);
+      break;
+  }
+  String lineZero = delay + "  " + sprays + "    ";
+  String lineOne =  reset + "    " + exit + "     ";
+  lcdScreen.setCursor(0,0);
+  lcdScreen.print(lineZero);
+  lcdScreen.setCursor(0,1);
+  lcdScreen.print(lineOne);
 }
 
 void printMenuDelay() {
