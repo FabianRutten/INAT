@@ -178,6 +178,9 @@ void initializeEEPROM() {
 void printSensor(String name, String value, byte line_x, byte line_y) {
   lcdScreen.setCursor(line_x,line_y);
   name.concat(": " + value);
+  while (name.length() < 16) {
+    name.concat(" ");
+  }
   lcdScreen.print(name);
 }
 
@@ -199,10 +202,7 @@ void printDistance(byte x, byte y) {
 
 // mandatory sensor reading
 void printTemperature(byte x, byte y) {
-  lcdScreen.clear();
-  lcdScreen.print("start request");
-  delay(1000);
-  //tempSensor.requestTemperatures();
+  tempSensor.requestTemperatures();
   double tempValue = tempSensor.getTempCByIndex(0);
   String tempOutput = String(tempValue);
   printSensor("temp", tempOutput, x, y);
@@ -482,7 +482,6 @@ void printMenuToLCD() {
 }
 
 void printToLCD() {
-  lcdScreen.clear();
   // if (state == 7) {
   //   printMenuToLCD();
   //   return;
