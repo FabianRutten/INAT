@@ -375,6 +375,62 @@ void actOnMenuSelection() {
 
 }
 
+void printMenuOveriewToLCD() {
+
+}
+
+void printMenuDelay() {
+
+}
+
+void printMenuSprays() {
+  char arrowChar = 27;
+  String arrow = String(arrowChar);
+  //String plus = "+";
+  //String minus = "-";
+  String value = String(sprays);
+  String reset = "reset";
+  String exit = "exit";
+  switch (menuSelection) {
+    case 0:
+      exit.concat(arrow);
+      break;
+    case 1:
+      reset.concat(arrow);
+      break;
+  }
+  String lineZero = "sprays left:" + value;
+  String lineOne = reset + "    " + exit;
+  lcdScreen.setCursor(0,0);
+  lcdScreen.print(lineZero);
+  lcdScreen.setCursor(0,1);
+  lcdScreen.print(lineOne);
+}
+
+void printMenuToLCD() {
+  switch (submenu) {
+    case 1:
+      printMenuDelay();
+      break;
+    case 2:
+      printMenuSprays();
+      break;
+    case 3: 
+      printMenuOveriewToLCD();
+      break;
+  }
+}
+
+void printToLCD() {
+  lcdScreen.clear();
+  if (state == 7) {
+    printMenuToLCD();
+    return;
+  }
+  printTemperature(0,0);
+  printLDR(0,1);
+}
+
 void setup() {
   myTime = millis();
   lcdScreen.begin(2,16);
@@ -433,6 +489,12 @@ void loop() {
   actOnStateWithButton();
   isPressed = false;
   }
+
+  // print to LCD every 100ms
+  if(myTime%100 == 0){
+    printToLCD();
+  }
+
 }
 
 
