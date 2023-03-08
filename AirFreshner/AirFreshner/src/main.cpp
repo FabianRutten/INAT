@@ -134,7 +134,6 @@ void writeEEPROM_DELAY(byte value) {
   sprayDelay = value;
 }
 
-
 // initialze EEPROM if necessary.
 // If the first byte of the int is 255
 // then we asume it is never written to
@@ -255,11 +254,11 @@ void overrideSpray() {
   override = false;
 }
 
-void updateSensors(){
+void updateSensors() {
 
 }
 
-byte iterateMenu(byte maxMenuValue){
+byte iterateMenu(byte maxMenuValue) {
   if (menuSelection > 0) {
     menuSelection++;
     if (menuSelection > maxMenuValue) {
@@ -280,12 +279,49 @@ void nonMenuButtonAction() {
   }
 }
 
-void delayMenuButtonAction() {
-  
+void menuOverviewButtonAction() {
+  switch (buttonState) {
+    case 2:
+      menuSelection = iterateMenu(2);
+      break;
+    case 3:
+     submenu = menuSelection;
+     menuSelection = 1;
+     break;
+  }
 }
 
-void menuOverviewButtonAction() {
+void returnToMenuOverview() {
+  submenu = 3;
+  menuSelection = 1;
+}
 
+void menyDelayAction() {
+  switch (menuSelection) {
+    case 1:
+      if (sprayDelay < 254) {sprayDelay++;}
+      break;
+    case 2:
+      if(sprayDelay > 0) {sprayDelay--;}
+      break;
+    case 3:
+      sprayDelay = 0;
+    case 0:
+      writeEEPROM_DELAY(sprayDelay);
+      returnToMenuOverview();
+      break;
+  }
+}
+
+void menuDelayButtonAction() {
+      switch (buttonState) {
+    case 2:
+      menuSelection = iterateMenu(3);
+      break;
+    case 3:
+      menyDelayAction();
+      break;
+  }
 }
 
 void selectNumOfSpraysAction() {
@@ -293,8 +329,7 @@ void selectNumOfSpraysAction() {
     writeEEPROM_SPRAYS(2400);
     return;
   }
-  submenu = 3;
-  menuSelection = 1;
+  returnToMenuOverview();
 }
 
 void menuNumOfSpraysButtonAction() {
@@ -308,8 +343,11 @@ void menuNumOfSpraysButtonAction() {
   }
 }
 
-void menuButtonAction(){
+void menuButtonAction() {
   switch (submenu) {
+    case 1:
+      menuDelayButtonAction();
+      break;
     case 2:
       menuNumOfSpraysButtonAction();
       break;
@@ -321,7 +359,7 @@ void menuButtonAction(){
   }
 }
 
-void actOnStateWithButton(){
+void actOnStateWithButton() {
   if (buttonState == 1){
     override = true;
     return;
@@ -333,9 +371,7 @@ void actOnStateWithButton(){
   nonMenuButtonAction();
 }
 
-
-
-void actOnMenuSelection(){
+void actOnMenuSelection() {
 
 }
 
