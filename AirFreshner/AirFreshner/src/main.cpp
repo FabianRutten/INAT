@@ -39,9 +39,9 @@ NewPing sonar(10,9,200);
 #define BUTTON_BUS A2
 // 3 buttons with each 3 threshholds
 // each is lower than value
-#define BUTTON_ONE 400             // this button is the override!!!
+#define BUTTON_ONE 200             // this button is the override!!!
 #define BUTTON_TWO 600
-#define BUTTON_THREE 1024
+#define BUTTON_THREE 900
 
 // the buttons and other sensors might need debouncing, 
 // so we define a standard debouncing time in milliseconds
