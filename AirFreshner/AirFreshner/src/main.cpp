@@ -239,27 +239,17 @@ byte buttonFromValue(unsigned int value) {
 
 void updateButtonState() {
   int reading = analogRead(BUTTON_BUS);
-  // lcdScreen.clear();
-  // lcdScreen.print("reading");
-  // delay(300);
   byte currentButtonState = buttonFromValue(reading);
-  // lcdScreen.clear();
-  // lcdScreen.print("cbs");
-  // delay(300);
   if (currentButtonState != lastButtonState) {
-    // lcdScreen.clear();
-    // lcdScreen.print("Btimer");
-    // delay(300);
     buttonDebounceTimer = millis();
+    //printSensor("dbTimer", "reset   ", 0, 0);
   }  
-  if ((millis() - buttonDebounceTimer) > DEBOUNCE_DURATION) {
-      // lcdScreen.clear();
-      // lcdScreen.print("debounced");
-      // delay(300);
-      buttonState = currentButtonState;
-      if (buttonState != 0) {
-        isPressed = true;
-      }
+  else if ((millis() - buttonDebounceTimer) > DEBOUNCE_DURATION) {
+    buttonState = currentButtonState;
+    if (buttonState != 0) {
+      isPressed = true;
+    }
+    //printSensor("bstate", String(buttonState) , 0, 1);
   }
   lastButtonState = currentButtonState;
 }
@@ -268,7 +258,6 @@ void spray(unsigned long time, byte x, bool isLow) {
   if (override){
     return;
   }
-
   if (isLow){
     digitalWrite(MOS, HIGH);
   }
@@ -308,9 +297,9 @@ byte iterateMenu(byte maxMenuValue) {
 
 void nonMenuButtonAction() {
   switch (buttonState) {
-      break;
     case 2:
       state = 7;
+      //printSensor("state:", "7   ", 0, 0);
       break;
     default:
       break;
@@ -323,9 +312,9 @@ void menuOverviewButtonAction() {
       menuSelection = iterateMenu(2);
       break;
     case 3:
-     submenu = menuSelection;
-     menuSelection = 1;
-     break;
+      submenu = menuSelection;
+      menuSelection = 1;
+      break;
   }
 }
 
@@ -334,7 +323,7 @@ void returnToMenuOverview() {
   menuSelection = 1;
 }
 
-void menyDelayAction() {
+void menuDelayAction() {
   switch (menuSelection) {
     case 1:
       if (sprayDelay < 254) {sprayDelay++;}
@@ -357,7 +346,7 @@ void menuDelayButtonAction() {
       menuSelection = iterateMenu(3);
       break;
     case 3:
-      menyDelayAction();
+      menuDelayAction();
       break;
   }
 }
@@ -392,8 +381,6 @@ void menuButtonAction() {
     case 3:
       menuOverviewButtonAction();
       break;
-    default:
-      break;
   }
 }
 
@@ -410,11 +397,11 @@ void actOnStateWithButton() {
 }
 
 void printMenuOveriewToLCD() {
-
+  
 }
 
 void printMenuDelay() {
-  char arrowChar = 27;
+  char arrowChar = '<';
   String arrow = String(arrowChar);
   String plus = "+";
   String minus = "-";
@@ -444,7 +431,7 @@ void printMenuDelay() {
 }
 
 void printMenuSprays() {
-  char arrowChar = 27;
+  char arrowChar = '<';
   String arrow = String(arrowChar);
   //String plus = "+";
   //String minus = "-";
@@ -482,12 +469,12 @@ void printMenuToLCD() {
 }
 
 void printToLCD() {
-  // if (state == 7) {
-  //   printMenuToLCD();
-  //   return;
-  // }
-  printTemperature(0,0);
-  //printButtonState(0,0);
+  if (state == 7) {
+    printMenuToLCD();
+    return;
+  }
+  //printTemperature(0,0);
+  printButtonState(0,0);
   printLDR(0,1);
 }
 
@@ -552,14 +539,10 @@ void loop() {
   }
 
   // print to LCD every 200ms  
-  if((myTime - printTime) >= 500){
+  if((myTime - printTime) >= 200){
     printToLCD();
     printTime = myTime;
   }
-
-  digitalWrite(RGB_RED, LOW);
-  digitalWrite(RGB_GREEN, LOW);
-  digitalWrite(RGB_BLUE, HIGH);
 
   //delay(1000);
 }
