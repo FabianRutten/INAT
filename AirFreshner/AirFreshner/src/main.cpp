@@ -493,14 +493,15 @@ void printMenuToLCD() {
   }
 }
 
-void printToLCD() {
+void printToLCDWithButton() {
   if (state == 7) {
     printMenuToLCD();
     return;
   }
-  //printTemperature(0,0);
-  printButtonState(0,0);
-  printLDR(0,1);
+}
+
+void printDefaultToLCD() {
+  printLDR(0,0);
 }
 
 void setup() {
@@ -560,16 +561,13 @@ void loop() {
   //
   if (isPressed){
   actOnStateWithButton();
+  printToLCDWithButton();
   isPressed = false;
   }
 
-  // print to LCD every 200ms  
-  if((myTime - printTime) >= 200){
-    printToLCD();
-    printTime = myTime;
+  if (state != 7) {
+    printDefaultToLCD();
   }
-
-  //delay(1000);
 }
 
 
