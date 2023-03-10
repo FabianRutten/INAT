@@ -92,7 +92,7 @@ byte state;
 // 1 -> configurable delay between sprays, minimum is 15 seconds (because of sprayer)
 // 2 -> adjust number of sprays
 // 3 -> overview
-// 0 -> exit
+// 0 -> exit -> not as a state in submenu
 byte submenu;
 
 // represeting different selections in the current menu
@@ -166,6 +166,7 @@ void initializeEEPROM() {
   byte delay = EEPROM.read(sprayDelay);
   if (delay == 255) {
     writeEEPROM_DELAY(0);
+    sprayDelay = 0; //// fooking bugg <- dont forget to delete this comment
   }
   else
   {
@@ -285,14 +286,14 @@ void updateSensors() {
 
 }
 
-byte iterateMenu(byte maxMenuValue) {
+void iterateMenu(byte maxMenuValue) {
   if (menuSelection > 0) {
     menuSelection++;
     if (menuSelection > maxMenuValue) {
-      return 0;
+      menuSelection = 0;
     }
-    return menuSelection;
   }
+  menuSelection = 1;   //////bugggg
 }
 
 void nonMenuButtonAction() {
@@ -309,7 +310,7 @@ void nonMenuButtonAction() {
 void menuOverviewButtonAction() {
   switch (buttonState) {
     case 2:
-      menuSelection = iterateMenu(3);
+      iterateMenu(2);   //////bugggg
       break;
     case 3:
       submenu = menuSelection;
@@ -343,7 +344,7 @@ void menuDelayAction() {
 void menuDelayButtonAction() {
       switch (buttonState) {
     case 2:
-      menuSelection = iterateMenu(3);
+      iterateMenu(3);
       break;
     case 3:
       menuDelayAction();
@@ -362,7 +363,7 @@ void selectNumOfSpraysAction() {
 void menuNumOfSpraysButtonAction() {
   switch (buttonState) {
     case 2:
-      menuSelection = iterateMenu(1);
+      iterateMenu(1);
       break;
     case 3:
       selectNumOfSpraysAction();
@@ -397,8 +398,7 @@ void actOnStateWithButton() {
 }
 
 void printMenuOveriewToLCD() {
-  char arrowChar = '<';
-  String arrow = String(arrowChar);
+  String arrow = "<";
   String delay = "delay";
   String sprays = "sprays";
   String reset = "reset";
@@ -426,8 +426,7 @@ void printMenuOveriewToLCD() {
 }
 
 void printMenuDelay() {
-  char arrowChar = '<';
-  String arrow = String(arrowChar);
+  String arrow = "<";
   String plus = "+";
   String minus = "-";
   String value = String(sprayDelay+15);
@@ -456,8 +455,7 @@ void printMenuDelay() {
 }
 
 void printMenuSprays() {
-  char arrowChar = '<';
-  String arrow = String(arrowChar);
+  String arrow = "<";
   //String plus = "+";
   //String minus = "-";
   String value = String(sprays);
