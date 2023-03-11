@@ -49,7 +49,7 @@ NewPing sonar(10,9,200);
 // so we define a standard debouncing time in milliseconds
 // also a button current state
 // and a time variable
-#define DEBOUNCE_DURATION 10
+#define DEBOUNCE_DURATION 50
 byte buttonState;
 byte lastButtonState;
 // consume this boolean if you used the button
@@ -287,13 +287,9 @@ void updateSensors() {
 }
 
 void iterateMenu(byte maxMenuValue) {
-  if (menuSelection > 0) {
-    menuSelection++;
-    if (menuSelection > maxMenuValue) {
-      menuSelection = 0;
-    }
-  }
-  menuSelection = 1;   //////bugggg
+  menuSelection++;
+  if (menuSelection > maxMenuValue)
+    {menuSelection = 0; }  //////bugggg
 }
 
 void nonMenuButtonAction() {
@@ -313,6 +309,10 @@ void menuOverviewButtonAction() {
       iterateMenu(2);   //////bugggg
       break;
     case 3:
+      if (menuSelection == 0){
+        state = 1;
+        return;
+      }
       submenu = menuSelection;
       menuSelection = 1;
       break;
@@ -563,8 +563,9 @@ void loop() {
   isPressed = false;
   }
 
-  if (state != 7) {
+  if (state != 7 && (myTime - printTime >= 200)) {
     printDefaultToLCD();
+    printTime = myTime;
   }
 }
 
