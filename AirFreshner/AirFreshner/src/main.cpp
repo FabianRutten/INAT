@@ -26,34 +26,44 @@ int sprays;
 byte sprayDelay;
 
 // Display
-LiquidCrystal lcdScreen(7,6,5,4,3,2);
+LiquidCrystal lcdScreen(7,8,9,10,11,12);
 
+
+/// default door value
+int default_door = 150;
+/// overhead
+#define door_overhead 20
+/// max value
+#define door_max 300
 // Distance Sensor, which is sonar based
-NewPing sonar(10,9,200);
+NewPing sonar(5,4,door_max);
+
 
 // Light sensor, LDR
 #define LDR A0
 
 // magnet sensor, MAG
-#define MAG A1
+#define MAG 2
 
 // Button bus, which is used for 3 buttons on analogPin 2
 #define BUTTON_BUS A2
 // 3 buttons with each 3 threshholds
 // each is lower than value
-#define BUTTON_ONE 200             // this button is the override!!!
+#define BUTTON_ONE 100            // this button is the override!!!
 #define BUTTON_TWO 600
-#define BUTTON_THREE 900
+#define BUTTON_THREE 800
 
 // the buttons and other sensors might need debouncing, 
 // so we define a standard debouncing time in milliseconds
 // also a button current state
 // and a time variable
-#define DEBOUNCE_DURATION 50
-byte buttonState;
-byte lastButtonState;
-// consume this boolean if you used the button
-bool isPressed;
+#define DEBOUNCE_DURATION 10
+byte pressedButton;
+#define BUTTON_OVERRIDE      1
+#define BUTTON_MENU_ITERATOR 2
+#define BUTTON_SELECT        3
+#define BUTTON_NON           0
+byte lastpressedButton;
 unsigned long buttonDebounceTimer;
 
 //RGB
@@ -62,7 +72,7 @@ unsigned long buttonDebounceTimer;
 #define RGB_BLUE A3
 
 // Bus for many digital signals on the bus
-#define ONE_WIRE_BUS 8
+#define ONE_WIRE_BUS 6
 
 // OneWire protocol to make use of the one_wire_bus
 OneWire oneWire(ONE_WIRE_BUS);
@@ -71,11 +81,11 @@ OneWire oneWire(ONE_WIRE_BUS);
 DallasTemperature tempSensor = (&oneWire);
 
 // PowerSwitch on mosfett
-#define MOS 12
+#define MOS A1
 
 // Motion sensor digital output
 // This sensor is "trigger once" mode
-#define MOTION 10
+#define MOTION 3
 
 // Representing the different states in a byte
 // 0 -> not in use
@@ -87,13 +97,23 @@ DallasTemperature tempSensor = (&oneWire);
 // 6 -> triggered two
 // 7 -> operator menu
 byte state;
+#define STATE_NOT_IN_USE 0
+#define STATE_UNKNOWN    1
+#define STATE_CLEANING   2
+#define STATE_NUM1       3
+#define STATE_NUM2       4
+#define STATE_TRIG1      5
+#define STATE_TRIG2      6
+#define STATE_MENU       7
 
 // Representing different submenu's in the operator menu
 // 1 -> configurable delay between sprays, minimum is 15 seconds (because of sprayer)
 // 2 -> adjust number of sprays
 // 3 -> overview
-// 0 -> exit -> not as a state in submenu
 byte submenu;
+#define SUBMENU_DELAY 1
+#define SUBMENU_SPRAYS 2
+#define SUBMENU_OVERVIEW 3
 
 // represeting different selections in the current menu
 // this is close to an index of an array, i.e. 0 is the first item and 4 is the 3rd item
@@ -111,24 +131,42 @@ byte submenu;
 //                    3 = reset to 15 seconds
 //                    0 = exit
 byte menuSelection;
+#define SELECTION_OVERVIEW_DELAY 1
+#define SELECTION_OVERVIEW_SPRAY 2
+#define SELECTION_OVERVIEW_RESET 3
+#define SELECTION_OVERVIEW_EXIT  0
+#define OVERVIEW_ITERATOR_NUMBER 3
+
+#define SELECTION_DELAY_PLUS  1
+#define SELECTION_DELAY_MINUS 2
+#define SELECTION_DELAY_RESET 3
+#define SELECTION_DELAY_EXIT  0
+#define DELAY_ITERATOR_NUMBER 3
+
+#define SELECTION_SPRAYS_RESET 1
+#define SELECTION_SPRAYS_EXIT  0
+#define SPRAYS_ITERATOR_NUMBER 1
+
+#define SELECTION_DEFAULT 1
 
 /////////////////////////////////////////////////////
 // Sensor variables;
-bool door;
-
+bool flushing;
+bool isMotion;
 // consume when used in spray
 bool override;
+
+bool doorClosed() {
+  int reading = sonar.ping_cm();
+  return (reading <= (default_door + door_overhead));
+}
 
 // update the myTime value with the current time
 void updateTime() {
   // no roll-over protection necessary since the rest is safe code
-  // lcdScreen.clear();
-  // lcdScreen.print("in updateTime");
-  // delay(3000);
+  // all code just compares the two times by subtraction. 
+  // Since its unsigned, it won't create problems :)
   myTime = millis();
-  // lcdScreen.clear();
-  // lcdScreen.print("out updateTime");
-  // delay(3000);
 }
 
 // Write to EEPROM and also update the value in memory
@@ -190,10 +228,16 @@ void printButtonAnalog(byte x, byte y) {
   printSensor("button", value, x, y);
 }
 
-void printButtonState(byte x, byte y) {
-  String value = String (buttonState);
+void printpressedButton(byte x, byte y) {
+  String value = String (pressedButton);
   printSensor("button", value, x, y);
 }
+
+void printButtonValue(byte x, byte y){
+  String value = String (analogRead(BUTTON_BUS));
+  printSensor("bV", value, x,y);
+} 
+
 // debug purposes for now
 void printDistance(byte x, byte y) {
   String value = String(sonar.ping_cm());
@@ -221,38 +265,30 @@ void printMotion(byte x, byte y) {
   printSensor("Motion", output, x, y);
 }
 
-byte buttonFromValue(unsigned int value) {
-  // lcdScreen.clear();
-  // lcdScreen.print("in buttonfromV");
-  // delay(3000);
+byte buttonFromValue(int value) {
   if (value < BUTTON_ONE) {
-    return 1;
+    return BUTTON_OVERRIDE;
   }
   if (value < BUTTON_TWO) {
-    return 2;
+    return BUTTON_MENU_ITERATOR;
   }
   if (value < BUTTON_THREE) {
-    return 3;
+    return BUTTON_SELECT;
   }
-  // no button pressed
-  return 0;
+  return BUTTON_NON;
 }
 
-void updateButtonState() {
+void updatepressedButton() {
   int reading = analogRead(BUTTON_BUS);
-  byte currentButtonState = buttonFromValue(reading);
-  if (currentButtonState != lastButtonState) {
+  byte currentpressedButton = buttonFromValue(reading);
+  if (currentpressedButton != lastpressedButton) {
     buttonDebounceTimer = millis();
-    //printSensor("dbTimer", "reset   ", 0, 0);
   }  
-  else if ((millis() - buttonDebounceTimer) > DEBOUNCE_DURATION) {
-    buttonState = currentButtonState;
-    if (buttonState != 0) {
-      isPressed = true;
-    }
-    //printSensor("bstate", String(buttonState) , 0, 1);
+  else if ((millis() - buttonDebounceTimer) > DEBOUNCE_DURATION 
+                  && currentpressedButton != lastpressedButton) {
+    pressedButton = currentpressedButton;
   }
-  lastButtonState = currentButtonState;
+  lastpressedButton = currentpressedButton;
 }
 
 void spray(unsigned long time, byte x, bool isLow) {
@@ -286,55 +322,76 @@ void updateSensors() {
 
 }
 
+
+
+// interupts
+// when magnets meet
+ void magnetInterrupt_falling() {
+  flushing = false;
+}
+// when magnets dont meet
+void magnetInterrupt_rising() {
+  flushing = true;
+}
+
+void motionInterrupt() {
+  isMotion = true;
+}
+
+
+
+// menu
+
 void iterateMenu(byte maxMenuValue) {
   menuSelection++;
   if (menuSelection > maxMenuValue)
-    {menuSelection = 0; }  //////bugggg
+    {menuSelection = 0; }
 }
 
 void nonMenuButtonAction() {
-  switch (buttonState) {
-    case 2:
-      state = 7;
-      //printSensor("state:", "7   ", 0, 0);
-      break;
-    default:
-      break;
-  }
-}
-
-void menuOverviewButtonAction() {
-  switch (buttonState) {
-    case 2:
-      iterateMenu(2);   //////bugggg
-      break;
-    case 3:
-      if (menuSelection == 0){
-        state = 1;
-        return;
-      }
-      submenu = menuSelection;
-      menuSelection = 1;
-      break;
+  if (pressedButton == BUTTON_MENU_ITERATOR){
+    state = STATE_MENU;
   }
 }
 
 void returnToMenuOverview() {
-  submenu = 3;
-  menuSelection = 1;
+  submenu = SUBMENU_OVERVIEW;
+  menuSelection = SELECTION_DEFAULT;
+}
+
+void menuOverviewButtonAction() {
+  switch (pressedButton) {
+    case BUTTON_MENU_ITERATOR:
+      iterateMenu(OVERVIEW_ITERATOR_NUMBER);
+      break;
+    case BUTTON_SELECT:
+      if (menuSelection == SELECTION_OVERVIEW_EXIT){
+        state = STATE_UNKNOWN;
+        returnToMenuOverview();
+      }
+      else if (menuSelection == SELECTION_OVERVIEW_RESET){
+        default_door = sonar.ping_cm();
+      }
+      else {
+        submenu = menuSelection;
+        menuSelection = SELECTION_DEFAULT;
+      }
+      break;
+  }
 }
 
 void menuDelayAction() {
   switch (menuSelection) {
-    case 1:
+    case SELECTION_DELAY_PLUS:
       if (sprayDelay < 254) {sprayDelay++;}
       break;
-    case 2:
+    case SELECTION_DELAY_MINUS:
       if(sprayDelay > 0) {sprayDelay--;}
       break;
-    case 3:
+    case SELECTION_DELAY_RESET:
       sprayDelay = 0;
-    case 0:
+      break;
+    case SELECTION_DELAY_EXIT:
       writeEEPROM_DELAY(sprayDelay);
       returnToMenuOverview();
       break;
@@ -342,30 +399,31 @@ void menuDelayAction() {
 }
 
 void menuDelayButtonAction() {
-      switch (buttonState) {
-    case 2:
-      iterateMenu(3);
+      switch (pressedButton) {
+    case BUTTON_MENU_ITERATOR:
+      iterateMenu(DELAY_ITERATOR_NUMBER);
       break;
-    case 3:
+    case BUTTON_SELECT:
       menuDelayAction();
       break;
   }
 }
 
 void selectNumOfSpraysAction() {
-  if (menuSelection == 1) {
+  if (menuSelection == SELECTION_DELAY_RESET) {
     writeEEPROM_SPRAYS(2400);
-    return;
   }
-  returnToMenuOverview();
+  else {
+    returnToMenuOverview();
+  }
 }
 
 void menuNumOfSpraysButtonAction() {
-  switch (buttonState) {
-    case 2:
-      iterateMenu(1);
+  switch (pressedButton) {
+    case BUTTON_MENU_ITERATOR:
+      iterateMenu(SPRAYS_ITERATOR_NUMBER);
       break;
-    case 3:
+    case BUTTON_SELECT:
       selectNumOfSpraysAction();
       break;
   }
@@ -373,29 +431,32 @@ void menuNumOfSpraysButtonAction() {
 
 void menuButtonAction() {
   switch (submenu) {
-    case 1:
+    case SUBMENU_DELAY:
       menuDelayButtonAction();
       break;
-    case 2:
+    case SUBMENU_SPRAYS:
       menuNumOfSpraysButtonAction();
       break;
-    case 3:
+    case SUBMENU_OVERVIEW:
       menuOverviewButtonAction();
       break;
   }
 }
 
 void actOnStateWithButton() {
-  if (buttonState == 1){
+  if (pressedButton == BUTTON_OVERRIDE){
     override = true;
     return;
   }
-  if (state == 7) {
+  if (state == STATE_MENU) {
     menuButtonAction();
     return;
   }
   nonMenuButtonAction();
 }
+
+
+// printing
 
 void printMenuOveriewToLCD() {
   String arrow = "<";
@@ -404,16 +465,16 @@ void printMenuOveriewToLCD() {
   String reset = "reset";
   String exit = "exit";
   switch (menuSelection) {
-    case 0:
+    case SELECTION_OVERVIEW_EXIT:
       exit.concat(arrow);
       break;
-    case 1:
+    case SELECTION_OVERVIEW_DELAY:
       delay.concat(arrow);
       break;
-    case 2:
+    case SELECTION_OVERVIEW_SPRAY:
       sprays.concat(arrow);
       break;
-    case 3:
+    case SELECTION_OVERVIEW_RESET:
       reset.concat(arrow);
       break;
   }
@@ -433,21 +494,21 @@ void printMenuDelay() {
   String reset = "reset";
   String exit = "exit";
   switch (menuSelection) {
-    case 0:
+    case SELECTION_DELAY_EXIT:
       exit.concat(arrow);
       break;
-    case 1:
+    case SELECTION_DELAY_PLUS:
       plus.concat(arrow);
       break;
-    case 2:
+    case SELECTION_DELAY_MINUS:
       minus.concat(arrow);
       break;
-    case 3:
+    case SELECTION_DELAY_RESET:
       reset.concat(arrow);
       break;
   }
-  String lineZero = "delay:" + value + " " + plus + " " + minus;
-  String lineOne = reset + "    " + exit;
+  String lineZero = "delay:" + value + " " + plus + " " + minus + "    ";
+  String lineOne = reset + "    " + exit + "    ";
   lcdScreen.setCursor(0,0);
   lcdScreen.print(lineZero);
   lcdScreen.setCursor(0,1);
@@ -462,10 +523,10 @@ void printMenuSprays() {
   String reset = "reset";
   String exit = "exit";
   switch (menuSelection) {
-    case 0:
+    case SELECTION_SPRAYS_EXIT:
       exit.concat(arrow);
       break;
-    case 1:
+    case SELECTION_DELAY_RESET:
       reset.concat(arrow);
       break;
   }
@@ -479,20 +540,20 @@ void printMenuSprays() {
 
 void printMenuToLCD() {
   switch (submenu) {
-    case 1:
+    case SUBMENU_DELAY:
       printMenuDelay();
       break;
-    case 2:
+    case SUBMENU_SPRAYS:
       printMenuSprays();
       break;
-    case 3: 
+    case SUBMENU_OVERVIEW: 
       printMenuOveriewToLCD();
       break;
   }
 }
 
 void printToLCDWithButton() {
-  if (state == 7) {
+  if (state == STATE_MENU) {
     printMenuToLCD();
     return;
   }
@@ -500,6 +561,7 @@ void printToLCDWithButton() {
 
 void printDefaultToLCD() {
   printLDR(0,0);
+  printTemperature(0,1);
 }
 
 void setup() {
@@ -512,12 +574,11 @@ void setup() {
   digitalWrite(LED_BUILTIN,HIGH);
 
   // default values for selection
-  submenu = 3;
-  menuSelection = 1;
+  returnToMenuOverview();
 
-  buttonState = 0;
-  lastButtonState = 0;
-  isPressed = false;
+
+  pressedButton = BUTTON_NON;
+  lastpressedButton = BUTTON_NON;
   buttonDebounceTimer = 0;
   override = false;
 
@@ -537,8 +598,10 @@ void setup() {
   pinMode(RGB_GREEN, OUTPUT);
   pinMode(RGB_BLUE, OUTPUT);
 
+  digitalWrite(RGB_RED, HIGH);
+
   // sensor defaults
-  door = false;
+  
 
   // set state default
   state = 0;
@@ -547,23 +610,30 @@ void setup() {
   lcdScreen.print("starting loop");
   delay(1000);
   printTime = 0;
+
+  // attach interrupts
+  pinMode(MAG, INPUT_PULLUP);
+  attachInterrupt(digitalPinToInterrupt(MAG), magnetInterrupt_falling, FALLING);
+  attachInterrupt(digitalPinToInterrupt(MAG), magnetInterrupt_rising, RISING);
+  pinMode(MOTION, INPUT_PULLUP);
+  attachInterrupt(digitalPinToInterrupt(MOTION), motionInterrupt, RISING);
 }
 
 void loop() {
   // the running timer is constantly updated
   updateTime();
 
-  // update the current buttonState
-  updateButtonState();
+  // update the current pressedButton
+  updatepressedButton();
 
   //
-  if (isPressed){
+  if (pressedButton){
   actOnStateWithButton();
   printToLCDWithButton();
-  isPressed = false;
+  pressedButton = BUTTON_NON;
   }
-
-  if (state != 7 && (myTime - printTime >= 200)) {
+  //&& (myTime - printTime >= 200)
+  if (state != 7 ) {
     printDefaultToLCD();
     printTime = myTime;
   }
