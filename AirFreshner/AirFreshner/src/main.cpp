@@ -36,7 +36,7 @@ int default_door = 150;
 /// max value
 #define door_max 300
 // Distance Sensor, which is sonar based
-NewPing sonar(5,4,door_max);
+NewPing sonar(4,5,door_max);
 
 
 // Light sensor, LDR
@@ -560,8 +560,11 @@ void printToLCDWithButton() {
 }
 
 void printDefaultToLCD() {
-  printLDR(0,0);
-  printTemperature(0,1);
+  //printLDR(0,0);
+  //printTemperature(0,1);
+  printDistance(0,0);
+  String magnet = String(flushing);
+  printSensor("mag", magnet, 0,1);
 }
 
 void setup() {
@@ -632,8 +635,8 @@ void loop() {
   printToLCDWithButton();
   pressedButton = BUTTON_NON;
   }
-  //&& (myTime - printTime >= 200)
-  if (state != 7 ) {
+  
+  if (state != 7 && (myTime - printTime >= 200)) {
     printDefaultToLCD();
     printTime = myTime;
   }
