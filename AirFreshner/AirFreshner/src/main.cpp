@@ -206,7 +206,7 @@ void initializeEEPROM() {
   byte delay = EEPROM.read(sprayDelay);
   if (delay == 255) {
     writeEEPROM_DELAY(0);
-    sprayDelay = 0; //// fooking bugg <- dont forget to delete this comment
+    sprayDelay = 0;
   }
   else
   {
@@ -567,8 +567,8 @@ void printToLCDWithButton() {
 }
 
 void printDefaultToLCD() {
-  printButtonAnalog(0,0);
-  printButtonValues(0,1);
+  printTemperature(0,0);
+  printMotion(0,1);
 }
 
 
@@ -579,7 +579,7 @@ void chanceRGBToState(){
       //NO LIGHT (energy savings ;) )
       digitalWrite(RGB_RED, LOW);
       digitalWrite(RGB_GREEN, LOW);
-      digitalWrite(RGB_BLUE, HIGH);
+      digitalWrite(RGB_BLUE, LOW);
       break;
     case STATE_UNKNOWN:
       //RED
@@ -650,8 +650,10 @@ void setup() {
   lcdScreen.print("eeprom done");
   delay(1000);
 
+  lcdScreen.clear();
+  lcdScreen.print("stabilizing...");
   // delay to stabilize motion sensor
-  // delay(60000);
+  delay(60000);
 
 
   // RGB
@@ -659,13 +661,11 @@ void setup() {
   pinMode(RGB_GREEN, OUTPUT);
   pinMode(RGB_BLUE, OUTPUT);
 
-  digitalWrite(RGB_RED, HIGH);
-
   // sensor defaults
   
 
   // set state default
-  state = 0;
+  state = STATE_NOT_IN_USE;
 
   buttonPressed = false;
   buttonCanBeActivated = true;
@@ -694,13 +694,14 @@ void loop() {
   if (buttonPressed){
   actOnStateWithButton();
   printToLCDWithButton();
+  chanceRGBToState();
   buttonPressed = false;
   }
   
   if (state != 7 && (myTime - printTime >= 200)) {
     printDefaultToLCD();
     printTime = myTime;
-  }
+  }  
 }
 
 
