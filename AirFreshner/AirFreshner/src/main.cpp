@@ -230,8 +230,6 @@ void printButtonAnalog(byte x, byte y) {
   printSensor("button", value, x, y);
 }
 
-
-
 void printpressedButton(byte x, byte y) {
   String value = String (pressedButton);
   printSensor("button", value, x, y);
@@ -348,8 +346,6 @@ void magnetInterrupt_rising() {
 void motionInterrupt() {
   isMotion = true;
 }
-
-
 
 // menu
 
@@ -573,6 +569,60 @@ void printToLCDWithButton() {
 void printDefaultToLCD() {
   printButtonAnalog(0,0);
   printButtonValues(0,1);
+}
+
+
+// view states
+void chanceRGBToState(){
+  switch(state){
+    case STATE_NOT_IN_USE:
+      //NO LIGHT (energy savings ;) )
+      digitalWrite(RGB_RED, LOW);
+      digitalWrite(RGB_GREEN, LOW);
+      digitalWrite(RGB_BLUE, HIGH);
+      break;
+    case STATE_UNKNOWN:
+      //RED
+      digitalWrite(RGB_RED, HIGH);
+      digitalWrite(RGB_GREEN, LOW);
+      digitalWrite(RGB_BLUE, LOW);
+      break;
+    case STATE_CLEANING:
+      // purple
+      digitalWrite(RGB_RED, 1024 * 0.627);
+      digitalWrite(RGB_GREEN, 1024 * 0.125);
+      digitalWrite(RGB_BLUE, 1024 * 0.941);
+      break;
+    case STATE_NUM1:
+      //GREEN
+      digitalWrite(RGB_RED, LOW);
+      digitalWrite(RGB_GREEN, HIGH);
+      digitalWrite(RGB_BLUE, LOW);
+      break;
+    case STATE_NUM2:
+      //BLUE
+      digitalWrite(RGB_RED, LOW);
+      digitalWrite(RGB_GREEN, LOW);
+      digitalWrite(RGB_BLUE, HIGH);
+      break;
+    case STATE_TRIG1:
+      //WHITE
+      digitalWrite(RGB_RED, HIGH);
+      digitalWrite(RGB_GREEN, HIGH);
+      digitalWrite(RGB_BLUE, HIGH);
+      break;
+    case STATE_TRIG2:
+      //YELLOW
+      digitalWrite(RGB_RED, HIGH);
+      digitalWrite(RGB_GREEN, HIGH);
+      digitalWrite(RGB_BLUE, LOW);
+      break;
+    case STATE_MENU:
+      digitalWrite(RGB_RED, HIGH);
+      digitalWrite(RGB_GREEN, 1024 * 0.647);
+      digitalWrite(RGB_BLUE, LOW);
+      break;
+  }
 }
 
 void setup() {
