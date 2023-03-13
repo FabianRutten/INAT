@@ -32,7 +32,7 @@ LiquidCrystal lcdScreen(7,8,9,10,11,12);
 /// default door value
 int default_door = 150;
 /// overhead
-#define door_overhead 20
+#define door_overhead 10
 /// max value
 #define door_max 300
 // Distance Sensor, which is sonar based
@@ -181,9 +181,8 @@ void writeEEPROM_SPRAYS(int value) {
   sprays = value;
 }
 
-void writeEEPROM_DELAY(byte value) {
-  EEPROM.write(SPRAY_DELAY, value);
-  sprayDelay = value;
+void writeEEPROM_DELAY() {
+  EEPROM.write(SPRAY_DELAY, sprayDelay);
 }
 
 // initialze EEPROM if necessary.
@@ -194,24 +193,9 @@ void initializeEEPROM() {
   byte num_0 = EEPROM.read(SPRAYS_0);
   byte num_1 = EEPROM.read(SPRAYS_1);
   int num = (num_0 << 8) + num_1;
-
-  if (num_0 == 255)
-  {
-    writeEEPROM_SPRAYS(2400);
-  }
-  else
-  {
-    sprays = num;
-  }
-  byte delay = EEPROM.read(sprayDelay);
-  if (delay == 255) {
-    writeEEPROM_DELAY(0);
-    sprayDelay = 0;
-  }
-  else
-  {
-    sprayDelay = delay;
-  }
+  sprays = num;
+  byte delay = EEPROM.read(SPRAY_DELAY);
+  sprayDelay = delay;
 }
 
 // Generic printer, takes name of value and the value in string 
@@ -324,7 +308,9 @@ void overrideSpray() {
 }
 
 void updateSensors() {
-
+  if (digitalRead(MAG) == LOW){
+    flushing = false;
+  }
 }
 
 void printButtonValues(byte x, byte y) {
@@ -335,9 +321,6 @@ void printButtonValues(byte x, byte y) {
 
 // interupts
 // when magnets meet
- void magnetInterrupt_falling() {
-  flushing = false;
-}
 // when magnets dont meet
 void magnetInterrupt_rising() {
   flushing = true;
@@ -399,7 +382,7 @@ void menuDelayAction() {
       sprayDelay = 0;
       break;
     case SELECTION_DELAY_EXIT:
-      writeEEPROM_DELAY(sprayDelay);
+      writeEEPROM_DELAY();
       returnToMenuOverview();
       break;
   }
@@ -567,7 +550,7 @@ void printToLCDWithButton() {
 }
 
 void printDefaultToLCD() {
-  printTemperature(0,0);
+  printSensor("mag", String(flushing), 0,0);
   printMotion(0,1);
 }
 
@@ -676,10 +659,9 @@ void setup() {
   printTime = 0;
 
   // attach interrupts
-  pinMode(MAG, INPUT_PULLUP);
-  attachInterrupt(digitalPinToInterrupt(MAG), magnetInterrupt_falling, FALLING); // possibly bs
+  pinMode(MAG, INPUT);
   attachInterrupt(digitalPinToInterrupt(MAG), magnetInterrupt_rising, RISING);
-  pinMode(MOTION, INPUT_PULLUP);
+  pinMode(MOTION, INPUT);
   attachInterrupt(digitalPinToInterrupt(MOTION), motionInterrupt, RISING);
 }
 
@@ -689,6 +671,8 @@ void loop() {
 
   // update the current pressedButton
   updatepressedButton();
+
+  updateSensors();
 
   //
   if (buttonPressed){
@@ -701,7 +685,9 @@ void loop() {
   if (state != 7 && (myTime - printTime >= 200)) {
     printDefaultToLCD();
     printTime = myTime;
-  }  
+  }
+
+
 }
 
 
