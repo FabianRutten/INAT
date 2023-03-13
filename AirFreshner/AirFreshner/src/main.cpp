@@ -102,8 +102,7 @@ byte state;
 #define STATE_CLEANING   2
 #define STATE_NUM1       3
 #define STATE_NUM2       4
-#define STATE_TRIG1      5
-#define STATE_TRIG2      6
+#define STATE_TRIG       5
 #define STATE_MENU       7
 
 // Representing different submenu's in the operator menu
@@ -157,6 +156,14 @@ bool buttonPressed;
 bool buttonCanBeActivated;
 // consume when used in spray
 bool override;
+
+unsigned int sprayDelayTimer = 0;
+bool isInOverride = false;
+
+unsigned int sprayTimer = 0;
+bool isSpraying = false;
+
+
 
 bool doorClosed() {
   int reading = sonar.ping_cm();
@@ -279,32 +286,35 @@ void updatepressedButton() {
   lastpressedButton = currentpressedButton;
 }
 
-void spray(unsigned long time, byte x, bool isLow) {
-  if (override){
-    return;
-  }
-  if (isLow){
-    digitalWrite(MOS, HIGH);
-  }
-  unsigned long currentTime = millis();
-  if ((currentTime - time) < 16){
-    spray(time, x, true);
-  }
-  else {
-    digitalWrite(MOS,LOW);
+void sprayLoop() {
+  if(millis() - sprayTimer > 18000) {
+    isSpraying = false;
+    digitalWrite(MOS, LOW);
+    state = STATE_UNKNOWN;
     sprays--;
     writeEEPROM_SPRAYS();
-    if( x > 1){    
-      unsigned long newTime = millis();
-      spray(newTime, x--, true);
-    }
   }
 }
 
-void overrideSpray() {
+void spray() {
+  isSpraying = true;
+  digitalWrite(MOS, HIGH);
+  sprayTimer = millis();
+}
 
-  //
-  override = false;
+void overrideSpray() {
+  printSensor("spray incoming", "", 0,0);
+  state = STATE_TRIG;
+  isInOverride = true;
+  sprayDelayTimer = millis();
+}
+
+void overrideLoop(){
+  unsigned int amount = int(sprayDelay) * 1000;
+  if ((millis() - sprayDelayTimer) > amount) {
+    spray();
+    isInOverride = false;
+  }
 }
 
 void updateSensors() {
@@ -436,7 +446,7 @@ void menuButtonAction() {
 
 void actOnStateWithButton() {
   if (pressedButton == BUTTON_OVERRIDE){
-    override = true;
+    overrideSpray();
   }
   else if (state == STATE_MENU) {
     menuButtonAction();
@@ -551,8 +561,8 @@ void printToLCDWithButton() {
 }
 
 void printDefaultToLCD() {
-  printSensor("mag", String(flushing), 0,0);
-  printMotion(0,1);
+  printTemperature(0,0);
+  printSensor("state", String(state), 0,1);
 }
 
 
@@ -589,17 +599,11 @@ void chanceRGBToState(){
       digitalWrite(RGB_GREEN, LOW);
       digitalWrite(RGB_BLUE, HIGH);
       break;
-    case STATE_TRIG1:
+    case STATE_TRIG:
       //WHITE
       digitalWrite(RGB_RED, HIGH);
       digitalWrite(RGB_GREEN, HIGH);
       digitalWrite(RGB_BLUE, HIGH);
-      break;
-    case STATE_TRIG2:
-      //YELLOW
-      digitalWrite(RGB_RED, HIGH);
-      digitalWrite(RGB_GREEN, HIGH);
-      digitalWrite(RGB_BLUE, LOW);
       break;
     case STATE_MENU:
       digitalWrite(RGB_RED, HIGH);
@@ -617,6 +621,7 @@ void setup() {
   pinMode(MOTION, INPUT);
   pinMode(LDR, INPUT);
   digitalWrite(LED_BUILTIN,HIGH);
+  pinMode(MOS, OUTPUT);
 
   // default values for selection
   returnToMenuOverview();
@@ -637,7 +642,7 @@ void setup() {
   lcdScreen.clear();
   lcdScreen.print("stabilizing...");
   // delay to stabilize motion sensor
-  delay(60000);
+  delay(6000);
 
 
   // RGB
@@ -673,7 +678,7 @@ void loop() {
   // update the current pressedButton
   updatepressedButton();
 
-  updateSensors();
+  // updateSensors();
 
   //
   if (buttonPressed){
@@ -688,7 +693,13 @@ void loop() {
     printTime = myTime;
   }
 
+  if(isInOverride) {
+    overrideLoop();
+  }
 
+  if(isSpraying) {
+    sprayLoop();
+  }
 }
 
 
