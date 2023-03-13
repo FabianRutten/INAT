@@ -153,6 +153,8 @@ byte menuSelection;
 // Sensor variables;
 bool flushing;
 bool isMotion;
+bool buttonPressed;
+bool buttonCanBeActivated;
 // consume when used in spray
 bool override;
 
@@ -228,15 +230,12 @@ void printButtonAnalog(byte x, byte y) {
   printSensor("button", value, x, y);
 }
 
+
+
 void printpressedButton(byte x, byte y) {
   String value = String (pressedButton);
   printSensor("button", value, x, y);
 }
-
-void printButtonValue(byte x, byte y){
-  String value = String (analogRead(BUTTON_BUS));
-  printSensor("bV", value, x,y);
-} 
 
 // debug purposes for now
 void printDistance(byte x, byte y) {
@@ -284,9 +283,17 @@ void updatepressedButton() {
   if (currentpressedButton != lastpressedButton) {
     buttonDebounceTimer = millis();
   }  
-  else if ((millis() - buttonDebounceTimer) > DEBOUNCE_DURATION 
-                  && currentpressedButton != lastpressedButton) {
-    pressedButton = currentpressedButton;
+  else if ((millis() - buttonDebounceTimer) > DEBOUNCE_DURATION) {
+    if(!buttonPressed){
+      pressedButton = currentpressedButton;
+      if(buttonCanBeActivated){
+        buttonPressed = true;
+        buttonCanBeActivated = false;
+      }
+    }
+    if(currentpressedButton == BUTTON_NON){
+      buttonCanBeActivated = true;
+    }
   }
   lastpressedButton = currentpressedButton;
 }
@@ -322,7 +329,11 @@ void updateSensors() {
 
 }
 
-
+void printButtonValues(byte x, byte y) {
+  String press = "pBG: ";
+  press.concat(String(pressedButton) + "   pB");
+  printSensor(press, String(buttonFromValue(analogRead(BUTTON_BUS))), 0,1);
+}
 
 // interupts
 // when magnets meet
@@ -446,13 +457,13 @@ void menuButtonAction() {
 void actOnStateWithButton() {
   if (pressedButton == BUTTON_OVERRIDE){
     override = true;
-    return;
   }
-  if (state == STATE_MENU) {
+  else if (state == STATE_MENU) {
     menuButtonAction();
-    return;
   }
+  else {
   nonMenuButtonAction();
+  }
 }
 
 
@@ -560,11 +571,8 @@ void printToLCDWithButton() {
 }
 
 void printDefaultToLCD() {
-  //printLDR(0,0);
-  //printTemperature(0,1);
-  printDistance(0,0);
-  String magnet = String(flushing);
-  printSensor("mag", magnet, 0,1);
+  printButtonAnalog(0,0);
+  printButtonValues(0,1);
 }
 
 void setup() {
@@ -609,6 +617,9 @@ void setup() {
   // set state default
   state = 0;
 
+  buttonPressed = false;
+  buttonCanBeActivated = true;
+
   lcdScreen.clear();
   lcdScreen.print("starting loop");
   delay(1000);
@@ -616,7 +627,7 @@ void setup() {
 
   // attach interrupts
   pinMode(MAG, INPUT_PULLUP);
-  attachInterrupt(digitalPinToInterrupt(MAG), magnetInterrupt_falling, FALLING);
+  attachInterrupt(digitalPinToInterrupt(MAG), magnetInterrupt_falling, FALLING); // possibly bs
   attachInterrupt(digitalPinToInterrupt(MAG), magnetInterrupt_rising, RISING);
   pinMode(MOTION, INPUT_PULLUP);
   attachInterrupt(digitalPinToInterrupt(MOTION), motionInterrupt, RISING);
@@ -630,10 +641,10 @@ void loop() {
   updatepressedButton();
 
   //
-  if (pressedButton){
+  if (buttonPressed){
   actOnStateWithButton();
   printToLCDWithButton();
-  pressedButton = BUTTON_NON;
+  buttonPressed = false;
   }
   
   if (state != 7 && (myTime - printTime >= 200)) {
