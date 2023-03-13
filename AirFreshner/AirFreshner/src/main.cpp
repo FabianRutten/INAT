@@ -172,13 +172,12 @@ void updateTime() {
 }
 
 // Write to EEPROM and also update the value in memory
-void writeEEPROM_SPRAYS(int value) {
-  byte num_0 = value >> 8;
-  byte num_1 = value & 0xFF;
+void writeEEPROM_SPRAYS() {
+  byte num_0 = sprays >> 8;
+  byte num_1 = sprays & 0xFF;
 
   EEPROM.write(SPRAYS_0, num_0);
   EEPROM.write(SPRAYS_1, num_1);
-  sprays = value;
 }
 
 void writeEEPROM_DELAY() {
@@ -293,7 +292,8 @@ void spray(unsigned long time, byte x, bool isLow) {
   }
   else {
     digitalWrite(MOS,LOW);
-    writeEEPROM_SPRAYS(sprays--);
+    sprays--;
+    writeEEPROM_SPRAYS();
     if( x > 1){    
       unsigned long newTime = millis();
       spray(newTime, x--, true);
@@ -401,7 +401,8 @@ void menuDelayButtonAction() {
 
 void selectNumOfSpraysAction() {
   if (menuSelection == SELECTION_SPRAYS_RESET) {
-    writeEEPROM_SPRAYS(2400);
+    sprays = 2400;
+    writeEEPROM_SPRAYS();
   }
   else {
     returnToMenuOverview();
