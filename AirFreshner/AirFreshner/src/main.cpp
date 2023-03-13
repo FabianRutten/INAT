@@ -421,7 +421,7 @@ void menuDelayButtonAction() {
 }
 
 void selectNumOfSpraysAction() {
-  if (menuSelection == SELECTION_DELAY_RESET) {
+  if (menuSelection == SELECTION_SPRAYS_RESET) {
     writeEEPROM_SPRAYS(2400);
   }
   else {
@@ -537,7 +537,7 @@ void printMenuSprays() {
     case SELECTION_SPRAYS_EXIT:
       exit.concat(arrow);
       break;
-    case SELECTION_DELAY_RESET:
+    case SELECTION_SPRAYS_RESET:
       reset.concat(arrow);
       break;
   }
