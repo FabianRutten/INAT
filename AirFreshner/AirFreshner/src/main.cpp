@@ -163,6 +163,8 @@ bool isInOverride = false;
 unsigned int sprayTimer = 0;
 bool isSpraying = false;
 
+unsigned int poopTimer = 0;
+
 
 
 bool doorClosed() {
@@ -613,6 +615,38 @@ void chanceRGBToState(){
   }
 }
 
+void checkState() {
+  switch (state)
+  {
+  case STATE_NOT_IN_USE:
+    if(!doorClosed()){
+      state = STATE_UNKNOWN;
+      poopTimer = millis();
+    }
+    break;
+  case STATE_UNKNOWN:
+    if((millis() - poopTimer) < 150000 && doorClosed()) {
+      state = STATE_NUM1;
+    }
+    else if (doorClosed()){
+      state = STATE_NUM2;
+    }
+    break;
+  case STATE_NUM1:
+    if(doorClosed()){
+      state = STATE_TRIG;
+      spray();
+    }
+  case STATE_NUM2:
+    if(doorClosed()){
+      state = STATE_TRIG;
+      spray();
+    }
+  default:
+   break;
+  }
+}
+
 void setup() {
   myTime = millis();
   lcdScreen.begin(2,16);
@@ -699,6 +733,10 @@ void loop() {
 
   if(isSpraying) {
     sprayLoop();
+  }
+
+  if (myTime%200 == 0) {
+    checkState();
   }
 }
 
