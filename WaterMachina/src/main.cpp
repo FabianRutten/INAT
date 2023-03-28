@@ -24,6 +24,10 @@ Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 // END DISPLAY
 
 // SERVO
+#include <Servo.h>
+Servo brrrrt;
+int servoPos = 0;
+// END SERVO
 
 #define NUMFLAKES     10 // Number of snowflakes in the animation example
 
@@ -336,7 +340,7 @@ void drawDoge(void) {
   display.display();
   delay(1000);
   display.invertDisplay(true);
-  delay(10000);
+  delay(1000);
 }
 
 #define XPOS   0 // Indexes into the 'icons' array in function below
@@ -383,7 +387,6 @@ void testanimate(const uint8_t *bitmap, uint8_t w, uint8_t h) {
     }
   }
 }
-// END DISPLAY
 
 
 
@@ -464,14 +467,28 @@ void setup() {
   screenTester();
 
   wifiSetup();
+
+  //
   pinMode(LED_BUILTIN,OUTPUT);
+  pinMode(A0, INPUT);
 
   drawDoge();
+
+  brrrrt.attach(D5);
 }
 
 void loop() { 
-    digitalWrite(LED_BUILTIN, HIGH);
-    delay(500);
-    digitalWrite(LED_BUILTIN, LOW);
-    delay(500);
+  digitalWrite(LED_BUILTIN, HIGH);
+  delay(500);
+  digitalWrite(LED_BUILTIN, LOW);
+  delay(500);
+  for (servoPos = 0; servoPos <= 180; servoPos += 1) { // goes from 0 degrees to 180 degrees
+    // in steps of 1 degree
+    brrrrt.write(servoPos);              // tell servo to go to position in variable 'servoPos'
+    delay(15);                       // waits 15 ms for the servo to reach the position
+  }
+  for (servoPos = 180; servoPos >= 0; servoPos -= 1) { // goes from 180 degrees to 0 degrees
+    brrrrt.write(servoPos);              // tell servo to go to position in variable 'servoPos'
+    delay(15);                       // waits 15 ms for the servo to reach the position
+  }
 }
