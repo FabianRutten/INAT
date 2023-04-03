@@ -161,12 +161,13 @@ unsigned long soilTimer   = 0;
 // 0: default
 // 1: soil measurement
 // 2: LDR  measurement
-// 3: else
+// 3: Watering
 byte state = 0;
 
 // threshold when the soil should we watered
 
-#define WATER_DELAY 
+#define WATER_DELAY 1000
+unsigned long waterTimer = 0;
 // END VARIABLES
 
 /*
@@ -453,6 +454,22 @@ void printLDR(){
   startSoilTest();
 }
 
+void startWater(){
+  brrt.write(SERVO_DOWN);
+  waterTimer = currentTime;
+  state = 3;
+  printWater();
+}
+
+void printWater(){
+
+}
+
+void endWater(){
+  brrt.write(SERVO_UP);
+  state = 0;
+}
+
 void stateLoop(){
   switch (state){
     case 1:
@@ -464,6 +481,9 @@ void stateLoop(){
       printLDR();
       break;
     case 3:
+      if(currentTime - waterTimer >= WATER_DELAY){
+        endWater();
+      }
       break;
     default:
       state = 2;
