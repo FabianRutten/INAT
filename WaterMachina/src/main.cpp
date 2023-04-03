@@ -38,6 +38,7 @@ Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 
 Servo brrt;
 int servoPos = 0;
+#define SERVO_PWM D0
 // END SERVO
 
 #define NUMFLAKES     10 // Number of snowflakes in the animation example
@@ -477,19 +478,18 @@ void screenTester() {
 
 void setup() {
   // Wire
-
-  //screenTester();
-  display.begin();
+  Wire.begin(D2,D1);
 
   //wifiSetup();
   pinMode(LED_BUILTIN,OUTPUT);
 
   drawDoge();
-  brrt.attach(D0);
+  brrt.attach(SERVO_PWM);
 }
 
 void loop() { 
     digitalWrite(LED_BUILTIN, HIGH);
+    drawDoge();
     brrt.write(180);
     delay(500);
     brrt.write(0);
