@@ -1,13 +1,15 @@
 // WIFI
-#include <WiFiManager.h>
-WiFiManager wifiManager;
+// #include <WiFiManager.h>
+// WiFiManager wifiManager;
 // END WIFI
 
+
 // MQTT
-#include "Adafruit_MQTT.h"
-#include "Adafruit_MQTT_Client.h"
+// #include "Adafruit_MQTT.h"
+// #include "Adafruit_MQTT_Client.h"
 
 /************************* Adafruit.io Setup *********************************/
+/*
 // Fabian's inlog
 #define AIO_SERVER      "mqtt.uu.nl"
 #define AIO_SERVERPORT  1883                   // use 8883 for SSL -> uu has no ssl
@@ -22,7 +24,7 @@ Adafruit_MQTT_Client mqtt(&wifiClient, AIO_SERVER, AIO_SERVERPORT, AIO_USERNAME,
 
 
 /****************************** Feeds ***************************************/
-
+/*
 // Setup a feed called 'photocell' for publishing.
 // Notice MQTT paths for AIO follow the form: <username>/feeds/<feedname>
 Adafruit_MQTT_Publish photocell = Adafruit_MQTT_Publish(&mqtt, AIO_USERNAME "/feeds/photocell");
@@ -61,7 +63,7 @@ void MQTT_connect() {
   }
   Serial.println("MQTT Connected!");
 }
-
+*/
 // END MQTT
 
 
@@ -94,6 +96,8 @@ Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 Servo brrt;
 int servoPos = 0;
 #define SERVO_PWM D0
+#define SERVO_UP 0
+#define SERVO_DOWN 180
 // END SERVO
 
 // ANALOG_SELECTOR
@@ -415,6 +419,7 @@ void drawDoge(void) {
 }
 
 void startSoilTest(){
+  state = 1;
   soilTimer = currentTime;
   digitalWrite(ANALOG_SEL, HIGH);
 }
@@ -436,12 +441,16 @@ void printSoil(){
   uint value = endSoilTest();
   display.println("SOIL: " + String(value));
   display.display();
+  delay(1000);
 }
 
 void printLDR(){
   display.clearDisplay();
+  display.setCursor(0,0);
   display.println("LDR: " + String(LDR_value()));
   display.display();
+  delay(1000);
+  startSoilTest();
 }
 
 void stateLoop(){
@@ -512,15 +521,15 @@ void updateTime(){
 }
 */
 
-void wifiSetup() {
-  display.clearDisplay();
-  display.setTextSize(10);
-  const char* apName = "jemoederswifi";
-  display.println("Trying wifi");
-  display.println("AP: " + String(apName));
-  display.display();
-  wifiManager.autoConnect(apName);
-}
+// void wifiSetup() {
+//   display.clearDisplay();
+//   display.setTextSize(10);
+//   const char* apName = "jemoederswifi";
+//   display.println("Trying wifi");
+//   display.println("AP: " + String(apName));
+//   display.display();
+//   wifiManager.autoConnect(apName);
+// }
 
 /*void screenTester() {
   Serial.begin(9600);
@@ -607,19 +616,16 @@ void setup() {
 
   drawDoge();
   delay(1000);
+  display.invertDisplay(false);
+  display.setTextSize(1); // Draw 2X-scale text
+  display.setTextColor(SSD1306_WHITE);
   brrt.attach(SERVO_PWM);
 }
 
 void loop() { 
   updateTime();
-  if(wifiClient.connected()){
-    MQTT_connect();
-  }
-  digitalWrite(LED_BUILTIN, HIGH);
-  state = 1;
-  brrt.write(180);
-  delay(2000);
-  brrt.write(0);
-  digitalWrite(LED_BUILTIN, LOW);
-  delay(2000);
+  // if(wifiClient.connected()){
+  //   MQTT_connect();
+  // }
+  stateLoop();
 }
