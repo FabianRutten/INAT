@@ -3,10 +3,20 @@
 WiFiManager wifiManager;
 // END WIFI
 
+
+// OneWire
+#include <Wire.h>
+//#define SCL D1
+//#define SDA D2
+// END OneWire
+
+// AnalogSwitch
+#define ANALOG_SWITCH_SEL D3
+// END AnalogSwitch
+
 // DISPLAY
 // possibly unneeded
 // #include <SPI.h>
-#include <Wire.h>
 #include <Adafruit_GFX.h>
 #include <Adafruit_SSD1306.h>
 
@@ -341,7 +351,7 @@ void drawDoge(void) {
   display.display();
   delay(1000);
   display.invertDisplay(true);
-  delay(10000);
+  delay(1000);
 }
 
 #define XPOS   0 // Indexes into the 'icons' array in function below
@@ -466,13 +476,16 @@ void screenTester() {
 }
 
 void setup() {
+  // Wire
+
   //screenTester();
+  display.begin();
 
   //wifiSetup();
   pinMode(LED_BUILTIN,OUTPUT);
 
   drawDoge();
-  brrt.attach(D5);
+  brrt.attach(D0);
 }
 
 void loop() { 
@@ -481,5 +494,5 @@ void loop() {
     delay(500);
     brrt.write(0);
     digitalWrite(LED_BUILTIN, LOW);
-    delay(500);
+    delay(5000);
 }
