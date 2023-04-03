@@ -3,6 +3,67 @@
 WiFiManager wifiManager;
 // END WIFI
 
+// MQTT
+#include "Adafruit_MQTT.h"
+#include "Adafruit_MQTT_Client.h"
+
+/************************* Adafruit.io Setup *********************************/
+// Fabian's inlog
+#define AIO_SERVER      "mqtt.uu.nl"
+#define AIO_SERVERPORT  1883                   // use 8883 for SSL -> uu has no ssl
+#define AIO_USERNAME    "student036"
+#define AIO_KEY         "bbkgsFeZ"
+
+// Create an ESP8266 WiFiClient class to connect to the MQTT server.
+WiFiClient wifiClient;
+
+// Setup the MQTT client class by passing in the WiFi client and MQTT server and login details.
+Adafruit_MQTT_Client mqtt(&wifiClient, AIO_SERVER, AIO_SERVERPORT, AIO_USERNAME, AIO_KEY);
+
+
+/****************************** Feeds ***************************************/
+
+// Setup a feed called 'photocell' for publishing.
+// Notice MQTT paths for AIO follow the form: <username>/feeds/<feedname>
+Adafruit_MQTT_Publish photocell = Adafruit_MQTT_Publish(&mqtt, AIO_USERNAME "/feeds/photocell");
+
+// Setup a feed called 'onoff' for subscribing to changes.
+Adafruit_MQTT_Subscribe onoffbutton = Adafruit_MQTT_Subscribe(&mqtt, AIO_USERNAME "/feeds/onoff");
+
+
+// Bug workaround for Arduino 1.6.6, it seems to need a function declaration
+// for some reason (only affects ESP8266, likely an arduino-builder bug).
+void MQTT_connect();
+
+// Function to connect and reconnect as necessary to the MQTT server.
+// Should be called in the loop function and it will take care if connecting.
+void MQTT_connect() {
+  int8_t ret;
+
+  // Stop if already connected.
+  if (mqtt.connected()) {
+    return;
+  }
+
+  Serial.print("Connecting to MQTT... ");
+
+  uint8_t retries = 3;
+  while ((ret = mqtt.connect()) != 0) { // connect will return 0 for connected
+       Serial.println(mqtt.connectErrorString(ret));
+       Serial.println("Retrying MQTT connection in 5 seconds...");
+       mqtt.disconnect();
+       delay(5000);  // wait 5 seconds
+       retries--;
+       if (retries == 0) {
+         // basically die and wait for WDT to reset me
+         while (1);
+       }
+  }
+  Serial.println("MQTT Connected!");
+}
+
+// END MQTT
+
 
 // OneWire
 #include <Wire.h>
@@ -13,7 +74,6 @@ WiFiManager wifiManager;
 // END AnalogSwitch
 
 // DISPLAY
-// possibly unneeded
 // #include <SPI.h>
 #include <Adafruit_GFX.h>
 #include <Adafruit_SSD1306.h>
@@ -31,11 +91,15 @@ Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 
 // SERVO
 #include <Servo.h>
-
 Servo brrt;
 int servoPos = 0;
 #define SERVO_PWM D0
 // END SERVO
+
+// ANALOG_SELECTOR
+#define ANALOG_SEL D3
+#define ANALOG_PIN A0
+// END ANALOG_SELECTOR
 
 // DOGE
 #define doge_width 60
@@ -83,6 +147,23 @@ static const unsigned char doge_xmb[] = {
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
   };
 // END DOGE
+
+// VARIABLES
+unsigned long currentTime = 0;
+#define SOIL_DELAY 100
+unsigned long soilTimer   = 0;
+
+// state
+// 0: default
+// 1: soil measurement
+// 2: LDR  measurement
+// 3: else
+byte state = 0;
+
+// threshold when the soil should we watered
+
+#define WATER_DELAY 
+// END VARIABLES
 
 /*
 void testdrawline() {
@@ -319,17 +400,70 @@ void testscrolltext(void) {
   delay(1000);
 }
 */
+
 void drawDoge(void) {
   display.clearDisplay();
 
   display.drawXBitmap(
-    ((display.width()  - doge_width )  / 2) - 20,
-    ((display.height() - doge_height) / 2) - 20,
+    ((display.width()  - 16 )  / 2) - 20,
+    ((display.height() - 16) / 2) - 20,
     doge_xmb, doge_width, doge_height, 1);
   display.display();
   delay(1000);
   display.invertDisplay(true);
   delay(1000);
+}
+
+void startSoilTest(){
+  soilTimer = currentTime;
+  digitalWrite(ANALOG_SEL, HIGH);
+}
+
+uint endSoilTest(){
+  uint value = analogRead(ANALOG_PIN);
+  digitalWrite(ANALOG_SEL, LOW);
+  state = 0;
+  return value;
+}
+
+uint LDR_value(){
+  // assuming this is only called when LDR is selected
+  return analogRead(ANALOG_PIN);
+}
+
+void printSoil(){
+  display.clearDisplay();
+  uint value = endSoilTest();
+  display.println("SOIL: " + String(value));
+  display.display();
+}
+
+void printLDR(){
+  display.clearDisplay();
+  display.println("LDR: " + String(LDR_value()));
+  display.display();
+}
+
+void stateLoop(){
+  switch (state){
+    case 1:
+      if(currentTime - soilTimer >= SOIL_DELAY){
+        printSoil();
+      }
+      break;
+    case 2:
+      printLDR();
+      break;
+    case 3:
+      break;
+    default:
+      state = 2;
+      break;
+  }
+}
+
+void updateTime(){
+  currentTime = millis();
 }
 
 // #define XPOS   0 // Indexes into the 'icons' array in function below
@@ -378,11 +512,9 @@ void drawDoge(void) {
 }
 */
 
-
-
-
 void wifiSetup() {
   display.clearDisplay();
+  display.setTextSize(10);
   const char* apName = "jemoederswifi";
   display.println("Trying wifi");
   display.println("AP: " + String(apName));
@@ -456,21 +588,38 @@ void wifiSetup() {
 */
 
 void setup() {
-  // Wire
+  // start display
   display.begin(SSD1306_SWITCHCAPVCC, SCREEN_ADDRESS);
+  //connect serial for debug
+  Serial.begin(115200);
+  delay(10);
+  // setup wifi
   //wifiSetup();
+  // mqtt setup
+
+  // Setup MQTT subscription for onoff feed.
+  //mqtt.subscribe(&onoffbutton);
+
+  // declaring pins and their modes
   pinMode(LED_BUILTIN,OUTPUT);
+  pinMode(ANALOG_PIN, INPUT);
+  pinMode(ANALOG_SEL, OUTPUT);
 
   drawDoge();
+  delay(1000);
   brrt.attach(SERVO_PWM);
 }
 
 void loop() { 
-    digitalWrite(LED_BUILTIN, HIGH);
-    drawDoge();
-    brrt.write(180);
-    delay(500);
-    brrt.write(0);
-    digitalWrite(LED_BUILTIN, LOW);
-    delay(5000);
+  updateTime();
+  if(wifiClient.connected()){
+    MQTT_connect();
+  }
+  digitalWrite(LED_BUILTIN, HIGH);
+  state = 1;
+  brrt.write(180);
+  delay(2000);
+  brrt.write(0);
+  digitalWrite(LED_BUILTIN, LOW);
+  delay(2000);
 }
