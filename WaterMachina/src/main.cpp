@@ -6,8 +6,6 @@ WiFiManager wifiManager;
 
 // OneWire
 #include <Wire.h>
-//#define SCL D1
-//#define SDA D2
 // END OneWire
 
 // AnalogSwitch
@@ -25,9 +23,7 @@ WiFiManager wifiManager;
 
 // Declaration for an SSD1306 display connected to I2C (SDA, SCL pins)
 // The pins for I2C are defined by the Wire-library. 
-// On an arduino UNO:       A4(SDA), A5(SCL)
-// On an arduino MEGA 2560: 20(SDA), 21(SCL)
-// On an arduino LEONARDO:   2(SDA),  3(SCL), ...
+// On an NodeMCU v2:       D2(SDA), D1(SCL)
 #define OLED_RESET     -1 // Reset pin # (or -1 if sharing Arduino reset pin)
 #define SCREEN_ADDRESS 0x3C ///< Data adress for oled
 Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
@@ -41,28 +37,7 @@ int servoPos = 0;
 #define SERVO_PWM D0
 // END SERVO
 
-#define NUMFLAKES     10 // Number of snowflakes in the animation example
-
-#define LOGO_HEIGHT   16
-#define LOGO_WIDTH    16
-static const unsigned char PROGMEM logo_bmp[] = { 
-  0b00000000, 0b11000000,
-  0b00000001, 0b11000000,
-  0b00000001, 0b11000000,
-  0b00000011, 0b11100000,
-  0b11110011, 0b11100000,
-  0b11111110, 0b11111000,
-  0b01111110, 0b11111111,
-  0b00110011, 0b10011111,
-  0b00011111, 0b11111100,
-  0b00001101, 0b01110000,
-  0b00011011, 0b10100000,
-  0b00111111, 0b11100000,
-  0b00111111, 0b11110000,
-  0b01111100, 0b11110000,
-  0b01110000, 0b01110000,
-  0b00000000, 0b00110000 };
-
+// DOGE
 #define doge_width 60
 #define doge_height 60
 static const unsigned char doge_xmb[] = {
@@ -107,7 +82,9 @@ static const unsigned char doge_xmb[] = {
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
   };
+// END DOGE
 
+/*
 void testdrawline() {
   int16_t i;
 
@@ -341,13 +318,13 @@ void testscrolltext(void) {
   display.stopscroll();
   delay(1000);
 }
-
+*/
 void drawDoge(void) {
   display.clearDisplay();
 
   display.drawXBitmap(
-    ((display.width()  - LOGO_WIDTH )  / 2) - 20,
-    ((display.height() - LOGO_HEIGHT) / 2) - 20,
+    ((display.width()  - doge_width )  / 2) - 20,
+    ((display.height() - doge_height) / 2) - 20,
     doge_xmb, doge_width, doge_height, 1);
   display.display();
   delay(1000);
@@ -355,11 +332,11 @@ void drawDoge(void) {
   delay(1000);
 }
 
-#define XPOS   0 // Indexes into the 'icons' array in function below
-#define YPOS   1
-#define DELTAY 2
+// #define XPOS   0 // Indexes into the 'icons' array in function below
+// #define YPOS   1
+// #define DELTAY 2
 
-void testanimate(const uint8_t *bitmap, uint8_t w, uint8_t h) {
+/* void testanimate(const uint8_t *bitmap, uint8_t w, uint8_t h) {
   int8_t f, icons[NUMFLAKES][3];
 
   // Initialize 'snowflake' positions
@@ -399,7 +376,8 @@ void testanimate(const uint8_t *bitmap, uint8_t w, uint8_t h) {
     }
   }
 }
-// END DISPLAY
+*/
+
 
 
 
@@ -412,7 +390,7 @@ void wifiSetup() {
   wifiManager.autoConnect(apName);
 }
 
-void screenTester() {
+/*void screenTester() {
   Serial.begin(9600);
 
   // SSD1306_SWITCHCAPVCC = generate display voltage from 3.3V internally
@@ -475,11 +453,11 @@ void screenTester() {
 
   //testanimate(logo_bmp, LOGO_WIDTH, LOGO_HEIGHT); // Animate bitmaps
 }
+*/
 
 void setup() {
   // Wire
-  Wire.begin(D2,D1);
-
+  display.begin(SSD1306_SWITCHCAPVCC, SCREEN_ADDRESS);
   //wifiSetup();
   pinMode(LED_BUILTIN,OUTPUT);
 
