@@ -13,7 +13,8 @@ WiFiManager wifiManager;
 #define MQTT_SERVER      "mqtt.uu.nl"
 #define MQTT_PORT         1883                   // use 8883 for SSL -> uu has no ssl
 #define MQTT_USERNAME    "student036"
-#define MQTT_PASSWORD         "bbkgsFeZ"
+#define MQTT_PASSWORD    "bbkgsFeZ"
+#define MQTT_ROOT_TOPIC  "infob3it/036/" 
 
 
 /*******************************************************************************/
@@ -22,9 +23,9 @@ WiFiManager wifiManager;
 
 // Update these with values suitable for your network.
 
-const char* ssid = "........";
-const char* password = "........";
-const char* mqtt_server = "broker.mqtt-dashboard.com";
+const char* ssid = MQTT_USERNAME;
+const char* password = MQTT_PASSWORD;
+const char* mqtt_server = MQTT_SERVER;
 
 WiFiClient espClient;
 PubSubClient client(espClient);
