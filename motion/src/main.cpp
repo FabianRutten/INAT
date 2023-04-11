@@ -8,8 +8,8 @@ int16_t ax, ay, az;
 int16_t gx, gy, gz;
 
 struct MyData {
-  byte X;
-  byte Y;
+  byte X; //standard is ~134 deg
+  byte Y; //standard is ~129 deg
 };
 
 MyData data;
@@ -20,6 +20,7 @@ void setup()
   Wire.begin();
   mpu.initialize();
   pinMode(LED_BUILTIN, OUTPUT);
+  pinMode(7, OUTPUT);
 }
 
 void loop()
@@ -45,9 +46,11 @@ void loop()
   }
   if (data.X > 155) {//gesture : left
     //Serial.print("gesture 3");
+    digitalWrite(7, HIGH);
   }
-  if (data.X < 80) {//gesture : right
+  if (data.X < 100) {//gesture : right
     //Serial.print("gesture 4");
+    digitalWrite(7, LOW);
   }
   if (data.X > 100 && data.X < 170 && data.Y > 80 && data.Y < 130) { //gesture : little bit down
     //Serial.print("gesture 5");
