@@ -6,6 +6,7 @@
         "iosfwd": "cpp",
         "new": "cpp",
         "ostream": "cpp",
-        "streambuf": "cpp"
+        "streambuf": "cpp",
+        "atomic": "cpp"
     }
 }

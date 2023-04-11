@@ -1,0 +1,555 @@
+[
+    {
+        "id": "ac84b5d652615ed1",
+        "type": "tab",
+        "label": "Flow 1",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "c01300d5a645e0d8",
+        "type": "trigger",
+        "z": "ac84b5d652615ed1",
+        "name": "",
+        "op1": "true",
+        "op2": "false",
+        "op1type": "bool",
+        "op2type": "bool",
+        "duration": "5",
+        "extend": true,
+        "overrideDelay": false,
+        "units": "min",
+        "reset": "",
+        "bytopic": "all",
+        "topic": "topic",
+        "outputs": 1,
+        "x": 690,
+        "y": 300,
+        "wires": [
+            [
+                "fd412af1f06a678d"
+            ]
+        ]
+    },
+    {
+        "id": "bb5358051235a652",
+        "type": "mqtt in",
+        "z": "ac84b5d652615ed1",
+        "name": "ThingAlive Backend",
+        "topic": "infob3it/036/BackEnd/ThingAlive",
+        "qos": "0",
+        "datatype": "auto-detect",
+        "broker": "8be8e3007bf6dba4",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 470,
+        "y": 320,
+        "wires": [
+            [
+                "c01300d5a645e0d8",
+                "fd412af1f06a678d"
+            ]
+        ]
+    },
+    {
+        "id": "fd412af1f06a678d",
+        "type": "mqtt out",
+        "z": "ac84b5d652615ed1",
+        "name": "ThingAlive Dashboard",
+        "topic": "infob3it/036/Dashboard/ThingAlive",
+        "qos": "0",
+        "retain": "",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "8be8e3007bf6dba4",
+        "x": 920,
+        "y": 320,
+        "wires": []
+    },
+    {
+        "id": "1f3dfdd227cac856",
+        "type": "inject",
+        "z": "ac84b5d652615ed1",
+        "name": "ThingAlive = True",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "true",
+        "payloadType": "bool",
+        "x": 510,
+        "y": 840,
+        "wires": [
+            [
+                "60384de6a9e22b5c"
+            ]
+        ]
+    },
+    {
+        "id": "60384de6a9e22b5c",
+        "type": "mqtt out",
+        "z": "ac84b5d652615ed1",
+        "name": "ThingAlive Backend",
+        "topic": "infob3it/036/BackEnd/ThingAlive",
+        "qos": "0",
+        "retain": "",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "8be8e3007bf6dba4",
+        "x": 800,
+        "y": 840,
+        "wires": []
+    },
+    {
+        "id": "8608eb41e1676e41",
+        "type": "ui_text",
+        "z": "ac84b5d652615ed1",
+        "group": "9a9b49c00bbc3718",
+        "order": 0,
+        "width": 0,
+        "height": 0,
+        "name": "ThingAliveText",
+        "label": "Waterer Alive",
+        "format": "{{msg.payload}}",
+        "layout": "col-center",
+        "className": "",
+        "x": 900,
+        "y": 260,
+        "wires": []
+    },
+    {
+        "id": "e87023616b9751c0",
+        "type": "mqtt in",
+        "z": "ac84b5d652615ed1",
+        "name": "ThingAlive Dashboard",
+        "topic": "infob3it/036/Dashboard/ThingAlive",
+        "qos": "0",
+        "datatype": "auto-detect",
+        "broker": "8be8e3007bf6dba4",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 480,
+        "y": 260,
+        "wires": [
+            [
+                "8608eb41e1676e41"
+            ]
+        ]
+    },
+    {
+        "id": "865243bd47542982",
+        "type": "comment",
+        "z": "ac84b5d652615ed1",
+        "name": "Injects (emulate)",
+        "info": "",
+        "x": 480,
+        "y": 800,
+        "wires": []
+    },
+    {
+        "id": "503fa4e45bbe624f",
+        "type": "comment",
+        "z": "ac84b5d652615ed1",
+        "name": "Thing Alive Cycle",
+        "info": "",
+        "x": 500,
+        "y": 200,
+        "wires": []
+    },
+    {
+        "id": "0a5af7153c91e8b1",
+        "type": "mqtt out",
+        "z": "ac84b5d652615ed1",
+        "name": "Water! BackEnd",
+        "topic": "infob3it/036/BackEnd/Manual/Water",
+        "qos": "0",
+        "retain": "",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "8be8e3007bf6dba4",
+        "x": 1280,
+        "y": 440,
+        "wires": []
+    },
+    {
+        "id": "570189e8401eefe9",
+        "type": "comment",
+        "z": "ac84b5d652615ed1",
+        "name": "OUTPUT: infob3it/036/XXX",
+        "info": "",
+        "x": 550,
+        "y": 80,
+        "wires": []
+    },
+    {
+        "id": "077f22e25bf0a9fe",
+        "type": "mqtt out",
+        "z": "ac84b5d652615ed1",
+        "name": "Sensor BackEnd",
+        "topic": "infob3it/036/BackEnd/Manual/Sensor",
+        "qos": "0",
+        "retain": "",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "8be8e3007bf6dba4",
+        "x": 690,
+        "y": 740,
+        "wires": []
+    },
+    {
+        "id": "b6922a3596171c15",
+        "type": "ui_button",
+        "z": "ac84b5d652615ed1",
+        "name": "Watering Button",
+        "group": "30cd15cc669483d3",
+        "order": 0,
+        "width": 0,
+        "height": 0,
+        "passthru": true,
+        "label": "Water your plant",
+        "tooltip": "",
+        "color": "Blue",
+        "bgcolor": "Orange",
+        "className": "",
+        "icon": "",
+        "payload": "true",
+        "payloadType": "bool",
+        "topic": "topic",
+        "topicType": "msg",
+        "x": 640,
+        "y": 440,
+        "wires": [
+            [
+                "5d1e7131b10be32b"
+            ]
+        ]
+    },
+    {
+        "id": "6c82d0e07077d86d",
+        "type": "ui_text",
+        "z": "ac84b5d652615ed1",
+        "group": "30cd15cc669483d3",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "name": "Watering Text",
+        "label": "Watering",
+        "format": "{{msg.payload}}",
+        "layout": "row-left",
+        "className": "",
+        "x": 880,
+        "y": 580,
+        "wires": []
+    },
+    {
+        "id": "04f268ee2958c2c3",
+        "type": "trigger",
+        "z": "ac84b5d652615ed1",
+        "name": "",
+        "op1": "",
+        "op2": "false",
+        "op1type": "nul",
+        "op2type": "bool",
+        "duration": "5",
+        "extend": true,
+        "overrideDelay": false,
+        "units": "s",
+        "reset": "false",
+        "bytopic": "all",
+        "topic": "topic",
+        "outputs": 1,
+        "x": 860,
+        "y": 460,
+        "wires": [
+            [
+                "5d1e7131b10be32b"
+            ]
+        ]
+    },
+    {
+        "id": "5510fc70b222aacf",
+        "type": "comment",
+        "z": "ac84b5d652615ed1",
+        "name": "Manual Watering Button",
+        "info": "",
+        "x": 530,
+        "y": 400,
+        "wires": []
+    },
+    {
+        "id": "c2b24d271ef4b3f5",
+        "type": "ui_switch",
+        "z": "ac84b5d652615ed1",
+        "name": "Watering Switch",
+        "label": "Watering Switch",
+        "tooltip": "",
+        "group": "30cd15cc669483d3",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "passthru": false,
+        "decouple": "true",
+        "topic": "topic",
+        "topicType": "msg",
+        "style": "",
+        "onvalue": "true",
+        "onvalueType": "bool",
+        "onicon": "",
+        "oncolor": "",
+        "offvalue": "false",
+        "offvalueType": "bool",
+        "officon": "",
+        "offcolor": "",
+        "animate": false,
+        "className": "",
+        "x": 880,
+        "y": 540,
+        "wires": [
+            [
+                "5d1e7131b10be32b"
+            ]
+        ]
+    },
+    {
+        "id": "d9b5a95d641396e4",
+        "type": "mqtt in",
+        "z": "ac84b5d652615ed1",
+        "name": "Water! BackEnd",
+        "topic": "infob3it/036/BackEnd/Manual/Water",
+        "qos": "0",
+        "datatype": "auto-detect",
+        "broker": "8be8e3007bf6dba4",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 460,
+        "y": 500,
+        "wires": [
+            [
+                "870eaae72b11c81e"
+            ]
+        ]
+    },
+    {
+        "id": "2c3e69039b33ea85",
+        "type": "mqtt in",
+        "z": "ac84b5d652615ed1",
+        "name": "WaterButton",
+        "topic": "infob3it/036/BackEnd/Manual/WaterButton",
+        "qos": "0",
+        "datatype": "auto-detect",
+        "broker": "8be8e3007bf6dba4",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 450,
+        "y": 440,
+        "wires": [
+            [
+                "b6922a3596171c15"
+            ]
+        ]
+    },
+    {
+        "id": "1c22fb4b3dc34813",
+        "type": "trigger",
+        "z": "ac84b5d652615ed1",
+        "name": "timeOut 3m",
+        "op1": "",
+        "op2": "false",
+        "op1type": "nul",
+        "op2type": "bool",
+        "duration": "3",
+        "extend": false,
+        "overrideDelay": false,
+        "units": "min",
+        "reset": "false",
+        "bytopic": "all",
+        "topic": "topic",
+        "outputs": 1,
+        "x": 870,
+        "y": 500,
+        "wires": [
+            [
+                "5d1e7131b10be32b"
+            ]
+        ]
+    },
+    {
+        "id": "0cde0ffd5957e357",
+        "type": "mqtt in",
+        "z": "ac84b5d652615ed1",
+        "name": "LWT",
+        "topic": "infob3it/036/LWT",
+        "qos": "0",
+        "datatype": "auto-detect",
+        "broker": "8be8e3007bf6dba4",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 450,
+        "y": 660,
+        "wires": [
+            [
+                "4371b8780a447be3"
+            ]
+        ]
+    },
+    {
+        "id": "4371b8780a447be3",
+        "type": "debug",
+        "z": "ac84b5d652615ed1",
+        "name": "debug 1",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 620,
+        "y": 660,
+        "wires": []
+    },
+    {
+        "id": "2dc505f8c652a655",
+        "type": "debug",
+        "z": "ac84b5d652615ed1",
+        "name": "debug 2",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 860,
+        "y": 620,
+        "wires": []
+    },
+    {
+        "id": "5d1e7131b10be32b",
+        "type": "function",
+        "z": "ac84b5d652615ed1",
+        "name": "BooleanToInt",
+        "func": "return {payload: msg.payload ? 1 : 0};",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1110,
+        "y": 440,
+        "wires": [
+            [
+                "0a5af7153c91e8b1"
+            ]
+        ]
+    },
+    {
+        "id": "870eaae72b11c81e",
+        "type": "function",
+        "z": "ac84b5d652615ed1",
+        "name": "IntToBoolean",
+        "func": "return { payload: !! msg.payload };",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 630,
+        "y": 500,
+        "wires": [
+            [
+                "04f268ee2958c2c3",
+                "1c22fb4b3dc34813",
+                "c2b24d271ef4b3f5",
+                "6c82d0e07077d86d",
+                "2dc505f8c652a655"
+            ]
+        ]
+    },
+    {
+        "id": "8be8e3007bf6dba4",
+        "type": "mqtt-broker",
+        "name": "UU MQTT",
+        "broker": "mqtt.uu.nl",
+        "port": "1883",
+        "clientid": "",
+        "autoConnect": true,
+        "usetls": false,
+        "protocolVersion": "4",
+        "keepalive": "60",
+        "cleansession": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthPayload": "",
+        "birthMsg": {},
+        "closeTopic": "",
+        "closeQos": "0",
+        "closePayload": "",
+        "closeMsg": {},
+        "willTopic": "",
+        "willQos": "0",
+        "willPayload": "",
+        "willMsg": {},
+        "userProps": "",
+        "sessionExpiry": ""
+    },
+    {
+        "id": "9a9b49c00bbc3718",
+        "type": "ui_group",
+        "name": "Connectivity",
+        "tab": "1f6c888a8253bf22",
+        "order": 1,
+        "disp": true,
+        "width": "6",
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "30cd15cc669483d3",
+        "type": "ui_group",
+        "name": "Manual Controls",
+        "tab": "1f6c888a8253bf22",
+        "order": 2,
+        "disp": true,
+        "width": "6",
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "1f6c888a8253bf22",
+        "type": "ui_tab",
+        "name": "Home",
+        "icon": "dashboard",
+        "disabled": false,
+        "hidden": false
+    }
+]

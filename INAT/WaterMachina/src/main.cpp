@@ -1,26 +1,146 @@
-#include <Arduino.h>
+// WIFI
+#include <WiFiManager.h>
+WiFiManager wifiManager;
+// END WIFI
 
-// VARIABLES
-unsigned long currentTime = 0;
-#define SOIL_DELAY 100
-unsigned long soilTimer   = 0;
 
-// state
-// 0: default
-// 1: soil measurement
-// 2: LDR  measurement
-// 3: Watering
-byte state = 0;
-#define STATE_DEFAULT  0
-#define STATE_SOIL     1
-#define STATE_LDR      2
-#define STATE_WATERING 3
+// MQTT
 
-// threshold when the soil should we watered
 
-#define WATER_DELAY 1000
-unsigned long waterTimer = 0;
-// END VARIABLES
+/************************* Adafruit.io Setup *********************************/
+
+// Fabian's inlog
+#define MQTT_SERVER      "mqtt.uu.nl"
+#define MQTT_PORT         1883                   // use 8883 for SSL -> uu has no ssl
+#define MQTT_USERNAME    "student036"
+#define MQTT_PASSWORD    "bbkgsFeZ"
+#define MQTT_ROOT_TOPIC  "infob3it/036/" 
+
+
+/*******************************************************************************/
+#include <ESP8266WiFi.h>
+#include <PubSubClient.h>
+
+// Update these with values suitable for your network.
+
+const char* ssid = MQTT_USERNAME;
+const char* password = MQTT_PASSWORD;
+const char* mqtt_server = MQTT_SERVER;
+
+WiFiClient espClient;
+PubSubClient client(espClient);
+unsigned long lastMsg = 0;
+#define MSG_BUFFER_SIZE	(50)
+char msg[MSG_BUFFER_SIZE];
+int value = 0;
+
+// void setup_wifi() {
+
+//   delay(10);
+//   // We start by connecting to a WiFi network
+//   Serial.println();
+//   Serial.print("Connecting to ");
+//   Serial.println(ssid);
+
+//   WiFi.mode(WIFI_STA);
+//   WiFi.begin(ssid, password);
+
+//   while (WiFi.status() != WL_CONNECTED) {
+//     delay(500);
+//     Serial.print(".");
+//   }
+
+//   randomSeed(micros());
+
+//   Serial.println("");
+//   Serial.println("WiFi connected");
+//   Serial.println("IP address: ");
+//   Serial.println(WiFi.localIP());
+// }
+
+void callback(char* topic, byte* payload, unsigned int length) {
+  Serial.print("Message arrived [");
+  Serial.print(topic);
+  Serial.print("] ");
+  for (int i = 0; i < length; i++) {
+    Serial.print((char)payload[i]);
+  }
+  Serial.println();
+
+  // Switch on the LED if an 1 was received as first character
+  if ((char)payload[0] == '1') {
+    digitalWrite(BUILTIN_LED, LOW);   // Turn the LED on (Note that LOW is the voltage level
+    // but actually the LED is on; this is because
+    // it is active low on the ESP-01)
+  } else {
+    digitalWrite(BUILTIN_LED, HIGH);  // Turn the LED off by making the voltage HIGH
+  }
+}
+
+
+unsigned long reconnectTimer = 0;
+#define reconnectDelay 5000
+
+void reconnect() {
+  // Loop until we're reconnected
+  if (!client.connected() && currentTime - reconnectTimer >= reconnectDelay) {
+    Serial.print("Attempting MQTT connection...");
+    // Create a random client ID
+    String clientId = "ESP8266Client-";
+    clientId += String(random(0xffff), HEX);
+    // Attempt to connect
+    if (client.connect(clientId.c_str())) {
+      Serial.println("connected");
+      // Once connected, publish an announcement...
+      client.publish("outTopic", "hello world");
+      // ... and resubscribe
+      client.subscribe("inTopic");
+    } else {
+      Serial.print("failed, rc=");
+      Serial.print(client.state());
+      Serial.println(" try again in 5 seconds");
+      // Wait 5 seconds before retrying
+      reconnectTimer = currentTime;
+    }
+  }
+}
+
+// void setup() {
+//   pinMode(BUILTIN_LED, OUTPUT);     // Initialize the BUILTIN_LED pin as an output
+//   Serial.begin(115200);
+//   setup_wifi();
+//   client.setServer(mqtt_server, 1883);
+//   client.setCallback(callback);
+// }
+
+// void loop() {
+
+//   if (!client.connected()) {
+//     reconnect();
+//   }
+//   client.loop();
+
+//   unsigned long now = millis();
+//   if (now - lastMsg > 2000) {
+//     lastMsg = now;
+//     ++value;
+//     snprintf (msg, MSG_BUFFER_SIZE, "hello world #%ld", value);
+//     Serial.print("Publish message: ");
+//     Serial.println(msg);
+//     client.publish("outTopic", msg);
+//   }
+// }
+
+// END MQTT
+
+
+// OneWire
+#include <Wire.h>
+// END OneWire
+
+// AnalogSwitch
+#define ANALOG_SWITCH_SEL D3
+// END AnalogSwitch
 
 // DISPLAY
 // #include <SPI.h>
@@ -38,173 +158,14 @@ unsigned long waterTimer = 0;
 Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 // END DISPLAY
 
-
-// WIFI
-#include <WiFiManager.h>
-WiFiManager wifiManager;
-
-const char* WIFI_SSID = "Woestgaafsecure";
-const char* WIFI_PASSWORD = "fantazero";
-// END WIFI
-
 // SERVO
 #include <Servo.h>
 Servo brrt;
 int servoPos = 0;
 #define SERVO_PWM D0
 #define SERVO_UP 0
-#define SERVO_DOWN 140
+#define SERVO_DOWN 180
 // END SERVO
-
-// MQTT
-
-
-/************************* Adafruit.io Setup *********************************/
-
-// Fabian's inlog
-#define MQTT_SERVER      "mqtt.uu.nl"
-#define MQTT_PORT         1883                   // use 8883 for SSL -> uu has no ssl
-#define MQTT_USERNAME    "student036"
-#define MQTT_PASSWORD    "bbkgsFeZ"
-#define MQTT_ROOT_TOPIC  "infob3it/036/" 
-#define MQTT_ID          "espclient_somerandomnumber"
-#define MQTT_WILL_TOPIC  "infob3it/036/LWT" 
-#define MQTT_WILL_QOS    0
-#define MQTT_WILL_RETAIN  false
-#define MQTT_WILL_MESSAGE "alive"
-
-
-/*******************************************************************************/
-#include <ESP8266WiFi.h>
-#include <PubSubClient.h>
-
-// Update these with values suitable for your network.
-
-WiFiClient espClient;
-PubSubClient pubClient(MQTT_SERVER, MQTT_PORT,espClient);
-#define MQTT_VERSION MQTT_VERSION_3_1_1
-
-
-#define TOPIC_WATERING "infob3it/036/BackEnd/Manual/Water"
-
-
-void printWater(){
-  display.clearDisplay();
-  display.println("watering");
-  display.display();
-}
-
-void startWater(){
-  brrt.write(SERVO_DOWN);
-  state = 3;
-  printWater();
-}
-
-void endWater(){
-  brrt.write(SERVO_UP);
-  state = 0;
-}
-
-void topicWaterHandler(boolean boo){
-  if(boo) {
-    if(state /= STATE_WATERING) {
-      startWater();
-    }
-  }
-  else {
-    endWater();
-  }
-}
-
-void callback(char* topic, byte* payload, unsigned int length)
-{
-  // handle received message
-  Serial.println("payload: " + String(length));
-  if (!(strcmp(topic,TOPIC_WATERING))) {
-    char load = payload[0];
-    boolean boolLoad = load == '1';
-    Serial.println(load);
-    topicWaterHandler(boolLoad);
-  }
-  else if (topic == " ") {
-
-  }
-  else {
-
-  }
-}
-
-void setSubscriptions() {
-  boolean sub1 = pubClient.subscribe(TOPIC_WATERING);
-  if(!sub1){
-    delay(2000);
-    boolean sub1_attempt2 = pubClient.subscribe(TOPIC_WATERING);
-    Serial.println("sub1: " + String(sub1_attempt2));
-  }
-}
-
-boolean mqttConnect(){
-  boolean isConnected = pubClient.connect(MQTT_ID
-  , MQTT_USERNAME,MQTT_PASSWORD
-  , MQTT_WILL_TOPIC, MQTT_WILL_QOS, MQTT_WILL_RETAIN,MQTT_WILL_MESSAGE
-  , true);
-  display.clearDisplay();
-  display.println("MQTT connected:");
-  display.println(String(isConnected));
-  display.display();
-  Serial.println("MQTT: " + String(isConnected));
-  
-  delay(3000);
-  pubClient.setCallback(callback);
-  setSubscriptions();
-  return isConnected;
-}
-
-
-
-/**************************** TOPICs *******************************/ 
-
-
-void mqttSetup() {
-  mqttConnect();
-  delay(1000);
-}
-
-
-
-unsigned long reconnectTimer = 0;
-#define reconnectDelay 5000
-
-void reconnect() {
-  // Loop until we're reconnected
-  if (!pubClient.connected() && currentTime - reconnectTimer >= reconnectDelay) {
-    Serial.print("Attempting MQTT connection...");
-    // Create a random pubClient ID
-    String clientId = "ESP8266Client-mine";
-    clientId += String(random(0xffff), HEX);
-    // Attempt to connect
-    if (mqttConnect()) {
-      Serial.println("connected");
-    } else {
-      Serial.print("failed, rc=");
-      Serial.print(pubClient.state());
-      Serial.println(" try again in 5 seconds");
-      // Wait 5 seconds before retrying
-      reconnectTimer = currentTime;
-    }
-  }
-}
-// END MQTT
-
-
-// OneWire
-#include <Wire.h>
-// END OneWire
-
-// AnalogSwitch
-#define ANALOG_SWITCH_SEL D3
-// END AnalogSwitch
-
 
 // ANALOG_SELECTOR
 #define ANALOG_SEL D3
@@ -258,7 +219,23 @@ static const unsigned char doge_xmb[] = {
   };
 // END DOGE
 
+// VARIABLES
+unsigned long currentTime = 0;
+#define SOIL_DELAY 100
+unsigned long soilTimer   = 0;
 
+// state
+// 0: default
+// 1: soil measurement
+// 2: LDR  measurement
+// 3: Watering
+byte state = 0;
+
+// threshold when the soil should we watered
+
+#define WATER_DELAY 1000
+unsigned long waterTimer = 0;
+// END VARIABLES
 
 void drawDoge(void) {
   display.clearDisplay();
@@ -308,8 +285,23 @@ void printLDR(){
   startSoilTest();
 }
 
+void printWater(){
+
+}
+
+void startWater(){
+  brrt.write(SERVO_DOWN);
+  waterTimer = currentTime;
+  state = 3;
+  printWater();
+}
 
 
+
+void endWater(){
+  brrt.write(SERVO_UP);
+  state = 0;
+}
 
 void stateLoop(){
   switch (state){
@@ -339,39 +331,25 @@ void updateTime(){
 
 void wifiSetup() {
   display.clearDisplay();
-  display.setTextSize(1);
+  display.setTextSize(10);
   const char* apName = "jemoederswifi";
   display.println("Trying wifi");
   display.println("AP: " + String(apName));
   display.display();
   wifiManager.autoConnect(apName);
-  display.clearDisplay();
-  display.println("WIFI connected");
-  display.display();
-  delay(1000);
 }
 
-void manualWifiSetup(){
-  WiFi.mode(WIFI_STA);
-  WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
-  display.println("wifi: " + String(WiFi.isConnected()));
-  Serial.println("wifi: " + String(WiFi.isConnected()));
-  display.display();
-}
 
 void setup() {
   // start display
   display.begin(SSD1306_SWITCHCAPVCC, SCREEN_ADDRESS);
-  display.setTextSize(1); // Draw 2X-scale text
   //connect serial for debug
-  Serial.begin(9600);
-  delay(100);
+  Serial.begin(115200);
+  delay(10);
   // setup wifi
-  wifiSetup();
-  //manualWifiSetup();
-  delay(5000);
+  //wifiSetup();
   // mqtt setup
-  mqttSetup();
+
   // Setup MQTT subscription for onoff feed.
   //mqtt.subscribe(&onoffbutton);
 
@@ -383,18 +361,15 @@ void setup() {
   drawDoge();
   delay(1000);
   display.invertDisplay(false);
+  display.setTextSize(1); // Draw 2X-scale text
   display.setTextColor(SSD1306_WHITE);
   brrt.attach(SERVO_PWM);
-  brrt.write(SERVO_UP);
 }
 
 void loop() { 
   updateTime();
-
+  // if(wifiClient.connected()){
+  //   MQTT_connect();
+  // }
   stateLoop();
-
-  if (!pubClient.connected() && WiFi.isConnected()) {
-    reconnect();
-  }
-  pubClient.loop();
 }
