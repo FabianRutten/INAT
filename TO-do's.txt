@@ -1,10 +1,10 @@
 TO-do's:
 
-- servo detach i.e. make the thing silent went not needing to hold the position
+/- servo detach i.e. make the thing silent went not needing to hold the position
 - eliminate many delay's
 - split in automatic and manual mode
-	- BUILTIN_LED should indicate mode
-	- FLASH_BUTTON should toggle automatic and manual mode
+	/- BUILTIN_LED should indicate mode
+	/- FLASH_BUTTON should toggle automatic and manual mode
 	- automatic:
 		- water the plant based on soil moist
 - UI
@@ -15,30 +15,30 @@ TO-do's:
 - last time since watering
 - soil measure timer (evaluate finished?)
 
-- ALWAYS:
+/- ALWAYS:
 	- read pressure
 	- read temperature
 	- read light level (percentile?)
 	- read soil moisture (percentile?)
 
 - MQTT
-	- regulary (in seperate topics)
+	/- regulary (in seperate topics)
 		- publish temperature
 		- publish light level
 		- publish soil moisture
-	- subcripe to topic ot water plant manually (command)
-	- subcripe to sensor topic (retrieve values!)
-	- sub and pub automatic/manual mode
-	- LastWill + retain flag for online status
+	/- subcripe to topic ot water plant manually (command)
+	/- subcripe to sensor topic (retrieve values!)
+	/- sub and pub automatic/manual mode
+	/- LastWill + retain flag for online status
 	- reconnecting (maybe persistent session)
 	- test with diagnostic mqtt (explorer) client ?? 
 
 - NODE-red
-	- gauges
-	- graphs
-	- issue command to plant (is there, but test with thing)
-	- update sensor values (force update sensors)
-	- online status thingy on dashboard
+	/- gauges
+	/- graphs
+	/- issue command to plant (is there, but test with thing)
+	/- update sensor values (force update sensors)
+	/- online status thingy on dashboard
 
 - MQTT APP
 	- duplicate node-red dashboard functionality
@@ -63,7 +63,7 @@ TO-do's:
 		- show gesture activating the thing
 
 - REPORT
-	- 
+	- ADJUST PIN-OUT sheet
 
 - CODE
  - remove sensitive data from skectch
@@ -75,4 +75,5 @@ Maybe To-Do's
 - Add button, and debounce it
 	- force scroll UI or water
 - water the plant based on LDR and pressure too (amount)
-- Try wifimanager again?
+/- Try wifimanager again?
+- make servo go smoother

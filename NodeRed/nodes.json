@@ -1,5 +1,13 @@
 [
     {
+        "id": "44f89e5d50cbb478",
+        "type": "tab",
+        "label": "Flow 1",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
         "id": "ac84b5d652615ed1",
         "type": "tab",
         "label": "Flow 1",
@@ -8,492 +16,101 @@
         "env": []
     },
     {
-        "id": "c01300d5a645e0d8",
-        "type": "trigger",
-        "z": "ac84b5d652615ed1",
-        "name": "",
-        "op1": "true",
-        "op2": "false",
-        "op1type": "bool",
-        "op2type": "bool",
-        "duration": "5",
-        "extend": true,
-        "overrideDelay": false,
-        "units": "min",
-        "reset": "",
-        "bytopic": "all",
-        "topic": "topic",
-        "outputs": 1,
-        "x": 690,
-        "y": 300,
-        "wires": [
-            [
-                "fd412af1f06a678d"
-            ]
-        ]
-    },
-    {
-        "id": "bb5358051235a652",
-        "type": "mqtt in",
-        "z": "ac84b5d652615ed1",
-        "name": "ThingAlive Backend",
-        "topic": "infob3it/036/BackEnd/ThingAlive",
-        "qos": "0",
-        "datatype": "auto-detect",
-        "broker": "8be8e3007bf6dba4",
-        "nl": false,
-        "rap": true,
-        "rh": 0,
-        "inputs": 0,
-        "x": 470,
-        "y": 320,
-        "wires": [
-            [
-                "c01300d5a645e0d8",
-                "fd412af1f06a678d"
-            ]
-        ]
-    },
-    {
-        "id": "fd412af1f06a678d",
-        "type": "mqtt out",
-        "z": "ac84b5d652615ed1",
-        "name": "ThingAlive Dashboard",
-        "topic": "infob3it/036/Dashboard/ThingAlive",
-        "qos": "0",
-        "retain": "",
-        "respTopic": "",
-        "contentType": "",
-        "userProps": "",
-        "correl": "",
-        "expiry": "",
-        "broker": "8be8e3007bf6dba4",
-        "x": 920,
-        "y": 320,
-        "wires": []
-    },
-    {
-        "id": "1f3dfdd227cac856",
-        "type": "inject",
-        "z": "ac84b5d652615ed1",
-        "name": "ThingAlive = True",
-        "props": [
-            {
-                "p": "payload"
+        "id": "0cdfd9e4800f8988",
+        "type": "ui_base",
+        "theme": {
+            "name": "theme-dark",
+            "lightTheme": {
+                "default": "#0094CE",
+                "baseColor": "#0094CE",
+                "baseFont": "-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen-Sans,Ubuntu,Cantarell,Helvetica Neue,sans-serif",
+                "edited": false
+            },
+            "darkTheme": {
+                "default": "#097479",
+                "baseColor": "#097479",
+                "baseFont": "-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen-Sans,Ubuntu,Cantarell,Helvetica Neue,sans-serif",
+                "edited": true,
+                "reset": false
+            },
+            "customTheme": {
+                "name": "Untitled Theme 1",
+                "default": "#4B7930",
+                "baseColor": "#4B7930",
+                "baseFont": "-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen-Sans,Ubuntu,Cantarell,Helvetica Neue,sans-serif"
+            },
+            "themeState": {
+                "base-color": {
+                    "default": "#097479",
+                    "value": "#097479",
+                    "edited": false
+                },
+                "page-titlebar-backgroundColor": {
+                    "value": "#097479",
+                    "edited": false
+                },
+                "page-backgroundColor": {
+                    "value": "#111111",
+                    "edited": false
+                },
+                "page-sidebar-backgroundColor": {
+                    "value": "#333333",
+                    "edited": false
+                },
+                "group-textColor": {
+                    "value": "#0eb8c0",
+                    "edited": false
+                },
+                "group-borderColor": {
+                    "value": "#555555",
+                    "edited": false
+                },
+                "group-backgroundColor": {
+                    "value": "#333333",
+                    "edited": false
+                },
+                "widget-textColor": {
+                    "value": "#eeeeee",
+                    "edited": false
+                },
+                "widget-backgroundColor": {
+                    "value": "#097479",
+                    "edited": false
+                },
+                "widget-borderColor": {
+                    "value": "#333333",
+                    "edited": false
+                },
+                "base-font": {
+                    "value": "-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen-Sans,Ubuntu,Cantarell,Helvetica Neue,sans-serif"
+                }
+            },
+            "angularTheme": {
+                "primary": "indigo",
+                "accents": "cyan",
+                "warn": "red",
+                "background": "grey",
+                "palette": "dark"
             }
-        ],
-        "repeat": "",
-        "crontab": "",
-        "once": false,
-        "onceDelay": 0.1,
-        "topic": "",
-        "payload": "true",
-        "payloadType": "bool",
-        "x": 510,
-        "y": 840,
-        "wires": [
-            [
-                "60384de6a9e22b5c"
-            ]
-        ]
-    },
-    {
-        "id": "60384de6a9e22b5c",
-        "type": "mqtt out",
-        "z": "ac84b5d652615ed1",
-        "name": "ThingAlive Backend",
-        "topic": "infob3it/036/BackEnd/ThingAlive",
-        "qos": "0",
-        "retain": "",
-        "respTopic": "",
-        "contentType": "",
-        "userProps": "",
-        "correl": "",
-        "expiry": "",
-        "broker": "8be8e3007bf6dba4",
-        "x": 800,
-        "y": 840,
-        "wires": []
-    },
-    {
-        "id": "8608eb41e1676e41",
-        "type": "ui_text",
-        "z": "ac84b5d652615ed1",
-        "group": "9a9b49c00bbc3718",
-        "order": 0,
-        "width": 0,
-        "height": 0,
-        "name": "ThingAliveText",
-        "label": "Waterer Alive",
-        "format": "{{msg.payload}}",
-        "layout": "col-center",
-        "className": "",
-        "x": 900,
-        "y": 260,
-        "wires": []
-    },
-    {
-        "id": "e87023616b9751c0",
-        "type": "mqtt in",
-        "z": "ac84b5d652615ed1",
-        "name": "ThingAlive Dashboard",
-        "topic": "infob3it/036/Dashboard/ThingAlive",
-        "qos": "0",
-        "datatype": "auto-detect",
-        "broker": "8be8e3007bf6dba4",
-        "nl": false,
-        "rap": true,
-        "rh": 0,
-        "inputs": 0,
-        "x": 480,
-        "y": 260,
-        "wires": [
-            [
-                "8608eb41e1676e41"
-            ]
-        ]
-    },
-    {
-        "id": "865243bd47542982",
-        "type": "comment",
-        "z": "ac84b5d652615ed1",
-        "name": "Injects (emulate)",
-        "info": "",
-        "x": 480,
-        "y": 800,
-        "wires": []
-    },
-    {
-        "id": "503fa4e45bbe624f",
-        "type": "comment",
-        "z": "ac84b5d652615ed1",
-        "name": "Thing Alive Cycle",
-        "info": "",
-        "x": 500,
-        "y": 200,
-        "wires": []
-    },
-    {
-        "id": "0a5af7153c91e8b1",
-        "type": "mqtt out",
-        "z": "ac84b5d652615ed1",
-        "name": "Water! BackEnd",
-        "topic": "infob3it/036/BackEnd/Manual/Water",
-        "qos": "0",
-        "retain": "",
-        "respTopic": "",
-        "contentType": "",
-        "userProps": "",
-        "correl": "",
-        "expiry": "",
-        "broker": "8be8e3007bf6dba4",
-        "x": 1280,
-        "y": 440,
-        "wires": []
-    },
-    {
-        "id": "570189e8401eefe9",
-        "type": "comment",
-        "z": "ac84b5d652615ed1",
-        "name": "OUTPUT: infob3it/036/XXX",
-        "info": "",
-        "x": 550,
-        "y": 80,
-        "wires": []
-    },
-    {
-        "id": "077f22e25bf0a9fe",
-        "type": "mqtt out",
-        "z": "ac84b5d652615ed1",
-        "name": "Sensor BackEnd",
-        "topic": "infob3it/036/BackEnd/Manual/Sensor",
-        "qos": "0",
-        "retain": "",
-        "respTopic": "",
-        "contentType": "",
-        "userProps": "",
-        "correl": "",
-        "expiry": "",
-        "broker": "8be8e3007bf6dba4",
-        "x": 690,
-        "y": 740,
-        "wires": []
-    },
-    {
-        "id": "b6922a3596171c15",
-        "type": "ui_button",
-        "z": "ac84b5d652615ed1",
-        "name": "Watering Button",
-        "group": "30cd15cc669483d3",
-        "order": 0,
-        "width": 0,
-        "height": 0,
-        "passthru": true,
-        "label": "Water your plant",
-        "tooltip": "",
-        "color": "Blue",
-        "bgcolor": "Orange",
-        "className": "",
-        "icon": "",
-        "payload": "true",
-        "payloadType": "bool",
-        "topic": "topic",
-        "topicType": "msg",
-        "x": 640,
-        "y": 440,
-        "wires": [
-            [
-                "5d1e7131b10be32b"
-            ]
-        ]
-    },
-    {
-        "id": "6c82d0e07077d86d",
-        "type": "ui_text",
-        "z": "ac84b5d652615ed1",
-        "group": "30cd15cc669483d3",
-        "order": 1,
-        "width": 0,
-        "height": 0,
-        "name": "Watering Text",
-        "label": "Watering",
-        "format": "{{msg.payload}}",
-        "layout": "row-left",
-        "className": "",
-        "x": 880,
-        "y": 580,
-        "wires": []
-    },
-    {
-        "id": "04f268ee2958c2c3",
-        "type": "trigger",
-        "z": "ac84b5d652615ed1",
-        "name": "",
-        "op1": "",
-        "op2": "false",
-        "op1type": "nul",
-        "op2type": "bool",
-        "duration": "5",
-        "extend": true,
-        "overrideDelay": false,
-        "units": "s",
-        "reset": "false",
-        "bytopic": "all",
-        "topic": "topic",
-        "outputs": 1,
-        "x": 860,
-        "y": 460,
-        "wires": [
-            [
-                "5d1e7131b10be32b"
-            ]
-        ]
-    },
-    {
-        "id": "5510fc70b222aacf",
-        "type": "comment",
-        "z": "ac84b5d652615ed1",
-        "name": "Manual Watering Button",
-        "info": "",
-        "x": 530,
-        "y": 400,
-        "wires": []
-    },
-    {
-        "id": "c2b24d271ef4b3f5",
-        "type": "ui_switch",
-        "z": "ac84b5d652615ed1",
-        "name": "Watering Switch",
-        "label": "Watering Switch",
-        "tooltip": "",
-        "group": "30cd15cc669483d3",
-        "order": 1,
-        "width": 0,
-        "height": 0,
-        "passthru": false,
-        "decouple": "true",
-        "topic": "topic",
-        "topicType": "msg",
-        "style": "",
-        "onvalue": "true",
-        "onvalueType": "bool",
-        "onicon": "",
-        "oncolor": "",
-        "offvalue": "false",
-        "offvalueType": "bool",
-        "officon": "",
-        "offcolor": "",
-        "animate": false,
-        "className": "",
-        "x": 880,
-        "y": 540,
-        "wires": [
-            [
-                "5d1e7131b10be32b"
-            ]
-        ]
-    },
-    {
-        "id": "d9b5a95d641396e4",
-        "type": "mqtt in",
-        "z": "ac84b5d652615ed1",
-        "name": "Water! BackEnd",
-        "topic": "infob3it/036/BackEnd/Manual/Water",
-        "qos": "0",
-        "datatype": "auto-detect",
-        "broker": "8be8e3007bf6dba4",
-        "nl": false,
-        "rap": true,
-        "rh": 0,
-        "inputs": 0,
-        "x": 460,
-        "y": 500,
-        "wires": [
-            [
-                "870eaae72b11c81e"
-            ]
-        ]
-    },
-    {
-        "id": "2c3e69039b33ea85",
-        "type": "mqtt in",
-        "z": "ac84b5d652615ed1",
-        "name": "WaterButton",
-        "topic": "infob3it/036/BackEnd/Manual/WaterButton",
-        "qos": "0",
-        "datatype": "auto-detect",
-        "broker": "8be8e3007bf6dba4",
-        "nl": false,
-        "rap": true,
-        "rh": 0,
-        "inputs": 0,
-        "x": 450,
-        "y": 440,
-        "wires": [
-            [
-                "b6922a3596171c15"
-            ]
-        ]
-    },
-    {
-        "id": "1c22fb4b3dc34813",
-        "type": "trigger",
-        "z": "ac84b5d652615ed1",
-        "name": "timeOut 3m",
-        "op1": "",
-        "op2": "false",
-        "op1type": "nul",
-        "op2type": "bool",
-        "duration": "3",
-        "extend": false,
-        "overrideDelay": false,
-        "units": "min",
-        "reset": "false",
-        "bytopic": "all",
-        "topic": "topic",
-        "outputs": 1,
-        "x": 870,
-        "y": 500,
-        "wires": [
-            [
-                "5d1e7131b10be32b"
-            ]
-        ]
-    },
-    {
-        "id": "0cde0ffd5957e357",
-        "type": "mqtt in",
-        "z": "ac84b5d652615ed1",
-        "name": "LWT",
-        "topic": "infob3it/036/LWT",
-        "qos": "0",
-        "datatype": "auto-detect",
-        "broker": "8be8e3007bf6dba4",
-        "nl": false,
-        "rap": true,
-        "rh": 0,
-        "inputs": 0,
-        "x": 450,
-        "y": 660,
-        "wires": [
-            [
-                "4371b8780a447be3"
-            ]
-        ]
-    },
-    {
-        "id": "4371b8780a447be3",
-        "type": "debug",
-        "z": "ac84b5d652615ed1",
-        "name": "debug 1",
-        "active": true,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": false,
-        "complete": "false",
-        "statusVal": "",
-        "statusType": "auto",
-        "x": 620,
-        "y": 660,
-        "wires": []
-    },
-    {
-        "id": "2dc505f8c652a655",
-        "type": "debug",
-        "z": "ac84b5d652615ed1",
-        "name": "debug 2",
-        "active": true,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": false,
-        "complete": "false",
-        "statusVal": "",
-        "statusType": "auto",
-        "x": 860,
-        "y": 620,
-        "wires": []
-    },
-    {
-        "id": "5d1e7131b10be32b",
-        "type": "function",
-        "z": "ac84b5d652615ed1",
-        "name": "BooleanToInt",
-        "func": "return {payload: msg.payload ? 1 : 0};",
-        "outputs": 1,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [],
-        "x": 1110,
-        "y": 440,
-        "wires": [
-            [
-                "0a5af7153c91e8b1"
-            ]
-        ]
-    },
-    {
-        "id": "870eaae72b11c81e",
-        "type": "function",
-        "z": "ac84b5d652615ed1",
-        "name": "IntToBoolean",
-        "func": "return { payload: !! msg.payload };",
-        "outputs": 1,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [],
-        "x": 630,
-        "y": 500,
-        "wires": [
-            [
-                "04f268ee2958c2c3",
-                "1c22fb4b3dc34813",
-                "c2b24d271ef4b3f5",
-                "6c82d0e07077d86d",
-                "2dc505f8c652a655"
-            ]
-        ]
+        },
+        "site": {
+            "name": "Node-RED Dashboard",
+            "hideToolbar": "false",
+            "allowSwipe": "false",
+            "lockMenu": "false",
+            "allowTempTheme": "none",
+            "dateFormat": "DD/MM/YYYY",
+            "sizes": {
+                "sx": 48,
+                "sy": 48,
+                "gx": 6,
+                "gy": 6,
+                "cx": 6,
+                "cy": 6,
+                "px": 0,
+                "py": 0
+            }
+        }
     },
     {
         "id": "8be8e3007bf6dba4",
@@ -501,12 +118,12 @@
         "name": "UU MQTT",
         "broker": "mqtt.uu.nl",
         "port": "1883",
-        "clientid": "",
+        "clientid": "node-red-with-random-client-id",
         "autoConnect": true,
         "usetls": false,
         "protocolVersion": "4",
         "keepalive": "60",
-        "cleansession": true,
+        "cleansession": false,
         "birthTopic": "",
         "birthQos": "0",
         "birthPayload": "",
@@ -551,5 +168,930 @@
         "icon": "dashboard",
         "disabled": false,
         "hidden": false
+    },
+    {
+        "id": "cf21b55ea0554e5a",
+        "type": "ui_group",
+        "name": "Sensors",
+        "tab": "1f6c888a8253bf22",
+        "order": 3,
+        "disp": true,
+        "width": "7",
+        "collapse": true,
+        "className": ""
+    },
+    {
+        "id": "bea4e612c183209b",
+        "type": "ui_group",
+        "name": "Sensor Graphs",
+        "tab": "1f6c888a8253bf22",
+        "order": 4,
+        "disp": true,
+        "width": "6",
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "8608eb41e1676e41",
+        "type": "ui_text",
+        "z": "ac84b5d652615ed1",
+        "group": "9a9b49c00bbc3718",
+        "order": 0,
+        "width": 0,
+        "height": 0,
+        "name": "ThingAliveText",
+        "label": "Waterer:",
+        "format": "{{msg.payload}}",
+        "layout": "col-center",
+        "className": "",
+        "x": 900,
+        "y": 260,
+        "wires": [],
+        "icon": "node-red/bridge.svg"
+    },
+    {
+        "id": "e87023616b9751c0",
+        "type": "mqtt in",
+        "z": "ac84b5d652615ed1",
+        "name": "Water Machine LWT",
+        "topic": "infob3it/036/WaterMachine/LWT",
+        "qos": "1",
+        "datatype": "auto-detect",
+        "broker": "8be8e3007bf6dba4",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 480,
+        "y": 260,
+        "wires": [
+            [
+                "8608eb41e1676e41"
+            ]
+        ]
+    },
+    {
+        "id": "503fa4e45bbe624f",
+        "type": "comment",
+        "z": "ac84b5d652615ed1",
+        "name": "Thing Alive Cycle",
+        "info": "",
+        "x": 470,
+        "y": 200,
+        "wires": []
+    },
+    {
+        "id": "0a5af7153c91e8b1",
+        "type": "mqtt out",
+        "z": "ac84b5d652615ed1",
+        "name": "Watering",
+        "topic": "infob3it/036/WaterMachine/Controls/Watering",
+        "qos": "0",
+        "retain": "",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "8be8e3007bf6dba4",
+        "x": 1240,
+        "y": 440,
+        "wires": []
+    },
+    {
+        "id": "570189e8401eefe9",
+        "type": "comment",
+        "z": "ac84b5d652615ed1",
+        "name": "OUTPUT: infob3it/036/XXX",
+        "info": "",
+        "x": 550,
+        "y": 80,
+        "wires": []
+    },
+    {
+        "id": "b6922a3596171c15",
+        "type": "ui_button",
+        "z": "ac84b5d652615ed1",
+        "name": "Watering Button",
+        "group": "30cd15cc669483d3",
+        "order": 0,
+        "width": "6",
+        "height": "3",
+        "passthru": true,
+        "label": "Water your plant",
+        "tooltip": "",
+        "color": "Blue",
+        "bgcolor": "Orange",
+        "className": "",
+        "icon": "",
+        "payload": "1",
+        "payloadType": "num",
+        "topic": "topic",
+        "topicType": "msg",
+        "x": 850,
+        "y": 440,
+        "wires": [
+            [
+                "04f268ee2958c2c3",
+                "0a5af7153c91e8b1"
+            ]
+        ]
+    },
+    {
+        "id": "6c82d0e07077d86d",
+        "type": "ui_text",
+        "z": "ac84b5d652615ed1",
+        "group": "30cd15cc669483d3",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "name": "Watering Text",
+        "label": "Watering",
+        "format": "{{msg.payload}}",
+        "layout": "row-left",
+        "className": "",
+        "x": 1000,
+        "y": 560,
+        "wires": []
+    },
+    {
+        "id": "04f268ee2958c2c3",
+        "type": "trigger",
+        "z": "ac84b5d652615ed1",
+        "name": "",
+        "op1": "",
+        "op2": "0",
+        "op1type": "nul",
+        "op2type": "num",
+        "duration": "5",
+        "extend": true,
+        "overrideDelay": false,
+        "units": "s",
+        "reset": "false",
+        "bytopic": "all",
+        "topic": "topic",
+        "outputs": 1,
+        "x": 1060,
+        "y": 420,
+        "wires": [
+            [
+                "0a5af7153c91e8b1"
+            ]
+        ]
+    },
+    {
+        "id": "5510fc70b222aacf",
+        "type": "comment",
+        "z": "ac84b5d652615ed1",
+        "name": "Manual controls",
+        "info": "",
+        "x": 460,
+        "y": 400,
+        "wires": []
+    },
+    {
+        "id": "c2b24d271ef4b3f5",
+        "type": "ui_switch",
+        "z": "ac84b5d652615ed1",
+        "name": "Watering Switch",
+        "label": "Watering Switch",
+        "tooltip": "",
+        "group": "30cd15cc669483d3",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "passthru": false,
+        "decouple": "true",
+        "topic": "topic",
+        "topicType": "msg",
+        "style": "",
+        "onvalue": "1",
+        "onvalueType": "num",
+        "onicon": "",
+        "oncolor": "",
+        "offvalue": "0",
+        "offvalueType": "num",
+        "officon": "",
+        "offcolor": "",
+        "animate": false,
+        "className": "",
+        "x": 850,
+        "y": 480,
+        "wires": [
+            [
+                "0a5af7153c91e8b1"
+            ]
+        ]
+    },
+    {
+        "id": "d9b5a95d641396e4",
+        "type": "mqtt in",
+        "z": "ac84b5d652615ed1",
+        "name": "Watering",
+        "topic": "infob3it/036/WaterMachine/Controls/Watering",
+        "qos": "0",
+        "datatype": "auto-detect",
+        "broker": "8be8e3007bf6dba4",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 440,
+        "y": 500,
+        "wires": [
+            [
+                "2dc505f8c652a655",
+                "c2b24d271ef4b3f5",
+                "60cf60e0b23172ce",
+                "1c22fb4b3dc34813"
+            ]
+        ]
+    },
+    {
+        "id": "2c3e69039b33ea85",
+        "type": "mqtt in",
+        "z": "ac84b5d652615ed1",
+        "name": "WaterButton",
+        "topic": "infob3it/036/WaterMachine/Controls/WaterButton",
+        "qos": "0",
+        "datatype": "auto-detect",
+        "broker": "8be8e3007bf6dba4",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 450,
+        "y": 440,
+        "wires": [
+            [
+                "b6922a3596171c15"
+            ]
+        ]
+    },
+    {
+        "id": "2dc505f8c652a655",
+        "type": "debug",
+        "z": "ac84b5d652615ed1",
+        "name": "debug 2",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 820,
+        "y": 600,
+        "wires": []
+    },
+    {
+        "id": "6dd2d279f5681ee3",
+        "type": "ui_switch",
+        "z": "ac84b5d652615ed1",
+        "name": "Manual Switch",
+        "label": "Manual Mode",
+        "tooltip": "",
+        "group": "30cd15cc669483d3",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "passthru": false,
+        "decouple": "true",
+        "topic": "infob3it/036/WaterMachine/Controls/Manual",
+        "topicType": "msg",
+        "style": "",
+        "onvalue": "true",
+        "onvalueType": "bool",
+        "onicon": "",
+        "oncolor": "",
+        "offvalue": "false",
+        "offvalueType": "bool",
+        "officon": "",
+        "offcolor": "",
+        "animate": false,
+        "className": "",
+        "x": 880,
+        "y": 720,
+        "wires": [
+            [
+                "af362b06b90f3170"
+            ]
+        ]
+    },
+    {
+        "id": "54430986200dba77",
+        "type": "mqtt in",
+        "z": "ac84b5d652615ed1",
+        "name": "WaterMachine Manual",
+        "topic": "infob3it/036/WaterMachine/Controls/Manual",
+        "qos": "1",
+        "datatype": "auto-detect",
+        "broker": "8be8e3007bf6dba4",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 490,
+        "y": 720,
+        "wires": [
+            [
+                "8ed4975fb50b1137"
+            ]
+        ]
+    },
+    {
+        "id": "8ed4975fb50b1137",
+        "type": "function",
+        "z": "ac84b5d652615ed1",
+        "name": "IntToBoolean",
+        "func": "return { payload: !! msg.payload };",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 690,
+        "y": 720,
+        "wires": [
+            [
+                "6dd2d279f5681ee3"
+            ]
+        ]
+    },
+    {
+        "id": "af362b06b90f3170",
+        "type": "function",
+        "z": "ac84b5d652615ed1",
+        "name": "BooleanToInt",
+        "func": "return {payload: msg.payload ? 1 : 0};",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1070,
+        "y": 720,
+        "wires": [
+            [
+                "ebfe06b43ae55ad3"
+            ]
+        ]
+    },
+    {
+        "id": "ebfe06b43ae55ad3",
+        "type": "mqtt out",
+        "z": "ac84b5d652615ed1",
+        "name": "Water Machine Manual",
+        "topic": "infob3it/036/WaterMachine/Controls/Manual",
+        "qos": "0",
+        "retain": "true",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "8be8e3007bf6dba4",
+        "x": 1310,
+        "y": 720,
+        "wires": []
+    },
+    {
+        "id": "1c22fb4b3dc34813",
+        "type": "trigger",
+        "z": "ac84b5d652615ed1",
+        "name": "timeOut 3m",
+        "op1": "",
+        "op2": "0",
+        "op1type": "nul",
+        "op2type": "num",
+        "duration": "3",
+        "extend": false,
+        "overrideDelay": false,
+        "units": "min",
+        "reset": "0",
+        "bytopic": "all",
+        "topic": "topic",
+        "outputs": 1,
+        "x": 830,
+        "y": 520,
+        "wires": [
+            [
+                "0a5af7153c91e8b1"
+            ]
+        ]
+    },
+    {
+        "id": "8993962f0f7557a2",
+        "type": "comment",
+        "z": "ac84b5d652615ed1",
+        "name": "Sensors",
+        "info": "",
+        "x": 440,
+        "y": 840,
+        "wires": []
+    },
+    {
+        "id": "eeca10a1919e0e32",
+        "type": "mqtt in",
+        "z": "ac84b5d652615ed1",
+        "name": "WaterMachine Pressure",
+        "topic": "infob3it/036/WaterMachine/Sensors/Pressure",
+        "qos": "2",
+        "datatype": "auto-detect",
+        "broker": "8be8e3007bf6dba4",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 490,
+        "y": 1060,
+        "wires": [
+            [
+                "351a716bbce87f67",
+                "213212ae7c0b2bb2"
+            ]
+        ]
+    },
+    {
+        "id": "bd6bf157f5ab8851",
+        "type": "mqtt in",
+        "z": "ac84b5d652615ed1",
+        "name": "WaterMachine Temperature",
+        "topic": "infob3it/036/WaterMachine/Sensors/Temperature",
+        "qos": "2",
+        "datatype": "auto-detect",
+        "broker": "8be8e3007bf6dba4",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 500,
+        "y": 1140,
+        "wires": [
+            [
+                "fc2b1b27e6bdc731",
+                "471af97de069cdb0"
+            ]
+        ]
+    },
+    {
+        "id": "351a716bbce87f67",
+        "type": "ui_text",
+        "z": "ac84b5d652615ed1",
+        "group": "cf21b55ea0554e5a",
+        "order": 4,
+        "width": 0,
+        "height": 0,
+        "name": "WaterMachine Pressure Text",
+        "label": "Pressure: ",
+        "format": "{{msg.payload}}",
+        "layout": "row-left",
+        "className": "",
+        "x": 810,
+        "y": 1040,
+        "wires": []
+    },
+    {
+        "id": "fc2b1b27e6bdc731",
+        "type": "ui_chart",
+        "z": "ac84b5d652615ed1",
+        "name": "WaterMachine Temperature Graph",
+        "group": "bea4e612c183209b",
+        "order": 6,
+        "width": 0,
+        "height": 0,
+        "label": "Temperature",
+        "chartType": "line",
+        "legend": "false",
+        "xformat": "auto",
+        "interpolate": "linear",
+        "nodata": "Temperature",
+        "dot": false,
+        "ymin": "",
+        "ymax": "",
+        "removeOlder": 1,
+        "removeOlderPoints": "",
+        "removeOlderUnit": "3600",
+        "cutout": 0,
+        "useOneColor": false,
+        "useUTC": false,
+        "colors": [
+            "#ff6b5b",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "outputs": 1,
+        "useDifferentColor": false,
+        "className": "",
+        "x": 830,
+        "y": 1160,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "471af97de069cdb0",
+        "type": "ui_gauge",
+        "z": "ac84b5d652615ed1",
+        "name": "WaterMachine Temperature Gauge",
+        "group": "cf21b55ea0554e5a",
+        "order": 3,
+        "width": 0,
+        "height": 0,
+        "gtype": "gage",
+        "title": "Temperature",
+        "label": "°C",
+        "format": "{{value}}",
+        "min": "-10",
+        "max": "40",
+        "colors": [
+            "#00b500",
+            "#e6e600",
+            "#ca3838"
+        ],
+        "seg1": "",
+        "seg2": "",
+        "diff": false,
+        "className": "",
+        "x": 830,
+        "y": 1120,
+        "wires": []
+    },
+    {
+        "id": "933f3efc648c5281",
+        "type": "mqtt out",
+        "z": "ac84b5d652615ed1",
+        "name": "WaterMachine Sensors Verbose",
+        "topic": "infob3it/036/WaterMachine/Sensors/Verbose",
+        "qos": "0",
+        "retain": "true",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "8be8e3007bf6dba4",
+        "x": 1260,
+        "y": 980,
+        "wires": []
+    },
+    {
+        "id": "ee88e3a2e03dcff6",
+        "type": "ui_switch",
+        "z": "ac84b5d652615ed1",
+        "name": "WaterMachine Sensors Verbose Retrieval",
+        "label": "Sensors Verbose Retrieval",
+        "tooltip": "",
+        "group": "cf21b55ea0554e5a",
+        "order": 1,
+        "width": "7",
+        "height": "2",
+        "passthru": false,
+        "decouple": "true",
+        "topic": "topic",
+        "topicType": "msg",
+        "style": "",
+        "onvalue": "1",
+        "onvalueType": "num",
+        "onicon": "",
+        "oncolor": "",
+        "offvalue": "0",
+        "offvalueType": "num",
+        "officon": "",
+        "offcolor": "",
+        "animate": false,
+        "className": "",
+        "x": 850,
+        "y": 980,
+        "wires": [
+            [
+                "933f3efc648c5281"
+            ]
+        ]
+    },
+    {
+        "id": "60cf60e0b23172ce",
+        "type": "function",
+        "z": "ac84b5d652615ed1",
+        "name": "IntToBoolean",
+        "func": "return { payload: !! msg.payload };",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 830,
+        "y": 560,
+        "wires": [
+            [
+                "6c82d0e07077d86d"
+            ]
+        ]
+    },
+    {
+        "id": "e2f0eeb23e1563ad",
+        "type": "mqtt in",
+        "z": "ac84b5d652615ed1",
+        "name": "WaterMachine Sensors Verbose",
+        "topic": "infob3it/036/WaterMachine/Sensors/Verbose",
+        "qos": "1",
+        "datatype": "auto-detect",
+        "broker": "8be8e3007bf6dba4",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 520,
+        "y": 980,
+        "wires": [
+            [
+                "ee88e3a2e03dcff6"
+            ]
+        ]
+    },
+    {
+        "id": "b91265b7b973645b",
+        "type": "ui_button",
+        "z": "ac84b5d652615ed1",
+        "name": "Retrieve WaterMachine Sensors",
+        "group": "cf21b55ea0554e5a",
+        "order": 2,
+        "width": "7",
+        "height": "3",
+        "passthru": false,
+        "label": "Retrieve sensor data",
+        "tooltip": "",
+        "color": "red",
+        "bgcolor": "cyan",
+        "className": "",
+        "icon": "",
+        "payload": "1",
+        "payloadType": "num",
+        "topic": "topic",
+        "topicType": "msg",
+        "x": 820,
+        "y": 920,
+        "wires": [
+            [
+                "b628b9fa4197a0bf"
+            ]
+        ]
+    },
+    {
+        "id": "b628b9fa4197a0bf",
+        "type": "mqtt out",
+        "z": "ac84b5d652615ed1",
+        "name": "Single Retrieval",
+        "topic": "infob3it/036/WaterMachine/Sensors/SingularRetrieval",
+        "qos": "0",
+        "retain": "",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "8be8e3007bf6dba4",
+        "x": 1210,
+        "y": 920,
+        "wires": []
+    },
+    {
+        "id": "09f07d7461047876",
+        "type": "mqtt in",
+        "z": "ac84b5d652615ed1",
+        "name": "WaterMachine Light",
+        "topic": "infob3it/036/WaterMachine/Sensors/Light",
+        "qos": "0",
+        "datatype": "auto-detect",
+        "broker": "8be8e3007bf6dba4",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 480,
+        "y": 1220,
+        "wires": [
+            [
+                "33fad53e98f3132b",
+                "b293a27e4d21582b"
+            ]
+        ]
+    },
+    {
+        "id": "33fad53e98f3132b",
+        "type": "ui_gauge",
+        "z": "ac84b5d652615ed1",
+        "name": "WaterMachine Light Gauge",
+        "group": "cf21b55ea0554e5a",
+        "order": 5,
+        "width": 0,
+        "height": 0,
+        "gtype": "donut",
+        "title": "Light",
+        "label": "%",
+        "format": "{{value}}",
+        "min": 0,
+        "max": "100",
+        "colors": [
+            "#0a0a0a",
+            "#e6e600",
+            "#ffffc1"
+        ],
+        "seg1": "",
+        "seg2": "",
+        "diff": false,
+        "className": "",
+        "x": 810,
+        "y": 1200,
+        "wires": []
+    },
+    {
+        "id": "2bfd73a0253fc01f",
+        "type": "mqtt in",
+        "z": "ac84b5d652615ed1",
+        "name": "WaterMachine Soil",
+        "topic": "infob3it/036/WaterMachine/Sensors/Soil",
+        "qos": "0",
+        "datatype": "auto-detect",
+        "broker": "8be8e3007bf6dba4",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 470,
+        "y": 1300,
+        "wires": [
+            [
+                "487561274eaa1340",
+                "da005e1d05af9ca5"
+            ]
+        ]
+    },
+    {
+        "id": "487561274eaa1340",
+        "type": "ui_gauge",
+        "z": "ac84b5d652615ed1",
+        "name": "WaterMachine Soil Gauge",
+        "group": "cf21b55ea0554e5a",
+        "order": 5,
+        "width": 0,
+        "height": 0,
+        "gtype": "wave",
+        "title": "Soil Moist",
+        "label": "%",
+        "format": "{{value}}",
+        "min": 0,
+        "max": "100",
+        "colors": [
+            "#0a0a0a",
+            "#e6e600",
+            "#ffffc1"
+        ],
+        "seg1": "",
+        "seg2": "",
+        "diff": false,
+        "className": "",
+        "x": 800,
+        "y": 1280,
+        "wires": []
+    },
+    {
+        "id": "b293a27e4d21582b",
+        "type": "ui_chart",
+        "z": "ac84b5d652615ed1",
+        "name": "WaterMachine Light Graph",
+        "group": "bea4e612c183209b",
+        "order": 6,
+        "width": 0,
+        "height": 0,
+        "label": "Light",
+        "chartType": "line",
+        "legend": "false",
+        "xformat": "auto",
+        "interpolate": "linear",
+        "nodata": "Light",
+        "dot": false,
+        "ymin": "",
+        "ymax": "",
+        "removeOlder": 1,
+        "removeOlderPoints": "",
+        "removeOlderUnit": "3600",
+        "cutout": 0,
+        "useOneColor": false,
+        "useUTC": false,
+        "colors": [
+            "#f3fd80",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "outputs": 1,
+        "useDifferentColor": false,
+        "className": "",
+        "x": 800,
+        "y": 1240,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "da005e1d05af9ca5",
+        "type": "ui_chart",
+        "z": "ac84b5d652615ed1",
+        "name": "WaterMachine Soil Graph",
+        "group": "bea4e612c183209b",
+        "order": 6,
+        "width": 0,
+        "height": 0,
+        "label": "Soil Moist",
+        "chartType": "line",
+        "legend": "false",
+        "xformat": "auto",
+        "interpolate": "linear",
+        "nodata": "Soil Most",
+        "dot": true,
+        "ymin": "",
+        "ymax": "",
+        "removeOlder": 1,
+        "removeOlderPoints": "",
+        "removeOlderUnit": "3600",
+        "cutout": 0,
+        "useOneColor": false,
+        "useUTC": false,
+        "colors": [
+            "#1f77b4",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "outputs": 1,
+        "useDifferentColor": false,
+        "className": "",
+        "x": 800,
+        "y": 1320,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "213212ae7c0b2bb2",
+        "type": "ui_chart",
+        "z": "ac84b5d652615ed1",
+        "name": "WaterMachine Pressure Graph",
+        "group": "bea4e612c183209b",
+        "order": 6,
+        "width": 0,
+        "height": 0,
+        "label": "Pressure",
+        "chartType": "line",
+        "legend": "false",
+        "xformat": "auto",
+        "interpolate": "linear",
+        "nodata": "Temperature",
+        "dot": false,
+        "ymin": "",
+        "ymax": "",
+        "removeOlder": 1,
+        "removeOlderPoints": "",
+        "removeOlderUnit": "3600",
+        "cutout": 0,
+        "useOneColor": false,
+        "useUTC": false,
+        "colors": [
+            "#d200bd",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "outputs": 1,
+        "useDifferentColor": false,
+        "className": "",
+        "x": 820,
+        "y": 1080,
+        "wires": [
+            []
+        ]
     }
 ]
