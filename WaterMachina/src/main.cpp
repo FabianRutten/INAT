@@ -16,6 +16,9 @@ byte state = 0;
 #define STATE_LDR      2
 #define STATE_WATERING 3
 
+// whether thingy is in in manual mode
+boolean manual = false;
+
 // threshold when the soil should we watered
 
 #define WATER_DELAY 1000
@@ -52,8 +55,24 @@ const char* WIFI_PASSWORD = "fantazero";
 Servo brrt;
 int servoPos = 0;
 #define SERVO_PWM D0
-#define SERVO_UP 0
-#define SERVO_DOWN 140
+#define SERVO_UP 140
+#define SERVO_DOWN 0
+#define SERVO_DELAY 10
+
+void servoUp(){
+  brrt.attach(SERVO_PWM);
+  brrt.write(SERVO_UP);
+  delay(SERVO_DELAY);
+  brrt.detach();
+}
+
+void servoDown(){
+  brrt.attach(SERVO_PWM);
+  brrt.write(SERVO_DOWN);
+  delay(SERVO_DELAY);
+  brrt.detach();
+}
+
 // END SERVO
 
 // MQTT
@@ -62,16 +81,16 @@ int servoPos = 0;
 /************************* Adafruit.io Setup *********************************/
 
 // Fabian's inlog
-#define MQTT_SERVER      "mqtt.uu.nl"
+#define MQTT_SERVER       "mqtt.uu.nl"
 #define MQTT_PORT         1883                   // use 8883 for SSL -> uu has no ssl
-#define MQTT_USERNAME    "student036"
-#define MQTT_PASSWORD    "bbkgsFeZ"
-#define MQTT_ROOT_TOPIC  "infob3it/036/" 
-#define MQTT_ID          "espclient_somerandomnumber"
-#define MQTT_WILL_TOPIC  "infob3it/036/LWT" 
-#define MQTT_WILL_QOS    0
-#define MQTT_WILL_RETAIN  false
-#define MQTT_WILL_MESSAGE "alive"
+#define MQTT_USERNAME     "student036"
+#define MQTT_PASSWORD     "bbkgsFeZ"
+#define MQTT_ROOT_TOPIC   "infob3it/036/" 
+#define MQTT_ID           "espclient_somerandomnumber"
+#define MQTT_WILL_TOPIC   "infob3it/036/WaterMachine/LWT" 
+#define MQTT_WILL_QOS     1
+#define MQTT_WILL_RETAIN  true
+#define MQTT_WILL_MESSAGE "K.I.A."
 
 
 /*******************************************************************************/
@@ -120,13 +139,14 @@ void callback(char* topic, byte* payload, unsigned int length)
 {
   // handle received message
   Serial.println("payload: " + String(length));
+  Serial.println("topic: "   + String(topic));
   if (!(strcmp(topic,TOPIC_WATERING))) {
     char load = payload[0];
     boolean boolLoad = load == '1';
     Serial.println(load);
     topicWaterHandler(boolLoad);
   }
-  else if (topic == " ") {
+  else if (!(strcmp(topic,""))) {
 
   }
   else {
@@ -154,20 +174,17 @@ boolean mqttConnect(){
   display.display();
   Serial.println("MQTT: " + String(isConnected));
   
-  delay(3000);
+  boolean isAlivePub = pubClient.publish(MQTT_WILL_TOPIC, "Alive", true);
+  // delay(3000);
   pubClient.setCallback(callback);
   setSubscriptions();
-  return isConnected;
+  return (isConnected && isAlivePub);
 }
-
-
-
-/**************************** TOPICs *******************************/ 
 
 
 void mqttSetup() {
   mqttConnect();
-  delay(1000);
+  delay(100);
 }
 
 
@@ -259,10 +276,9 @@ static const unsigned char doge_xmb[] = {
 // END DOGE
 
 
-
+// must invert back after drawDoge()
 void drawDoge(void) {
   display.clearDisplay();
-
   display.drawXBitmap(
     ((display.width()  - 16 )  / 2) - 20,
     ((display.height() - 16) / 2) - 20,
@@ -369,23 +385,25 @@ void setup() {
   // setup wifi
   wifiSetup();
   //manualWifiSetup();
-  delay(5000);
+  delay(100);
   // mqtt setup
   mqttSetup();
   // Setup MQTT subscription for onoff feed.
   //mqtt.subscribe(&onoffbutton);
 
   // declaring pins and their modes
-  pinMode(LED_BUILTIN,OUTPUT);
+  pinMode(LED_BUILTIN, OUTPUT);
   pinMode(ANALOG_PIN, INPUT);
   pinMode(ANALOG_SEL, OUTPUT);
 
   drawDoge();
   delay(1000);
+  // must invert back after drawDoge()
   display.invertDisplay(false);
+
   display.setTextColor(SSD1306_WHITE);
-  brrt.attach(SERVO_PWM);
-  brrt.write(SERVO_UP);
+
+  servoUp();
 }
 
 void loop() { 
