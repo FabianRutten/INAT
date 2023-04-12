@@ -53,11 +53,11 @@ const char* WIFI_PASSWORD = "fantazero";
 // SERVO
 #include <Servo.h>
 Servo brrt;
-int servoPos = 0;
 #define SERVO_PWM D6
-#define SERVO_UP 140
+#define SERVO_UP 175
 #define SERVO_DOWN 0
 #define SERVO_DELAY 10
+int servoPos = SERVO_UP;
 
 void servoUp(){
   brrt.attach(SERVO_PWM);
@@ -126,28 +126,33 @@ char* BooleanToPayload(boolean boo) {
 
 void printWater(){
   display.clearDisplay();
-  display.println("watering");
+  display.setCursor(0,0);
+  display.println("PRINT WATER");
   display.display();
+  Serial.println("PRINT WATER");
 }
 
 void startWater(){
-  brrt.write(SERVO_DOWN);
+  servoDown();
   state = 3;
+  Serial.println("water started");
   printWater();
 }
 
 void endWater(){
-  brrt.write(SERVO_UP);
+  servoUp();
   state = 0;
+  Serial.println("water stopped");
 }
 
 void topicWaterHandler(boolean boo) {
+  Serial.println("entered water handler");
   if(boo) {
-    if(state /= STATE_WATERING) {
-      startWater();
-    }
+    Serial.println("mqtt tells to water");
+    startWater();
   }
   else {
+    Serial.println("mqtt tells to stop water");
     endWater();
   }
 }
@@ -177,13 +182,27 @@ void topicManualHandler(boolean boo) {
   }
 }
 
+void displayMQTT(char* topic, byte* payload, unsigned int length) {
+  display.clearDisplay();
+  display.setTextSize(1);
+  display.setCursor(0,0);
+  //display.invertDisplay(extractBooleanPayload(payload));
+  display.println("last message ->");
+  display.println("topic: " + String(topic));
+  display.println("payload: " + String(extractBooleanPayload(payload)));
+  display.display();
+
+  // debug
+  Serial.println("topic: "   + String(topic));
+  Serial.println("payload: " + String(extractBooleanPayload(payload)));
+}
+
 void callback(char* topic, byte* payload, unsigned int length)
 {
   // handle received message
-  Serial.println("payload: " + String(extractBooleanPayload(payload)));
-  Serial.println("topic: "   + String(topic));
+  displayMQTT(topic,payload, length);
   if (!(strcmp(topic,TOPIC_WATERING))) {
-    Serial.println(extractBooleanPayload(payload));
+    Serial.println("hit in strcmp watering");
     topicWaterHandler(extractBooleanPayload(payload));
   }
   else if (!(strcmp(topic,TOPIC_MANUAL))) {
@@ -458,7 +477,7 @@ void setup() {
   display.setTextSize(1); // Draw 2X-scale text
   //connect serial for debug
   Serial.begin(9600);
-  delay(100);
+  delay(200);
   // setup wifi
   wifiSetup();
   //manualWifiSetup();
@@ -487,8 +506,6 @@ void loop() {
   updateTime();
 
   buttonLoop();
-
-  stateLoop();
 
   if (!pubClient.connected() && WiFi.isConnected()) {
     reconnect();

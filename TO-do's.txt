@@ -75,4 +75,4 @@ Maybe To-Do's
 - Add button, and debounce it
 	- force scroll UI or water
 - water the plant based on LDR and pressure too (amount)
-- Try wifimanager again?
+/- Try wifimanager again?
