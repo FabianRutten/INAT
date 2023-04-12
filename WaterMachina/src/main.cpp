@@ -21,7 +21,7 @@ boolean manual = false;
 
 // threshold when the soil should we watered
 
-#define WATER_DELAY 1000
+int waterDelay = 5000;
 unsigned long waterTimer = 0;
 // END VARIABLES
 
@@ -75,6 +75,54 @@ void servoDown(){
 }
 
 // END SERVO
+
+
+// BMP280 SENSOR
+#include <Adafruit_BMP280.h>
+Adafruit_BMP280 bmp;
+Adafruit_Sensor *bmp_temp = bmp.getTemperatureSensor();
+Adafruit_Sensor *bmp_pressure = bmp.getPressureSensor();
+
+float measuredTemperature = 0;
+float measuredPressure    = 0;
+
+void bmpSetup() {
+  unsigned status;
+  status = bmp.begin(BMP280_ADDRESS_ALT, BMP280_CHIPID);
+  //status = bmp.begin();
+  if (!status) {
+    Serial.println(F("Could not find a valid BMP280 sensor, check wiring or "
+                      "try a different address!"));
+  }
+
+  /* Default settings from datasheet. */
+  bmp.setSampling(Adafruit_BMP280::MODE_NORMAL,     /* Operating Mode. */
+                  Adafruit_BMP280::SAMPLING_X2,     /* Temp. oversampling */
+                  Adafruit_BMP280::SAMPLING_X16,    /* Pressure oversampling */
+                  Adafruit_BMP280::FILTER_X16,      /* Filtering. */
+                  Adafruit_BMP280::STANDBY_MS_500); /* Standby time. */
+
+  bmp_temp->printSensorDetails();
+}
+
+void serialPrintBmp() {
+  sensors_event_t temp_event, pressure_event;
+  bmp_temp->getEvent(&temp_event);
+  bmp_pressure->getEvent(&pressure_event);
+  
+  Serial.print(F("Temperature = "));
+  Serial.print(temp_event.temperature);
+  Serial.println(" *C");
+
+  Serial.print(F("Pressure = "));
+  Serial.print(pressure_event.pressure);
+  Serial.println(" hPa");
+
+  Serial.println();
+}
+
+// END BMP280 SENSOR
+
 
 // MQTT
 
@@ -248,13 +296,10 @@ boolean mqttConnect(){
   return (isConnected && isAlivePub);
 }
 
-
 void mqttSetup() {
   mqttConnect();
   delay(100);
 }
-
-
 
 unsigned long reconnectTimer = 0;
 #define reconnectDelay 5000
@@ -356,9 +401,8 @@ void drawDoge(void) {
 
 // END DOGE
 
-
-
-
+//old sensors
+/*
 void startSoilTest(){
   state = 1;
   soilTimer = currentTime;
@@ -393,15 +437,23 @@ void printLDR(){
   delay(1000);
   startSoilTest();
 }
+*/
+
 
 boolean flashButtonPressed = false;
-#define DEBOUNCE_DURATION 10
+boolean flashButtonActive  = false;
+#define DEBOUNCE_DURATION 50
 unsigned long buttonDebounceTimer;
 void updateFlashButton() {
   int reading = digitalRead(D3);
   if ((millis() - buttonDebounceTimer) > DEBOUNCE_DURATION) {
     if (!flashButtonPressed){
       if (reading == LOW) {
+        flashButtonActive = true;
+        buttonDebounceTimer = millis();
+      }
+      else if (flashButtonActive) {
+        flashButtonActive = false;
         flashButtonPressed = true;
         buttonDebounceTimer = millis();
       }
@@ -424,20 +476,59 @@ void buttonLoop() {
 }
 
 
+#define TOPIC_BMP_TEMP "infob3it/036/WaterMachine/Sensors/Temperature"
+#define TOPIC_BMP_PRESS "infob3it/036/WaterMachine/Sensors/Pressure"
+
+void publishTemp() {
+  String str = String(measuredTemperature) + " \370";
+  char* payload = new char[str.length()+1];
+  boolean published = pubClient.publish(TOPIC_BMP_TEMP, payload , true);
+  Serial.println("published Temp: " + str + "  , succes: " + String(published));
+}
+
+void publishPressure() {
+  String str = String(measuredPressure) + " hPa";
+  char* payload = new char[str.length()+1];
+  boolean published = pubClient.publish(TOPIC_BMP_PRESS, payload , true);
+  Serial.println("published Press: " + str + "  , succes: " + String(published));
+}
+
+
+
+#define sensorDelay 60000
+unsigned long sensorTimer = 0;
+
+void retrieveSensors() {
+  sensors_event_t temp_event, pressure_event;
+  bmp_temp->getEvent(&temp_event);
+  bmp_pressure->getEvent(&pressure_event);
+  
+  measuredTemperature = temp_event.temperature;
+  measuredPressure    = pressure_event.pressure;
+}
+
+void publishBMP() {
+  retrieveSensors();
+  serialPrintBmp();
+  publishTemp();
+  publishPressure();
+}
+
+void sensorLoop() {
+  if (currentTime - sensorTimer >= sensorDelay) {
+    publishBMP();
+    sensorTimer = currentTime;
+  }
+}
+
 void stateLoop(){
   switch (state){
     case 1:
-      if(currentTime - soilTimer >= SOIL_DELAY){
-        printSoil();
-      }
       break;
     case 2:
-      printLDR();
       break;
     case 3:
-      if(currentTime - waterTimer >= WATER_DELAY){
-        endWater();
-      }
+
       break;
     default:
       state = 2;
@@ -481,7 +572,10 @@ void setup() {
   display.begin(SSD1306_SWITCHCAPVCC, SCREEN_ADDRESS);
   display.setTextSize(1); // Draw 2X-scale text
   delay(200);
-  
+
+  // start sensors
+  bmpSetup();
+
   // setup wifi
   wifiSetup();
   delay(100);
@@ -507,6 +601,8 @@ void loop() {
   updateTime();
 
   buttonLoop();
+
+  sensorLoop();
 
   if (!pubClient.connected() && WiFi.isConnected()) {
     reconnect();
