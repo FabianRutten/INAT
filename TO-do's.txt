@@ -15,29 +15,29 @@ TO-do's:
 - last time since watering
 - soil measure timer (evaluate finished?)
 
-- ALWAYS:
+/- ALWAYS:
 	- read pressure
 	- read temperature
 	- read light level (percentile?)
 	- read soil moisture (percentile?)
 
 - MQTT
-	- regulary (in seperate topics)
+	/- regulary (in seperate topics)
 		- publish temperature
 		- publish light level
 		- publish soil moisture
-	- subcripe to topic ot water plant manually (command)
-	- subcripe to sensor topic (retrieve values!)
+	/- subcripe to topic ot water plant manually (command)
+	/- subcripe to sensor topic (retrieve values!)
 	/- sub and pub automatic/manual mode
-	- LastWill + retain flag for online status
+	/- LastWill + retain flag for online status
 	- reconnecting (maybe persistent session)
 	- test with diagnostic mqtt (explorer) client ?? 
 
 - NODE-red
-	- gauges
-	- graphs
+	/- gauges
+	/- graphs
 	/- issue command to plant (is there, but test with thing)
-	- update sensor values (force update sensors)
+	/- update sensor values (force update sensors)
 	/- online status thingy on dashboard
 
 - MQTT APP

@@ -1,11 +1,195 @@
 [
     {
+        "id": "44f89e5d50cbb478",
+        "type": "tab",
+        "label": "Flow 1",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
         "id": "ac84b5d652615ed1",
         "type": "tab",
         "label": "Flow 1",
         "disabled": false,
         "info": "",
         "env": []
+    },
+    {
+        "id": "0cdfd9e4800f8988",
+        "type": "ui_base",
+        "theme": {
+            "name": "theme-dark",
+            "lightTheme": {
+                "default": "#0094CE",
+                "baseColor": "#0094CE",
+                "baseFont": "-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen-Sans,Ubuntu,Cantarell,Helvetica Neue,sans-serif",
+                "edited": false
+            },
+            "darkTheme": {
+                "default": "#097479",
+                "baseColor": "#097479",
+                "baseFont": "-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen-Sans,Ubuntu,Cantarell,Helvetica Neue,sans-serif",
+                "edited": true,
+                "reset": false
+            },
+            "customTheme": {
+                "name": "Untitled Theme 1",
+                "default": "#4B7930",
+                "baseColor": "#4B7930",
+                "baseFont": "-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen-Sans,Ubuntu,Cantarell,Helvetica Neue,sans-serif"
+            },
+            "themeState": {
+                "base-color": {
+                    "default": "#097479",
+                    "value": "#097479",
+                    "edited": false
+                },
+                "page-titlebar-backgroundColor": {
+                    "value": "#097479",
+                    "edited": false
+                },
+                "page-backgroundColor": {
+                    "value": "#111111",
+                    "edited": false
+                },
+                "page-sidebar-backgroundColor": {
+                    "value": "#333333",
+                    "edited": false
+                },
+                "group-textColor": {
+                    "value": "#0eb8c0",
+                    "edited": false
+                },
+                "group-borderColor": {
+                    "value": "#555555",
+                    "edited": false
+                },
+                "group-backgroundColor": {
+                    "value": "#333333",
+                    "edited": false
+                },
+                "widget-textColor": {
+                    "value": "#eeeeee",
+                    "edited": false
+                },
+                "widget-backgroundColor": {
+                    "value": "#097479",
+                    "edited": false
+                },
+                "widget-borderColor": {
+                    "value": "#333333",
+                    "edited": false
+                },
+                "base-font": {
+                    "value": "-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen-Sans,Ubuntu,Cantarell,Helvetica Neue,sans-serif"
+                }
+            },
+            "angularTheme": {
+                "primary": "indigo",
+                "accents": "cyan",
+                "warn": "red",
+                "background": "grey",
+                "palette": "dark"
+            }
+        },
+        "site": {
+            "name": "Node-RED Dashboard",
+            "hideToolbar": "false",
+            "allowSwipe": "false",
+            "lockMenu": "false",
+            "allowTempTheme": "none",
+            "dateFormat": "DD/MM/YYYY",
+            "sizes": {
+                "sx": 48,
+                "sy": 48,
+                "gx": 6,
+                "gy": 6,
+                "cx": 6,
+                "cy": 6,
+                "px": 0,
+                "py": 0
+            }
+        }
+    },
+    {
+        "id": "8be8e3007bf6dba4",
+        "type": "mqtt-broker",
+        "name": "UU MQTT",
+        "broker": "mqtt.uu.nl",
+        "port": "1883",
+        "clientid": "node-red-with-random-client-id",
+        "autoConnect": true,
+        "usetls": false,
+        "protocolVersion": "4",
+        "keepalive": "60",
+        "cleansession": false,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthPayload": "",
+        "birthMsg": {},
+        "closeTopic": "",
+        "closeQos": "0",
+        "closePayload": "",
+        "closeMsg": {},
+        "willTopic": "",
+        "willQos": "0",
+        "willPayload": "",
+        "willMsg": {},
+        "userProps": "",
+        "sessionExpiry": ""
+    },
+    {
+        "id": "9a9b49c00bbc3718",
+        "type": "ui_group",
+        "name": "Connectivity",
+        "tab": "1f6c888a8253bf22",
+        "order": 1,
+        "disp": true,
+        "width": "6",
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "30cd15cc669483d3",
+        "type": "ui_group",
+        "name": "Manual Controls",
+        "tab": "1f6c888a8253bf22",
+        "order": 2,
+        "disp": true,
+        "width": "6",
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "1f6c888a8253bf22",
+        "type": "ui_tab",
+        "name": "Home",
+        "icon": "dashboard",
+        "disabled": false,
+        "hidden": false
+    },
+    {
+        "id": "cf21b55ea0554e5a",
+        "type": "ui_group",
+        "name": "Sensors",
+        "tab": "1f6c888a8253bf22",
+        "order": 3,
+        "disp": true,
+        "width": "7",
+        "collapse": true,
+        "className": ""
+    },
+    {
+        "id": "bea4e612c183209b",
+        "type": "ui_group",
+        "name": "Sensor Graphs",
+        "tab": "1f6c888a8253bf22",
+        "order": 4,
+        "disp": true,
+        "width": "6",
+        "collapse": false,
+        "className": ""
     },
     {
         "id": "8608eb41e1676e41",
@@ -404,7 +588,7 @@
         "name": "Sensors",
         "info": "",
         "x": 440,
-        "y": 800,
+        "y": 840,
         "wires": []
     },
     {
@@ -421,10 +605,11 @@
         "rh": 0,
         "inputs": 0,
         "x": 490,
-        "y": 1080,
+        "y": 1060,
         "wires": [
             [
-                "351a716bbce87f67"
+                "351a716bbce87f67",
+                "213212ae7c0b2bb2"
             ]
         ]
     },
@@ -464,7 +649,7 @@
         "layout": "row-left",
         "className": "",
         "x": 810,
-        "y": 1080,
+        "y": 1040,
         "wires": []
     },
     {
@@ -472,8 +657,8 @@
         "type": "ui_chart",
         "z": "ac84b5d652615ed1",
         "name": "WaterMachine Temperature Graph",
-        "group": "cf21b55ea0554e5a",
-        "order": 3,
+        "group": "bea4e612c183209b",
+        "order": 6,
         "width": 0,
         "height": 0,
         "label": "Temperature",
@@ -492,7 +677,7 @@
         "useOneColor": false,
         "useUTC": false,
         "colors": [
-            "#1f77b4",
+            "#ff6b5b",
             "#aec7e8",
             "#ff7f0e",
             "#2ca02c",
@@ -517,7 +702,7 @@
         "z": "ac84b5d652615ed1",
         "name": "WaterMachine Temperature Gauge",
         "group": "cf21b55ea0554e5a",
-        "order": 2,
+        "order": 3,
         "width": 0,
         "height": 0,
         "gtype": "gage",
@@ -546,7 +731,7 @@
         "name": "WaterMachine Sensors Verbose",
         "topic": "infob3it/036/WaterMachine/Sensors/Verbose",
         "qos": "0",
-        "retain": "",
+        "retain": "true",
         "respTopic": "",
         "contentType": "",
         "userProps": "",
@@ -583,7 +768,7 @@
         "offcolor": "",
         "animate": false,
         "className": "",
-        "x": 870,
+        "x": 850,
         "y": 980,
         "wires": [
             [
@@ -637,7 +822,7 @@
         "z": "ac84b5d652615ed1",
         "name": "Retrieve WaterMachine Sensors",
         "group": "cf21b55ea0554e5a",
-        "order": 1,
+        "order": 2,
         "width": "7",
         "height": "3",
         "passthru": false,
@@ -651,7 +836,7 @@
         "payloadType": "num",
         "topic": "topic",
         "topicType": "msg",
-        "x": 900,
+        "x": 820,
         "y": 920,
         "wires": [
             [
@@ -678,71 +863,235 @@
         "wires": []
     },
     {
-        "id": "9a9b49c00bbc3718",
-        "type": "ui_group",
-        "name": "Connectivity",
-        "tab": "1f6c888a8253bf22",
-        "order": 1,
-        "disp": true,
-        "width": "6",
-        "collapse": false,
-        "className": ""
+        "id": "09f07d7461047876",
+        "type": "mqtt in",
+        "z": "ac84b5d652615ed1",
+        "name": "WaterMachine Light",
+        "topic": "infob3it/036/WaterMachine/Sensors/Light",
+        "qos": "0",
+        "datatype": "auto-detect",
+        "broker": "8be8e3007bf6dba4",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 480,
+        "y": 1220,
+        "wires": [
+            [
+                "33fad53e98f3132b",
+                "b293a27e4d21582b"
+            ]
+        ]
     },
     {
-        "id": "8be8e3007bf6dba4",
-        "type": "mqtt-broker",
-        "name": "UU MQTT",
-        "broker": "mqtt.uu.nl",
-        "port": "1883",
-        "clientid": "node-red-with-random-client-id",
-        "autoConnect": true,
-        "usetls": false,
-        "protocolVersion": "4",
-        "keepalive": "60",
-        "cleansession": false,
-        "birthTopic": "",
-        "birthQos": "0",
-        "birthPayload": "",
-        "birthMsg": {},
-        "closeTopic": "",
-        "closeQos": "0",
-        "closePayload": "",
-        "closeMsg": {},
-        "willTopic": "",
-        "willQos": "0",
-        "willPayload": "",
-        "willMsg": {},
-        "userProps": "",
-        "sessionExpiry": ""
+        "id": "33fad53e98f3132b",
+        "type": "ui_gauge",
+        "z": "ac84b5d652615ed1",
+        "name": "WaterMachine Light Gauge",
+        "group": "cf21b55ea0554e5a",
+        "order": 5,
+        "width": 0,
+        "height": 0,
+        "gtype": "donut",
+        "title": "Light",
+        "label": "%",
+        "format": "{{value}}",
+        "min": 0,
+        "max": "100",
+        "colors": [
+            "#0a0a0a",
+            "#e6e600",
+            "#ffffc1"
+        ],
+        "seg1": "",
+        "seg2": "",
+        "diff": false,
+        "className": "",
+        "x": 810,
+        "y": 1200,
+        "wires": []
     },
     {
-        "id": "30cd15cc669483d3",
-        "type": "ui_group",
-        "name": "Manual Controls",
-        "tab": "1f6c888a8253bf22",
-        "order": 2,
-        "disp": true,
-        "width": "6",
-        "collapse": false,
-        "className": ""
+        "id": "2bfd73a0253fc01f",
+        "type": "mqtt in",
+        "z": "ac84b5d652615ed1",
+        "name": "WaterMachine Soil",
+        "topic": "infob3it/036/WaterMachine/Sensors/Soil",
+        "qos": "0",
+        "datatype": "auto-detect",
+        "broker": "8be8e3007bf6dba4",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 470,
+        "y": 1300,
+        "wires": [
+            [
+                "487561274eaa1340",
+                "da005e1d05af9ca5"
+            ]
+        ]
     },
     {
-        "id": "cf21b55ea0554e5a",
-        "type": "ui_group",
-        "name": "Sensors",
-        "tab": "1f6c888a8253bf22",
-        "order": 3,
-        "disp": true,
-        "width": "7",
-        "collapse": true,
-        "className": ""
+        "id": "487561274eaa1340",
+        "type": "ui_gauge",
+        "z": "ac84b5d652615ed1",
+        "name": "WaterMachine Soil Gauge",
+        "group": "cf21b55ea0554e5a",
+        "order": 5,
+        "width": 0,
+        "height": 0,
+        "gtype": "wave",
+        "title": "Soil Moist",
+        "label": "%",
+        "format": "{{value}}",
+        "min": 0,
+        "max": "100",
+        "colors": [
+            "#0a0a0a",
+            "#e6e600",
+            "#ffffc1"
+        ],
+        "seg1": "",
+        "seg2": "",
+        "diff": false,
+        "className": "",
+        "x": 800,
+        "y": 1280,
+        "wires": []
     },
     {
-        "id": "1f6c888a8253bf22",
-        "type": "ui_tab",
-        "name": "Home",
-        "icon": "dashboard",
-        "disabled": false,
-        "hidden": false
+        "id": "b293a27e4d21582b",
+        "type": "ui_chart",
+        "z": "ac84b5d652615ed1",
+        "name": "WaterMachine Light Graph",
+        "group": "bea4e612c183209b",
+        "order": 6,
+        "width": 0,
+        "height": 0,
+        "label": "Light",
+        "chartType": "line",
+        "legend": "false",
+        "xformat": "auto",
+        "interpolate": "linear",
+        "nodata": "Light",
+        "dot": false,
+        "ymin": "",
+        "ymax": "",
+        "removeOlder": 1,
+        "removeOlderPoints": "",
+        "removeOlderUnit": "3600",
+        "cutout": 0,
+        "useOneColor": false,
+        "useUTC": false,
+        "colors": [
+            "#f3fd80",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "outputs": 1,
+        "useDifferentColor": false,
+        "className": "",
+        "x": 800,
+        "y": 1240,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "da005e1d05af9ca5",
+        "type": "ui_chart",
+        "z": "ac84b5d652615ed1",
+        "name": "WaterMachine Soil Graph",
+        "group": "bea4e612c183209b",
+        "order": 6,
+        "width": 0,
+        "height": 0,
+        "label": "Soil Moist",
+        "chartType": "line",
+        "legend": "false",
+        "xformat": "auto",
+        "interpolate": "linear",
+        "nodata": "Soil Most",
+        "dot": true,
+        "ymin": "",
+        "ymax": "",
+        "removeOlder": 1,
+        "removeOlderPoints": "",
+        "removeOlderUnit": "3600",
+        "cutout": 0,
+        "useOneColor": false,
+        "useUTC": false,
+        "colors": [
+            "#1f77b4",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "outputs": 1,
+        "useDifferentColor": false,
+        "className": "",
+        "x": 800,
+        "y": 1320,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "213212ae7c0b2bb2",
+        "type": "ui_chart",
+        "z": "ac84b5d652615ed1",
+        "name": "WaterMachine Pressure Graph",
+        "group": "bea4e612c183209b",
+        "order": 6,
+        "width": 0,
+        "height": 0,
+        "label": "Pressure",
+        "chartType": "line",
+        "legend": "false",
+        "xformat": "auto",
+        "interpolate": "linear",
+        "nodata": "Temperature",
+        "dot": false,
+        "ymin": "",
+        "ymax": "",
+        "removeOlder": 1,
+        "removeOlderPoints": "",
+        "removeOlderUnit": "3600",
+        "cutout": 0,
+        "useOneColor": false,
+        "useUTC": false,
+        "colors": [
+            "#d200bd",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "outputs": 1,
+        "useDifferentColor": false,
+        "className": "",
+        "x": 820,
+        "y": 1080,
+        "wires": [
+            []
+        ]
     }
 ]

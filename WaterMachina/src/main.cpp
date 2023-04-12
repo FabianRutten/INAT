@@ -588,7 +588,7 @@ void startPublishSoil() {
 void endPublishSoil() {
   soilMeasurementActive = false;
   double value = analogRead(ANALOG_PIN);
-  double percentileValue = 100 * value / 1023;
+  double percentileValue = 200 * value / 1023;
   digitalWrite(ANALOG_SEL, LOW);
   String str = String(percentileValue) + "% moist";
   char* payload = new char[str.length()+1];
@@ -624,21 +624,6 @@ void sensorLoop() {
   if (soilMeasurementActive && currentTime - soilTimer >= SOIL_DELAY) {
     endPublishSoil();
   }  
-}
-
-void stateLoop(){
-  switch (state){
-    case 1:
-      break;
-    case 2:
-      break;
-    case 3:
-
-      break;
-    default:
-      state = 2;
-      break;
-  }
 }
 
 void updateTime(){
