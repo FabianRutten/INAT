@@ -3,6 +3,7 @@
 // VARIABLES
 unsigned long currentTime = 0;
 #define SOIL_DELAY 100
+boolean soilMeasurementActive = false;
 unsigned long soilTimer   = 0;
 
 // state
@@ -16,6 +17,11 @@ byte state = 0;
 #define STATE_LDR      2
 #define STATE_WATERING 3
 
+#define SENSOR_VERBOSE_DELAY 1000
+unsigned long sensorVerboseTimer = 0;
+boolean sensorVerbosePublishing = false;
+boolean sensorSingularPublish  = false;
+
 unsigned int measuredSoil = 0;
 unsigned int measuredLDR  = 0;
 
@@ -26,6 +32,7 @@ boolean manual = false;
 
 int waterDelay = 5000;
 unsigned long waterTimer = 0;
+boolean watering = false;
 // END VARIABLES
 
 // DISPLAY
@@ -158,7 +165,12 @@ PubSubClient pubClient(MQTT_SERVER, MQTT_PORT,espClient);
 /*******************************   TOPICS   ***********************************/
 #define TOPIC_WATERING "infob3it/036/WaterMachine/Controls/Watering"
 #define TOPIC_MANUAL   "infob3it/036/WaterMachine/Controls/Manual"
-
+#define TOPIC_SENSORS_SINGULAR_RETRIEVAL "infob3it/036/WaterMachine/Sensors/SingularRetrieval"
+#define TOPIC_SENSORS_VERBOSE "infob3it/036/WaterMachine/Sensors/Verbose"
+#define TOPIC_BMP_TEMP "infob3it/036/WaterMachine/Sensors/Temperature"
+#define TOPIC_BMP_PRESS "infob3it/036/WaterMachine/Sensors/Pressure"
+#define TOPIC_SENSORS_LIGHT "infob3it/036/WaterMachine/Sensors/Light"
+#define TOPIC_SENSORS_SOIL "infob3it/036/WaterMachine/Sensors/Soil"
 
 boolean extractBooleanPayload(byte* payload) {
   char load = payload[0];
@@ -185,20 +197,25 @@ void printWater(){
 }
 
 void startWater(){
-  servoDown();
-  state = 3;
-  Serial.println("water started");
-  printWater();
+  if (!watering) {
+    servoDown();
+    state = 3;
+    Serial.println("water started");
+    printWater();
+    watering = true;
+  }
 }
 
 void endWater(){
-  servoUp();
-  state = 0;
-  Serial.println("water stopped");
+  if (watering) {
+    servoUp();
+    state = 0;
+    Serial.println("water stopped");
+    watering = false;
+  }
 }
 
 void topicWaterHandler(boolean boo) {
-  Serial.println("entered water handler");
   if(boo) {
     Serial.println("mqtt tells to water");
     startWater();
@@ -234,6 +251,17 @@ void topicManualHandler(boolean boo) {
   }
 }
 
+void topicSensorsSingularRetrievalHandler(boolean boo) {
+  if (boo) {
+  sensorSingularPublish = boo;
+  pubClient.publish(TOPIC_SENSORS_SINGULAR_RETRIEVAL, "0");
+  }
+}
+
+void topicSensorsVerboseHandler(boolean boo) {
+  sensorVerbosePublishing = boo;
+}
+
 void displayMQTT(char* topic, byte* payload, unsigned int length) {
   display.clearDisplay();
   display.setTextSize(1);
@@ -254,15 +282,23 @@ void callback(char* topic, byte* payload, unsigned int length)
   // handle received message
   displayMQTT(topic,payload, length);
   if (!(strcmp(topic,TOPIC_WATERING))) {
-    Serial.println("hit in strcmp watering");
     topicWaterHandler(extractBooleanPayload(payload));
   }
   else if (!(strcmp(topic,TOPIC_MANUAL))) {
     topicManualHandler(extractBooleanPayload(payload));
   }
-  else {
-
+  else if (!(strcmp(topic,TOPIC_SENSORS_SINGULAR_RETRIEVAL))) {
+    topicSensorsSingularRetrievalHandler(extractBooleanPayload(payload));
   }
+  else if (!(strcmp(topic,TOPIC_SENSORS_VERBOSE))) {
+    topicSensorsVerboseHandler(extractBooleanPayload(payload));
+  }
+  // else if (!(strcmp(topic,TOPIC_MANUAL))) {
+  //   topicManualHandler(extractBooleanPayload(payload));
+  // }
+  // else if (!(strcmp(topic,TOPIC_MANUAL))) {
+  //   topicManualHandler(extractBooleanPayload(payload));
+  // }
 }
 
 void setSubscriptions() {
@@ -275,8 +311,20 @@ void setSubscriptions() {
   boolean sub2 = pubClient.subscribe(TOPIC_MANUAL);
   if(!sub2){
     delay(2000);
-    boolean sub2_attempt2 = pubClient.subscribe(TOPIC_WATERING);
+    boolean sub2_attempt2 = pubClient.subscribe(TOPIC_MANUAL);
     Serial.println("sub2: " + String(sub2_attempt2));
+  }
+  boolean sub3 = pubClient.subscribe(TOPIC_SENSORS_SINGULAR_RETRIEVAL);
+  if(!sub3){
+    delay(2000);
+    boolean sub3_attempt2 = pubClient.subscribe(TOPIC_SENSORS_SINGULAR_RETRIEVAL);
+    Serial.println("sub3: " + String(sub3_attempt2));
+  }
+  boolean sub4 = pubClient.subscribe(TOPIC_SENSORS_VERBOSE);
+  if(!sub4){
+    delay(2000);
+    boolean sub4_attempt2 = pubClient.subscribe(TOPIC_SENSORS_VERBOSE);
+    Serial.println("sub4: " + String(sub4_attempt2));
   }
   Serial.println("subs done");
 }
@@ -479,9 +527,6 @@ void buttonLoop() {
 }
 
 
-#define TOPIC_BMP_TEMP "infob3it/036/WaterMachine/Sensors/Temperature"
-#define TOPIC_BMP_PRESS "infob3it/036/WaterMachine/Sensors/Pressure"
-
 void publishTemp() {
   String str = String(measuredTemperature) + " *C";
   char* payload = new char[str.length()+1];
@@ -516,36 +561,69 @@ void retrieveBMPSensors() {
 
 void publishBMP() {
   retrieveBMPSensors();
-  serialPrintBmp();
+  // serialPrintBmp();
   publishTemp();
   publishPressure();
 }
 
-void retrieveSOIL(){
-
-}
-
-void retrieveLDR() {
-
-}
-
 void publishLDR() {
-
+  if(!soilMeasurementActive) {
+    double value = analogRead(ANALOG_PIN);
+    double percentileValue = 100 * value / 1023;
+    String str = String(percentileValue) + "% light";
+    char* payload = new char[str.length()+1];
+    strcpy(payload, str.c_str());
+    boolean published = pubClient.publish(TOPIC_SENSORS_LIGHT, payload , true);
+    Serial.println("published LDR: " + String(payload) + "  , succes: " + String(published));
+    delete [] payload;
+  }
 }
 
-void publishSoil() {
-  retrieveSOIL();
+void startPublishSoil() {
+  soilMeasurementActive = true;
+  digitalWrite(ANALOG_SEL, HIGH);
+  soilTimer = currentTime;
+}
+
+void endPublishSoil() {
+  soilMeasurementActive = false;
+  double value = analogRead(ANALOG_PIN);
+  double percentileValue = 100 * value / 1023;
+  digitalWrite(ANALOG_SEL, LOW);
+  String str = String(percentileValue) + "% moist";
+  char* payload = new char[str.length()+1];
+  strcpy(payload, str.c_str());
+  boolean published = pubClient.publish(TOPIC_SENSORS_SOIL, payload , true);
+  Serial.println("published Soil: " + String(payload) + "  , succes: " + String(published));
+  delete [] payload;
+}
+
+void publishAnalogSensors() {
+  publishLDR();
+  startPublishSoil();
 }
 
 void publishSensors() {
   publishBMP();
+  publishAnalogSensors();
+  sensorTimer = currentTime;
 }
 
 void sensorLoop() {
-  if (currentTime - sensorTimer >= sensorDelay) {
+  if (sensorSingularPublish){
+    sensorSingularPublish = false;
     publishSensors();
-    sensorTimer = currentTime;
   }
+  else if (currentTime - sensorTimer >= sensorDelay) {
+    publishSensors();
+  } 
+  else if (sensorVerbosePublishing && currentTime - sensorVerboseTimer >= SENSOR_VERBOSE_DELAY) {
+    publishSensors();
+    sensorVerboseTimer = currentTime;
+  }
+  if (soilMeasurementActive && currentTime - soilTimer >= SOIL_DELAY) {
+    endPublishSoil();
+  }  
 }
 
 void stateLoop(){

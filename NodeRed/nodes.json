@@ -70,7 +70,7 @@
         "correl": "",
         "expiry": "",
         "broker": "8be8e3007bf6dba4",
-        "x": 1260,
+        "x": 1240,
         "y": 440,
         "wires": []
     },
@@ -104,7 +104,7 @@
         "payloadType": "num",
         "topic": "topic",
         "topicType": "msg",
-        "x": 640,
+        "x": 850,
         "y": 440,
         "wires": [
             [
@@ -126,8 +126,8 @@
         "format": "{{msg.payload}}",
         "layout": "row-left",
         "className": "",
-        "x": 1040,
-        "y": 580,
+        "x": 1000,
+        "y": 560,
         "wires": []
     },
     {
@@ -147,8 +147,8 @@
         "bytopic": "all",
         "topic": "topic",
         "outputs": 1,
-        "x": 860,
-        "y": 460,
+        "x": 1060,
+        "y": 420,
         "wires": [
             [
                 "0a5af7153c91e8b1"
@@ -191,8 +191,8 @@
         "offcolor": "",
         "animate": false,
         "className": "",
-        "x": 890,
-        "y": 540,
+        "x": 850,
+        "y": 480,
         "wires": [
             [
                 "0a5af7153c91e8b1"
@@ -218,8 +218,8 @@
             [
                 "2dc505f8c652a655",
                 "c2b24d271ef4b3f5",
-                "1c22fb4b3dc34813",
-                "60cf60e0b23172ce"
+                "60cf60e0b23172ce",
+                "1c22fb4b3dc34813"
             ]
         ]
     },
@@ -257,8 +257,8 @@
         "targetType": "msg",
         "statusVal": "",
         "statusType": "auto",
-        "x": 860,
-        "y": 620,
+        "x": 820,
+        "y": 600,
         "wires": []
     },
     {
@@ -385,12 +385,12 @@
         "extend": false,
         "overrideDelay": false,
         "units": "min",
-        "reset": "false",
+        "reset": "0",
         "bytopic": "all",
         "topic": "topic",
         "outputs": 1,
-        "x": 870,
-        "y": 500,
+        "x": 830,
+        "y": 520,
         "wires": [
             [
                 "0a5af7153c91e8b1"
@@ -540,6 +540,98 @@
         "wires": []
     },
     {
+        "id": "933f3efc648c5281",
+        "type": "mqtt out",
+        "z": "ac84b5d652615ed1",
+        "name": "WaterMachine Sensors Verbose",
+        "topic": "infob3it/036/WaterMachine/Sensors/Verbose",
+        "qos": "0",
+        "retain": "",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "8be8e3007bf6dba4",
+        "x": 1260,
+        "y": 980,
+        "wires": []
+    },
+    {
+        "id": "ee88e3a2e03dcff6",
+        "type": "ui_switch",
+        "z": "ac84b5d652615ed1",
+        "name": "WaterMachine Sensors Verbose Retrieval",
+        "label": "Sensors Verbose Retrieval",
+        "tooltip": "",
+        "group": "cf21b55ea0554e5a",
+        "order": 1,
+        "width": "7",
+        "height": "2",
+        "passthru": false,
+        "decouple": "true",
+        "topic": "topic",
+        "topicType": "msg",
+        "style": "",
+        "onvalue": "1",
+        "onvalueType": "num",
+        "onicon": "",
+        "oncolor": "",
+        "offvalue": "0",
+        "offvalueType": "num",
+        "officon": "",
+        "offcolor": "",
+        "animate": false,
+        "className": "",
+        "x": 870,
+        "y": 980,
+        "wires": [
+            [
+                "933f3efc648c5281"
+            ]
+        ]
+    },
+    {
+        "id": "60cf60e0b23172ce",
+        "type": "function",
+        "z": "ac84b5d652615ed1",
+        "name": "IntToBoolean",
+        "func": "return { payload: !! msg.payload };",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 830,
+        "y": 560,
+        "wires": [
+            [
+                "6c82d0e07077d86d"
+            ]
+        ]
+    },
+    {
+        "id": "e2f0eeb23e1563ad",
+        "type": "mqtt in",
+        "z": "ac84b5d652615ed1",
+        "name": "WaterMachine Sensors Verbose",
+        "topic": "infob3it/036/WaterMachine/Sensors/Verbose",
+        "qos": "1",
+        "datatype": "auto-detect",
+        "broker": "8be8e3007bf6dba4",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 520,
+        "y": 980,
+        "wires": [
+            [
+                "ee88e3a2e03dcff6"
+            ]
+        ]
+    },
+    {
         "id": "b91265b7b973645b",
         "type": "ui_button",
         "z": "ac84b5d652615ed1",
@@ -559,20 +651,20 @@
         "payloadType": "num",
         "topic": "topic",
         "topicType": "msg",
-        "x": 380,
-        "y": 980,
+        "x": 900,
+        "y": 920,
         "wires": [
             [
-                "ee88e3a2e03dcff6"
+                "b628b9fa4197a0bf"
             ]
         ]
     },
     {
-        "id": "933f3efc648c5281",
+        "id": "b628b9fa4197a0bf",
         "type": "mqtt out",
         "z": "ac84b5d652615ed1",
-        "name": "WaterMachine Sensors Verbose",
-        "topic": "infob3it/036/WaterMachine/Sensors/Verbose",
+        "name": "Single Retrieval",
+        "topic": "infob3it/036/WaterMachine/Sensors/SingularRetrieval",
         "qos": "0",
         "retain": "",
         "respTopic": "",
@@ -581,62 +673,9 @@
         "correl": "",
         "expiry": "",
         "broker": "8be8e3007bf6dba4",
-        "x": 1080,
-        "y": 980,
+        "x": 1210,
+        "y": 920,
         "wires": []
-    },
-    {
-        "id": "ee88e3a2e03dcff6",
-        "type": "ui_switch",
-        "z": "ac84b5d652615ed1",
-        "name": "WaterMachine Sensors Verbose Retrieval",
-        "label": "Sensors Verbose Retrieval",
-        "tooltip": "",
-        "group": "cf21b55ea0554e5a",
-        "order": 1,
-        "width": "7",
-        "height": "2",
-        "passthru": true,
-        "decouple": "false",
-        "topic": "topic",
-        "topicType": "msg",
-        "style": "",
-        "onvalue": "1",
-        "onvalueType": "num",
-        "onicon": "",
-        "oncolor": "",
-        "offvalue": "0",
-        "offvalueType": "num",
-        "officon": "",
-        "offcolor": "",
-        "animate": false,
-        "className": "",
-        "x": 730,
-        "y": 980,
-        "wires": [
-            [
-                "933f3efc648c5281"
-            ]
-        ]
-    },
-    {
-        "id": "60cf60e0b23172ce",
-        "type": "function",
-        "z": "ac84b5d652615ed1",
-        "name": "IntToBoolean",
-        "func": "return { payload: !! msg.payload };",
-        "outputs": 1,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [],
-        "x": 870,
-        "y": 580,
-        "wires": [
-            [
-                "6c82d0e07077d86d"
-            ]
-        ]
     },
     {
         "id": "9a9b49c00bbc3718",
