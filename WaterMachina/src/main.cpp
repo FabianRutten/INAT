@@ -54,7 +54,7 @@ const char* WIFI_PASSWORD = "fantazero";
 #include <Servo.h>
 Servo brrt;
 int servoPos = 0;
-#define SERVO_PWM D0
+#define SERVO_PWM D6
 #define SERVO_UP 140
 #define SERVO_DOWN 0
 #define SERVO_DELAY 10
@@ -113,6 +113,17 @@ boolean extractBooleanPayload(byte* payload) {
   return (load == '1');
 }
 
+char* BooleanToPayload(boolean boo) {
+  char* ch = new char[2];
+  if (boo) {
+    strcpy(ch,"1");
+  } 
+  else {
+    strcpy(ch,"0");
+  }
+  return ch;
+}
+
 void printWater(){
   display.clearDisplay();
   display.println("watering");
@@ -141,6 +152,10 @@ void topicWaterHandler(boolean boo) {
   }
 }
 
+void publishManual() {
+  pubClient.publish(TOPIC_MANUAL, BooleanToPayload(manual), true);
+}
+
 void setToManual() {
   digitalWrite(LED_BUILTIN, LOW);
   manual = true;
@@ -165,7 +180,7 @@ void topicManualHandler(boolean boo) {
 void callback(char* topic, byte* payload, unsigned int length)
 {
   // handle received message
-  Serial.println("payload: " + String(length));
+  Serial.println("payload: " + String(extractBooleanPayload(payload)));
   Serial.println("topic: "   + String(topic));
   if (!(strcmp(topic,TOPIC_WATERING))) {
     Serial.println(extractBooleanPayload(payload));
@@ -251,12 +266,12 @@ void reconnect() {
 // END OneWire
 
 // AnalogSwitch
-#define ANALOG_SWITCH_SEL D3
+#define ANALOG_SWITCH_SEL D5
 // END AnalogSwitch
 
 
 // ANALOG_SELECTOR
-#define ANALOG_SEL D3
+#define ANALOG_SEL D5
 #define ANALOG_PIN A0
 // END ANALOG_SELECTOR
 
@@ -359,7 +374,34 @@ void printLDR(){
   startSoilTest();
 }
 
+boolean flashButtonPressed = false;
+#define DEBOUNCE_DURATION 10
+unsigned long buttonDebounceTimer;
+void updateFlashButton() {
+  int reading = digitalRead(D3);
+  if ((millis() - buttonDebounceTimer) > DEBOUNCE_DURATION) {
+    if (!flashButtonPressed){
+      if (reading == LOW) {
+        flashButtonPressed = true;
+        buttonDebounceTimer = millis();
+      }
+    }
+  }
+}
 
+void buttonLoop() {
+  updateFlashButton();
+  if(flashButtonPressed) {
+    if (manual) {
+      setToAutomatic();
+    }
+    else {
+      setToManual();
+    }
+    publishManual();
+    flashButtonPressed = false;
+  }
+}
 
 
 void stateLoop(){
@@ -443,6 +485,8 @@ void setup() {
 
 void loop() { 
   updateTime();
+
+  buttonLoop();
 
   stateLoop();
 

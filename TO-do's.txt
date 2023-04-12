@@ -1,10 +1,10 @@
 TO-do's:
 
-- servo detach i.e. make the thing silent went not needing to hold the position
+/- servo detach i.e. make the thing silent went not needing to hold the position
 - eliminate many delay's
 - split in automatic and manual mode
-	- BUILTIN_LED should indicate mode
-	- FLASH_BUTTON should toggle automatic and manual mode
+	/- BUILTIN_LED should indicate mode
+	/- FLASH_BUTTON should toggle automatic and manual mode
 	- automatic:
 		- water the plant based on soil moist
 - UI
@@ -28,7 +28,7 @@ TO-do's:
 		- publish soil moisture
 	- subcripe to topic ot water plant manually (command)
 	- subcripe to sensor topic (retrieve values!)
-	- sub and pub automatic/manual mode
+	/- sub and pub automatic/manual mode
 	- LastWill + retain flag for online status
 	- reconnecting (maybe persistent session)
 	- test with diagnostic mqtt (explorer) client ?? 
@@ -63,7 +63,7 @@ TO-do's:
 		- show gesture activating the thing
 
 - REPORT
-	- 
+	- ADJUST PIN-OUT sheet
 
 - CODE
  - remove sensitive data from skectch
