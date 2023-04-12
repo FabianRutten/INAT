@@ -46,30 +46,31 @@ Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 #include <WiFiManager.h>
 WiFiManager wifiManager;
 
-const char* WIFI_SSID = "Woestgaafsecure";
-const char* WIFI_PASSWORD = "fantazero";
+// legacy
+// const char* WIFI_SSID = "Woestgaafsecure";
+// const char* WIFI_PASSWORD = "fantazero";
 // END WIFI
 
 // SERVO
 #include <Servo.h>
 Servo brrt;
 #define SERVO_PWM D6
-#define SERVO_UP 175
-#define SERVO_DOWN 0
-#define SERVO_DELAY 10
-int servoPos = SERVO_UP;
+#define SERVO_UP 0
+#define SERVO_DOWN 175
+#define SERVO_DELAY 100
+int servoPos;
 
 void servoUp(){
   brrt.attach(SERVO_PWM);
   brrt.write(SERVO_UP);
-  delay(SERVO_DELAY);
+  //delay(SERVO_DELAY);
   brrt.detach();
 }
 
 void servoDown(){
   brrt.attach(SERVO_PWM);
   brrt.write(SERVO_DOWN);
-  delay(SERVO_DELAY);
+  //delay(SERVO_DELAY);
   brrt.detach();
 }
 
@@ -463,24 +464,26 @@ void wifiSetup() {
   delay(1000);
 }
 
-void manualWifiSetup(){
-  WiFi.mode(WIFI_STA);
-  WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
-  display.println("wifi: " + String(WiFi.isConnected()));
-  Serial.println("wifi: " + String(WiFi.isConnected()));
-  display.display();
-}
+// legacy
+// void manualWifiSetup(){
+//   WiFi.mode(WIFI_STA);
+//   WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
+//   display.println("wifi: " + String(WiFi.isConnected()));
+//   Serial.println("wifi: " + String(WiFi.isConnected()));
+//   display.display();
+// }
 
 void setup() {
+  // connect serial for debug
+  Serial.begin(9600);
+  delay(100);
   // start display
   display.begin(SSD1306_SWITCHCAPVCC, SCREEN_ADDRESS);
   display.setTextSize(1); // Draw 2X-scale text
-  //connect serial for debug
-  Serial.begin(9600);
   delay(200);
+  
   // setup wifi
   wifiSetup();
-  //manualWifiSetup();
   delay(100);
   // mqtt setup
   mqttSetup();
@@ -498,8 +501,6 @@ void setup() {
   display.invertDisplay(false);
 
   display.setTextColor(SSD1306_WHITE);
-
-  servoUp();
 }
 
 void loop() { 

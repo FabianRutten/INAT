@@ -76,3 +76,4 @@ Maybe To-Do's
 	- force scroll UI or water
 - water the plant based on LDR and pressure too (amount)
 /- Try wifimanager again?
+- make servo go smoother
