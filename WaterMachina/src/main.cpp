@@ -626,6 +626,12 @@ void sensorLoop() {
   }  
 }
 
+void automaticLoop(){
+  if(!manual) {
+    
+  }
+}
+
 void updateTime(){
   currentTime = millis();
 }
@@ -695,6 +701,8 @@ void loop() {
   buttonLoop();
 
   sensorLoop();
+
+  automaticLoop();
 
   if (!pubClient.connected() && WiFi.isConnected()) {
     reconnect();

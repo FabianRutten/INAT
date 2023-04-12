@@ -192,6 +192,36 @@
         "className": ""
     },
     {
+        "id": "4ccd9e2f76c12299",
+        "type": "serial-port",
+        "serialport": "COM1",
+        "serialbaud": "57600",
+        "databits": "8",
+        "parity": "none",
+        "stopbits": "1",
+        "waitfor": "",
+        "dtr": "none",
+        "rts": "none",
+        "cts": "none",
+        "dsr": "none",
+        "newline": "\\n",
+        "bin": "false",
+        "out": "char",
+        "addchar": "",
+        "responsetimeout": "10000"
+    },
+    {
+        "id": "c4827098fb3ae492",
+        "type": "ui_group",
+        "name": "Sensor Gauges",
+        "tab": "1f6c888a8253bf22",
+        "order": 5,
+        "disp": true,
+        "width": "6",
+        "collapse": false,
+        "className": ""
+    },
+    {
         "id": "8608eb41e1676e41",
         "type": "ui_text",
         "z": "ac84b5d652615ed1",
@@ -264,8 +294,8 @@
         "z": "ac84b5d652615ed1",
         "name": "OUTPUT: infob3it/036/XXX",
         "info": "",
-        "x": 550,
-        "y": 80,
+        "x": 490,
+        "y": 100,
         "wires": []
     },
     {
@@ -310,7 +340,7 @@
         "format": "{{msg.payload}}",
         "layout": "row-left",
         "className": "",
-        "x": 1000,
+        "x": 1220,
         "y": 560,
         "wires": []
     },
@@ -701,7 +731,7 @@
         "type": "ui_gauge",
         "z": "ac84b5d652615ed1",
         "name": "WaterMachine Temperature Gauge",
-        "group": "cf21b55ea0554e5a",
+        "group": "c4827098fb3ae492",
         "order": 3,
         "width": 0,
         "height": 0,
@@ -791,7 +821,7 @@
         "y": 560,
         "wires": [
             [
-                "6c82d0e07077d86d"
+                "1efb980d5752bcaf"
             ]
         ]
     },
@@ -837,7 +867,7 @@
         "topic": "topic",
         "topicType": "msg",
         "x": 820,
-        "y": 920,
+        "y": 1380,
         "wires": [
             [
                 "b628b9fa4197a0bf"
@@ -859,7 +889,7 @@
         "expiry": "",
         "broker": "8be8e3007bf6dba4",
         "x": 1210,
-        "y": 920,
+        "y": 1380,
         "wires": []
     },
     {
@@ -889,7 +919,7 @@
         "type": "ui_gauge",
         "z": "ac84b5d652615ed1",
         "name": "WaterMachine Light Gauge",
-        "group": "cf21b55ea0554e5a",
+        "group": "c4827098fb3ae492",
         "order": 5,
         "width": 0,
         "height": 0,
@@ -939,7 +969,7 @@
         "type": "ui_gauge",
         "z": "ac84b5d652615ed1",
         "name": "WaterMachine Soil Gauge",
-        "group": "cf21b55ea0554e5a",
+        "group": "c4827098fb3ae492",
         "order": 5,
         "width": 0,
         "height": 0,
@@ -1092,6 +1122,221 @@
         "y": 1080,
         "wires": [
             []
+        ]
+    },
+    {
+        "id": "095e79aa1b4f874b",
+        "type": "comment",
+        "z": "ac84b5d652615ed1",
+        "name": "Gesture based control",
+        "info": "",
+        "x": 480,
+        "y": 1400,
+        "wires": []
+    },
+    {
+        "id": "a4675a43553d7af7",
+        "type": "serial in",
+        "z": "ac84b5d652615ed1",
+        "name": "Arduino Gesture Input COM1",
+        "serial": "4ccd9e2f76c12299",
+        "x": 510,
+        "y": 1440,
+        "wires": [
+            [
+                "9b8516eda3b6e88a",
+                "a7dba583b323b7d3"
+            ]
+        ]
+    },
+    {
+        "id": "9b8516eda3b6e88a",
+        "type": "switch",
+        "z": "ac84b5d652615ed1",
+        "name": "Gesture Switcher",
+        "property": "payload",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "0",
+                "vt": "num"
+            },
+            {
+                "t": "eq",
+                "v": "1",
+                "vt": "num"
+            }
+        ],
+        "checkall": "false",
+        "repair": false,
+        "outputs": 2,
+        "x": 770,
+        "y": 1440,
+        "wires": [
+            [
+                "b628b9fa4197a0bf"
+            ],
+            [
+                "10ce6be353baca6b"
+            ]
+        ]
+    },
+    {
+        "id": "10ce6be353baca6b",
+        "type": "mqtt out",
+        "z": "ac84b5d652615ed1",
+        "name": "WaterButton",
+        "topic": "infob3it/036/WaterMachine/Controls/WaterButton",
+        "qos": "0",
+        "retain": "",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "8be8e3007bf6dba4",
+        "x": 1190,
+        "y": 1460,
+        "wires": []
+    },
+    {
+        "id": "aa9f7ed2f5574058",
+        "type": "inject",
+        "z": "ac84b5d652615ed1",
+        "name": "COM1 value = 0 (sensor)",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "0",
+        "payloadType": "num",
+        "x": 490,
+        "y": 1600,
+        "wires": [
+            [
+                "efd6bc9e1a0b884b",
+                "5601183d0d0938c1"
+            ]
+        ]
+    },
+    {
+        "id": "efd6bc9e1a0b884b",
+        "type": "serial out",
+        "z": "ac84b5d652615ed1",
+        "name": "Arduino emulated COM1",
+        "serial": "4ccd9e2f76c12299",
+        "x": 820,
+        "y": 1600,
+        "wires": []
+    },
+    {
+        "id": "f6caba91496275df",
+        "type": "comment",
+        "z": "ac84b5d652615ed1",
+        "name": "Mimic arduino",
+        "info": "",
+        "x": 440,
+        "y": 1540,
+        "wires": []
+    },
+    {
+        "id": "50ab303572d2c020",
+        "type": "inject",
+        "z": "ac84b5d652615ed1",
+        "name": "COM1 value = 1 (water)",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "1",
+        "payloadType": "num",
+        "x": 490,
+        "y": 1660,
+        "wires": [
+            [
+                "efd6bc9e1a0b884b",
+                "d64caaa6d3276876"
+            ]
+        ]
+    },
+    {
+        "id": "5601183d0d0938c1",
+        "type": "debug",
+        "z": "ac84b5d652615ed1",
+        "name": "debug 3",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 760,
+        "y": 1560,
+        "wires": []
+    },
+    {
+        "id": "d64caaa6d3276876",
+        "type": "debug",
+        "z": "ac84b5d652615ed1",
+        "name": "debug 4",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 760,
+        "y": 1640,
+        "wires": []
+    },
+    {
+        "id": "a7dba583b323b7d3",
+        "type": "debug",
+        "z": "ac84b5d652615ed1",
+        "name": "debug 5",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 740,
+        "y": 1480,
+        "wires": []
+    },
+    {
+        "id": "1efb980d5752bcaf",
+        "type": "function",
+        "z": "ac84b5d652615ed1",
+        "name": "BoolToCustomText",
+        "func": "return { payload: msg.payload ? \"Yes\" : \"Nein\" };",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1030,
+        "y": 560,
+        "wires": [
+            [
+                "6c82d0e07077d86d"
+            ]
         ]
     }
 ]
