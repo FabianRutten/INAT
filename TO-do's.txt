@@ -36,9 +36,9 @@ TO-do's:
 - NODE-red
 	- gauges
 	- graphs
-	- issue command to plant (is there, but test with thing)
+	/- issue command to plant (is there, but test with thing)
 	- update sensor values (force update sensors)
-	- online status thingy on dashboard
+	/- online status thingy on dashboard
 
 - MQTT APP
 	- duplicate node-red dashboard functionality

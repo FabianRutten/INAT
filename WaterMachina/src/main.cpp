@@ -480,17 +480,21 @@ void buttonLoop() {
 #define TOPIC_BMP_PRESS "infob3it/036/WaterMachine/Sensors/Pressure"
 
 void publishTemp() {
-  String str = String(measuredTemperature) + " \370";
+  String str = String(measuredTemperature) + " *C";
   char* payload = new char[str.length()+1];
+  strcpy(payload, str.c_str());
   boolean published = pubClient.publish(TOPIC_BMP_TEMP, payload , true);
-  Serial.println("published Temp: " + str + "  , succes: " + String(published));
+  Serial.println("published Temp: " + String(payload) + "  , succes: " + String(published));
+  delete [] payload;
 }
 
 void publishPressure() {
   String str = String(measuredPressure) + " hPa";
   char* payload = new char[str.length()+1];
+  strcpy(payload, str.c_str());
   boolean published = pubClient.publish(TOPIC_BMP_PRESS, payload , true);
-  Serial.println("published Press: " + str + "  , succes: " + String(published));
+  Serial.println("published Press: " + String(payload) + "  , succes: " + String(published));
+  delete [] payload;
 }
 
 
@@ -514,9 +518,13 @@ void publishBMP() {
   publishPressure();
 }
 
+void publishSensors() {
+  publishBMP();
+}
+
 void sensorLoop() {
   if (currentTime - sensorTimer >= sensorDelay) {
-    publishBMP();
+    publishSensors();
     sensorTimer = currentTime;
   }
 }
@@ -595,6 +603,8 @@ void setup() {
   display.invertDisplay(false);
 
   display.setTextColor(SSD1306_WHITE);
+
+  publishSensors();
 }
 
 void loop() { 
