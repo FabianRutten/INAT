@@ -103,9 +103,15 @@ WiFiClient espClient;
 PubSubClient pubClient(MQTT_SERVER, MQTT_PORT,espClient);
 #define MQTT_VERSION MQTT_VERSION_3_1_1
 
+/*******************************   TOPICS   ***********************************/
+#define TOPIC_WATERING "infob3it/036/WaterMachine/Controls/Watering"
+#define TOPIC_MANUAL   "infob3it/036/WaterMachine/Controls/Manual"
 
-#define TOPIC_WATERING "infob3it/036/BackEnd/Manual/Water"
 
+boolean extractBooleanPayload(byte* payload) {
+  char load = payload[0];
+  return (load == '1');
+}
 
 void printWater(){
   display.clearDisplay();
@@ -124,7 +130,7 @@ void endWater(){
   state = 0;
 }
 
-void topicWaterHandler(boolean boo){
+void topicWaterHandler(boolean boo) {
   if(boo) {
     if(state /= STATE_WATERING) {
       startWater();
@@ -135,19 +141,38 @@ void topicWaterHandler(boolean boo){
   }
 }
 
+void setToManual() {
+  digitalWrite(LED_BUILTIN, LOW);
+  manual = true;
+}
+
+void setToAutomatic() {
+  digitalWrite(LED_BUILTIN, HIGH);
+  manual = false;
+}
+
+void topicManualHandler(boolean boo) {
+  if(boo) {
+    if(!manual) {
+      setToManual();
+    }
+  }
+  else {
+    setToAutomatic();
+  }
+}
+
 void callback(char* topic, byte* payload, unsigned int length)
 {
   // handle received message
   Serial.println("payload: " + String(length));
   Serial.println("topic: "   + String(topic));
   if (!(strcmp(topic,TOPIC_WATERING))) {
-    char load = payload[0];
-    boolean boolLoad = load == '1';
-    Serial.println(load);
-    topicWaterHandler(boolLoad);
+    Serial.println(extractBooleanPayload(payload));
+    topicWaterHandler(extractBooleanPayload(payload));
   }
-  else if (!(strcmp(topic,""))) {
-
+  else if (!(strcmp(topic,TOPIC_MANUAL))) {
+    topicManualHandler(extractBooleanPayload(payload));
   }
   else {
 
@@ -161,6 +186,13 @@ void setSubscriptions() {
     boolean sub1_attempt2 = pubClient.subscribe(TOPIC_WATERING);
     Serial.println("sub1: " + String(sub1_attempt2));
   }
+  boolean sub2 = pubClient.subscribe(TOPIC_MANUAL);
+  if(!sub2){
+    delay(2000);
+    boolean sub2_attempt2 = pubClient.subscribe(TOPIC_WATERING);
+    Serial.println("sub2: " + String(sub2_attempt2));
+  }
+  Serial.println("subs done");
 }
 
 boolean mqttConnect(){
@@ -273,8 +305,6 @@ static const unsigned char doge_xmb[] = {
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
   };
-// END DOGE
-
 
 // must invert back after drawDoge()
 void drawDoge(void) {
@@ -288,6 +318,11 @@ void drawDoge(void) {
   display.invertDisplay(true);
   delay(1000);
 }
+
+// END DOGE
+
+
+
 
 void startSoilTest(){
   state = 1;
