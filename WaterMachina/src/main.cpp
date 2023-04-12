@@ -16,6 +16,9 @@ byte state = 0;
 #define STATE_LDR      2
 #define STATE_WATERING 3
 
+unsigned int measuredSoil = 0;
+unsigned int measuredLDR  = 0;
+
 // whether thingy is in in manual mode
 boolean manual = false;
 
@@ -502,7 +505,7 @@ void publishPressure() {
 #define sensorDelay 60000
 unsigned long sensorTimer = 0;
 
-void retrieveSensors() {
+void retrieveBMPSensors() {
   sensors_event_t temp_event, pressure_event;
   bmp_temp->getEvent(&temp_event);
   bmp_pressure->getEvent(&pressure_event);
@@ -512,10 +515,26 @@ void retrieveSensors() {
 }
 
 void publishBMP() {
-  retrieveSensors();
+  retrieveBMPSensors();
   serialPrintBmp();
   publishTemp();
   publishPressure();
+}
+
+void retrieveSOIL(){
+
+}
+
+void retrieveLDR() {
+
+}
+
+void publishLDR() {
+
+}
+
+void publishSoil() {
+  retrieveSOIL();
 }
 
 void publishSensors() {
