@@ -22,6 +22,13 @@ unsigned long sensorVerboseTimer = 0;
 boolean sensorVerbosePublishing = false;
 boolean sensorSingularPublish  = false;
 
+
+unsigned int moistThreshold = 512 / 2;
+
+void setMoistThresholdFromPercentage(unsigned int per) {
+  moistThreshold = (per * 512) / 100;
+}
+
 unsigned int measuredSoil = 0;
 unsigned int measuredLDR  = 0;
 
@@ -30,7 +37,7 @@ boolean manual = false;
 
 // threshold when the soil should we watered
 
-int waterDelay = 5000;
+unsigned int waterDelay = 5000;
 unsigned long waterTimer = 0;
 boolean watering = false;
 // END VARIABLES
@@ -140,6 +147,10 @@ void serialPrintBmp() {
 /************************* Adafruit.io Setup *********************************/
 
 // Fabian's inlog
+
+// very secret
+#define UNWIREDLABS_API_TOKEN "pk.9c2639520bbf5413d6b9d1830ead8535";
+
 #define MQTT_SERVER       "mqtt.uu.nl"
 #define MQTT_PORT         1883                   // use 8883 for SSL -> uu has no ssl
 #define MQTT_USERNAME     "student036"
@@ -626,6 +637,28 @@ void sensorLoop() {
   }  
 }
 
+boolean isMoist() {
+  return measuredSoil >= moistThreshold;
+}
+
+boolean shouldWater() {
+  return !isMoist();
+}
+
+void automaticLoop(){
+  if(!manual) {
+    if(shouldWater() && !watering) {
+      startWater();
+      pubClient.publish(TOPIC_WATERING, "1", true);
+      waterTimer = currentTime;
+    }
+  }
+  if(currentTime - waterTimer >= waterDelay) {
+    endWater();
+    pubClient.publish(TOPIC_WATERING, "0", true);
+  }
+}
+
 void updateTime(){
   currentTime = millis();
 }
@@ -695,6 +728,8 @@ void loop() {
   buttonLoop();
 
   sensorLoop();
+
+  automaticLoop();
 
   if (!pubClient.connected() && WiFi.isConnected()) {
     reconnect();

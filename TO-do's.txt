@@ -5,7 +5,7 @@ TO-do's:
 - split in automatic and manual mode
 	/- BUILTIN_LED should indicate mode
 	/- FLASH_BUTTON should toggle automatic and manual mode
-	- automatic:
+	just testing - automatic:
 		- water the plant based on soil moist
 - UI
 	- multiple screens
@@ -33,7 +33,7 @@ TO-do's:
 	- reconnecting (maybe persistent session)
 	- test with diagnostic mqtt (explorer) client ?? 
 
-- NODE-red
+/- NODE-red
 	/- gauges
 	/- graphs
 	/- issue command to plant (is there, but test with thing)
