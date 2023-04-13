@@ -13,6 +13,7 @@ float yaw, pitch, roll;
 #define STATE_WATER_MOTION 1
 #define STATE_SHOW_SENSORS_MOTION 2
 #define STATE_CHAOTIC 3 //for when it's not sure what movement to do
+#define STATE_UNKNOWN 4
 
 byte currentState = 0;
 byte stateToActUpon = 0;
@@ -33,12 +34,12 @@ struct MyData {
 MyData data;
 
 void serialShowSensor(){
-  Serial.print(0);
+  Serial.println(0);
   //Serial.println("sensor gesture completed"); 
 }
 
 void serialWaterGesture(){
-  Serial.print(1);
+  Serial.println(1);
   //Serial.println("water gesture completed");
 }
 
@@ -52,8 +53,11 @@ byte getState(int xAngle, int yAngle){
   if((yAngle > 160 || yAngle < 20) && (xAngle < 20 || xAngle > 160)){
     return STATE_CHAOTIC;
   }
-  else{
+  if((yAngle > 70 || yAngle < 110) && (xAngle > 70 || xAngle < 110)){
     return STATE_BASE_STATE;
+  }
+  else{
+    return STATE_UNKNOWN;
   }
 }
 
@@ -80,39 +84,45 @@ void setup()
   Wire.begin();
   mpu.initialize();
   pinMode(LED_BUILTIN, OUTPUT);
-  pinMode(7, OUTPUT);
 }
+
+unsigned long previousMillis = 0;
+const long interval = 500;  // interval time in milliseconds
 
 void loop()
 {
-  mpu.getMotion6(&ax, &ay, &az, &gx, &gy, &gz);
-  
+  unsigned long currentMillis = millis();
 
-  data.X = map(ax, -17000, 17000, 0, 180 ); // X axis data
-  data.Y = map(ay, -17000, 17000, 0, 180);  // Y axis data
-  
-  //get new/current state
-  byte state = getState(data.X, data.Y);
-  //Serial.print("current state = ");
-  //Serial.println(state);
+  //for some reason we need this timer, otherwise buggy wuggy serial monitor and we don;t like that
+  if (currentMillis - previousMillis >= interval) {
+    previousMillis = currentMillis;
 
-  //adapt the two booleans based on current state
-  checkMotionThreshold(state);
-  checkStasisAfterMotion(state);
+    mpu.getMotion6(&ax, &ay, &az, &gx, &gy, &gz);
 
-  //serially write if the gesture is made
-  if(stateToActUpon == STATE_WATER_MOTION && isBackFromThreshold){
-    isThresholdReached = false;
-    isBackFromThreshold = false;
-    stateToActUpon = STATE_BASE_STATE;
-    serialWaterGesture();
-  } 
-  if(stateToActUpon == STATE_SHOW_SENSORS_MOTION && isBackFromThreshold){
-    isThresholdReached = false;
-    isBackFromThreshold = false;
-    stateToActUpon = STATE_BASE_STATE;
-    serialShowSensor();
-  } 
+    data.X = map(ax, -17000, 17000, 0, 180 ); // X axis data
+    data.Y = map(ay, -17000, 17000, 0, 180);  // Y axis data
+    
+    //get new/current state
+    byte state = getState(data.X, data.Y);
+    //Serial.print("current state = ");
+    //Serial.println(state);
 
-  delay(500);
+    //adapt the two booleans based on current state
+    checkMotionThreshold(state);
+    checkStasisAfterMotion(state);
+
+    //serially write if the gesture is made
+    if(stateToActUpon == STATE_WATER_MOTION && isBackFromThreshold){
+      isThresholdReached = false;
+      isBackFromThreshold = false;
+      stateToActUpon = STATE_BASE_STATE;
+      serialWaterGesture();
+    } 
+    if(stateToActUpon == STATE_SHOW_SENSORS_MOTION && isBackFromThreshold){
+      isThresholdReached = false;
+      isBackFromThreshold = false;
+      stateToActUpon = STATE_BASE_STATE;
+      serialShowSensor();
+    } 
+  }
 }
