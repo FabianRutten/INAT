@@ -788,7 +788,7 @@ void displayAnalog(){
   display.println("Analog values");
   display.println(" ");
   display.print("Soil moisture = ");
-  display.print(measuredSoil);
+  display.print(soilPercentile(measuredSoil));
   display.println("%");
   display.print("LDR level = ");
   display.println(measuredLDR);
