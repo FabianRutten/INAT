@@ -6,6 +6,12 @@ unsigned long currentTime = 0;
 boolean soilMeasurementActive = false;
 unsigned long soilTimer   = 0;
 
+boolean soilCalibrate = false;
+unsigned int measuredSoil = 0;
+unsigned int calibratedMoist = 1023;
+unsigned int moistThreshold = 512;
+unsigned int measuredLDR  = 0;
+unsigned int calibratedLDR = 1023;
 // state
 // 0: default
 // 1: soil measurement
@@ -23,14 +29,11 @@ boolean sensorVerbosePublishing = false;
 boolean sensorSingularPublish  = false;
 
 
-unsigned int moistThreshold = 512 / 2;
 
 void setMoistThresholdFromPercentage(unsigned int per) {
-  moistThreshold = (per * 512) / 100;
+  moistThreshold = (per * calibratedMoist) / 100;
 }
 
-unsigned int measuredSoil = 0;
-unsigned int measuredLDR  = 0;
 
 // whether thingy is in in manual mode
 boolean manual = false;
@@ -40,6 +43,8 @@ boolean manual = false;
 unsigned int waterDelay = 5000;
 unsigned long waterTimer = 0;
 boolean watering = false;
+
+
 // END VARIABLES
 
 // DISPLAY
@@ -74,20 +79,25 @@ Servo brrt;
 #define SERVO_PWM D6
 #define SERVO_UP 0
 #define SERVO_DOWN 175
-#define SERVO_DELAY 100
-int servoPos;
+#define SERVO_DELAY 10
+int servoPos = SERVO_UP;
+#define SERVO_PERIODIC_ATTACH_DELAY 5000
+int servoTimer = 0;
+boolean calibratrionDone = false;
 
 void servoUp(){
   brrt.attach(SERVO_PWM);
   brrt.write(SERVO_UP);
-  //delay(SERVO_DELAY);
+  servoPos = SERVO_UP;
+  delay(SERVO_DELAY);
   brrt.detach();
 }
 
 void servoDown(){
   brrt.attach(SERVO_PWM);
   brrt.write(SERVO_DOWN);
-  //delay(SERVO_DELAY);
+  servoPos = SERVO_DOWN;
+  delay(SERVO_DELAY);
   brrt.detach();
 }
 
@@ -141,6 +151,30 @@ void serialPrintBmp() {
 // END BMP280 SENSOR
 
 
+
+// GPS LOCATION
+// very secret
+#define UNWIREDLABS_API_TOKEN "pk.9c2639520bbf5413d6b9d1830ead8535";
+
+
+// END GPS LOCATION
+
+
+
+// OneWire
+#include <Wire.h>
+// END OneWire
+
+// AnalogSwitch
+#define ANALOG_SWITCH_SEL D5
+// END AnalogSwitch
+
+
+// ANALOG_SELECTOR
+#define ANALOG_SEL D5
+#define ANALOG_PIN A0
+// END ANALOG_SELECTOR
+
 // MQTT
 
 
@@ -148,8 +182,7 @@ void serialPrintBmp() {
 
 // Fabian's inlog
 
-// very secret
-#define UNWIREDLABS_API_TOKEN "pk.9c2639520bbf5413d6b9d1830ead8535";
+
 
 #define MQTT_SERVER       "mqtt.uu.nl"
 #define MQTT_PORT         1883                   // use 8883 for SSL -> uu has no ssl
@@ -182,6 +215,9 @@ PubSubClient pubClient(MQTT_SERVER, MQTT_PORT,espClient);
 #define TOPIC_BMP_PRESS "infob3it/036/WaterMachine/Sensors/Pressure"
 #define TOPIC_SENSORS_LIGHT "infob3it/036/WaterMachine/Sensors/Light"
 #define TOPIC_SENSORS_SOIL "infob3it/036/WaterMachine/Sensors/Soil"
+#define TOPIC_SENSORS_CALIBRATE_SOIL "infob3it/036/WaterMachine/Sensors/Calibration/Soil"
+#define TOPIC_SENSORS_CALIBRATE_LIGHT "infob3it/036/WaterMachine/Sensors/Calibration/Light"
+#define TOPIC_DELAY "infob3it/036/WaterMachine/Delay"
 
 boolean extractBooleanPayload(byte* payload) {
   char load = payload[0];
@@ -201,10 +237,22 @@ char* BooleanToPayload(boolean boo) {
 
 void printWater(){
   display.clearDisplay();
-  display.setCursor(0,0);
-  display.println("PRINT WATER");
+  display.setCursor(20,25);
+  display.println("Watering plant...");
   display.display();
   Serial.println("PRINT WATER");
+}
+
+void displayBMPData(){
+  display.clearDisplay();
+  display.setCursor(0, 5);
+  display.println("BMP info");
+  display.println(" ");
+  display.print("temperature = ");
+  display.println(measuredTemperature);
+  display.print("air pressure = ");
+  display.println(measuredPressure);
+  display.display();
 }
 
 void startWater(){
@@ -212,7 +260,6 @@ void startWater(){
     servoDown();
     state = 3;
     Serial.println("water started");
-    printWater();
     watering = true;
   }
 }
@@ -273,19 +320,47 @@ void topicSensorsVerboseHandler(boolean boo) {
   sensorVerbosePublishing = boo;
 }
 
+
+void startPublishSoil() {
+  soilMeasurementActive = true;
+  digitalWrite(ANALOG_SEL, HIGH);
+  soilTimer = currentTime;
+}
+
+
+void topicSensorsCalibrationSoilHandler() {
+  soilCalibrate = true;
+  startPublishSoil();
+}
+
+void topicSensorsCalibrationLightHandler() {
+  topicSensorsSingularRetrievalHandler(true);
+  calibratedLDR = measuredLDR;
+}
+
+void topicDelayHandler(byte* payload) {
+  unsigned int newDelay = (int)payload;
+  waterDelay = newDelay;
+}
+
+int extractData(byte* payload, unsigned int lenght) {
+  int value;
+  std::memcpy(&value, payload, lenght);
+  return value;
+}
+
 void displayMQTT(char* topic, byte* payload, unsigned int length) {
   display.clearDisplay();
   display.setTextSize(1);
   display.setCursor(0,0);
-  //display.invertDisplay(extractBooleanPayload(payload));
   display.println("last message ->");
   display.println("topic: " + String(topic));
-  display.println("payload: " + String(extractBooleanPayload(payload)));
-  display.display();
-
-  // debug
   Serial.println("topic: "   + String(topic));
-  Serial.println("payload: " + String(extractBooleanPayload(payload)));
+  int value = extractData(payload, length);
+
+  display.println("int payload: " + String(value));
+  Serial.println("int payload" + String(value));
+  display.display();
 }
 
 void callback(char* topic, byte* payload, unsigned int length)
@@ -304,15 +379,45 @@ void callback(char* topic, byte* payload, unsigned int length)
   else if (!(strcmp(topic,TOPIC_SENSORS_VERBOSE))) {
     topicSensorsVerboseHandler(extractBooleanPayload(payload));
   }
-  // else if (!(strcmp(topic,TOPIC_MANUAL))) {
-  //   topicManualHandler(extractBooleanPayload(payload));
-  // }
-  // else if (!(strcmp(topic,TOPIC_MANUAL))) {
-  //   topicManualHandler(extractBooleanPayload(payload));
-  // }
+  else if (!(strcmp(topic,TOPIC_SENSORS_CALIBRATE_SOIL))) {
+    topicSensorsCalibrationSoilHandler();
+  }
+  else if (!(strcmp(topic,TOPIC_SENSORS_CALIBRATE_LIGHT))) {
+    topicSensorsCalibrationLightHandler();
+  }
+  else if (!(strcmp(topic,TOPIC_DELAY))) {
+    topicDelayHandler(payload);
+  }
+}
+
+
+void sub(int subNum, const char* topic) {
+  boolean sub = pubClient.subscribe(topic);
+  if(!sub){
+    delay(2000);
+    boolean sub_attempt2 = pubClient.subscribe(topic);
+    Serial.println("sub" + String(subNum) + ":" + String(sub_attempt2));
+  }
 }
 
 void setSubscriptions() {
+  const int amount = 7;
+  const char* topicToSub [amount] = {
+    TOPIC_WATERING,
+    TOPIC_MANUAL,
+    TOPIC_SENSORS_SINGULAR_RETRIEVAL,
+    TOPIC_SENSORS_VERBOSE,
+    TOPIC_SENSORS_CALIBRATE_SOIL,
+    TOPIC_SENSORS_CALIBRATE_LIGHT,
+    TOPIC_DELAY
+  };
+
+  for (size_t i = 0; i < amount; i++)
+  {
+    sub(i,topicToSub[i]);
+  }
+  
+  /*
   boolean sub1 = pubClient.subscribe(TOPIC_WATERING);
   if(!sub1){
     delay(2000);
@@ -337,6 +442,25 @@ void setSubscriptions() {
     boolean sub4_attempt2 = pubClient.subscribe(TOPIC_SENSORS_VERBOSE);
     Serial.println("sub4: " + String(sub4_attempt2));
   }
+  boolean sub5 = pubClient.subscribe(TOPIC_SENSORS_CALIBRATE_SOIL);
+  if(!sub5){
+    delay(2000);
+    boolean sub5_attempt2 = pubClient.subscribe(TOPIC_SENSORS_CALIBRATE_SOIL);
+    Serial.println("sub5: " + String(sub5_attempt2));
+  }
+  boolean sub6 = pubClient.subscribe(TOPIC_SENSORS_CALIBRATE_LIGHT);
+  if(!sub6){
+    delay(2000);
+    boolean sub6_attempt2 = pubClient.subscribe(TOPIC_SENSORS_CALIBRATE_LIGHT);
+    Serial.println("sub6: " + String(sub6_attempt2));
+  }
+  boolean sub7 = pubClient.subscribe(TOPIC_DELAY);
+  if(!sub7){
+    delay(2000);
+    boolean sub7_attempt2 = pubClient.subscribe(TOPIC_DELAY);
+    Serial.println("sub7: " + String(sub7_attempt2));
+  }
+  */
   Serial.println("subs done");
 }
 
@@ -370,9 +494,6 @@ void reconnect() {
   // Loop until we're reconnected
   if (!pubClient.connected() && currentTime - reconnectTimer >= reconnectDelay) {
     Serial.print("Attempting MQTT connection...");
-    // Create a random pubClient ID
-    String clientId = "ESP8266Client-mine";
-    clientId += String(random(0xffff), HEX);
     // Attempt to connect
     if (mqttConnect()) {
       Serial.println("connected");
@@ -388,19 +509,7 @@ void reconnect() {
 // END MQTT
 
 
-// OneWire
-#include <Wire.h>
-// END OneWire
 
-// AnalogSwitch
-#define ANALOG_SWITCH_SEL D5
-// END AnalogSwitch
-
-
-// ANALOG_SELECTOR
-#define ANALOG_SEL D5
-#define ANALOG_PIN A0
-// END ANALOG_SELECTOR
 
 // DOGE
 #define doge_width 60
@@ -590,18 +699,24 @@ void publishLDR() {
   }
 }
 
-void startPublishSoil() {
-  soilMeasurementActive = true;
-  digitalWrite(ANALOG_SEL, HIGH);
-  soilTimer = currentTime;
+
+
+double soilPercentile(double value) {
+  return 100 * (1+value) / (calibratedMoist +1);
 }
 
 void endPublishSoil() {
   soilMeasurementActive = false;
   double value = analogRead(ANALOG_PIN);
-  double percentileValue = 200 * value / 1023;
+  measuredSoil = value;
+  if (soilCalibrate) {
+    soilCalibrate = false;
+    unsigned int oldPer = (100 * moistThreshold) / calibratedMoist;
+    calibratedMoist = measuredSoil;
+    setMoistThresholdFromPercentage(oldPer);
+  }
   digitalWrite(ANALOG_SEL, LOW);
-  String str = String(percentileValue) + "% moist";
+  String str = String(soilPercentile(value)) + "% moist"; 
   char* payload = new char[str.length()+1];
   strcpy(payload, str.c_str());
   boolean published = pubClient.publish(TOPIC_SENSORS_SOIL, payload , true);
@@ -652,10 +767,19 @@ void automaticLoop(){
       pubClient.publish(TOPIC_WATERING, "1", true);
       waterTimer = currentTime;
     }
+    if(currentTime - waterTimer >= waterDelay && watering) {
+      endWater();
+      pubClient.publish(TOPIC_WATERING, "0", true);
+    }
   }
-  if(currentTime - waterTimer >= waterDelay) {
-    endWater();
-    pubClient.publish(TOPIC_WATERING, "0", true);
+}
+
+void periodicServoAttach() {
+  if(currentTime - servoTimer >= SERVO_PERIODIC_ATTACH_DELAY) {
+    servoTimer = currentTime;
+    if(!watering) {
+      servoDown();
+    }
   }
 }
 
@@ -667,7 +791,7 @@ void updateTime(){
 void wifiSetup() {
   display.clearDisplay();
   display.setTextSize(1);
-  const char* apName = "jemoederswifi";
+  const char* apName = "ESP_wifi";
   display.println("Trying wifi");
   display.println("AP: " + String(apName));
   display.display();
@@ -728,8 +852,10 @@ void loop() {
   buttonLoop();
 
   sensorLoop();
-
+  
   automaticLoop();
+
+  periodicServoAttach();
 
   if (!pubClient.connected() && WiFi.isConnected()) {
     reconnect();
