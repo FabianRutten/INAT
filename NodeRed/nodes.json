@@ -1,6 +1,6 @@
 [
     {
-        "id": "44f89e5d50cbb478",
+        "id": "f0cbbdfebb30aea1",
         "type": "tab",
         "label": "Flow 1",
         "disabled": false,
@@ -8,15 +8,7 @@
         "env": []
     },
     {
-        "id": "ac84b5d652615ed1",
-        "type": "tab",
-        "label": "Flow 1",
-        "disabled": false,
-        "info": "",
-        "env": []
-    },
-    {
-        "id": "0cdfd9e4800f8988",
+        "id": "ef56f0baa07d982f",
         "type": "ui_base",
         "theme": {
             "name": "theme-dark",
@@ -113,7 +105,7 @@
         }
     },
     {
-        "id": "8be8e3007bf6dba4",
+        "id": "99a19b34aa77739d",
         "type": "mqtt-broker",
         "name": "UU MQTT",
         "broker": "mqtt.uu.nl",
@@ -140,10 +132,10 @@
         "sessionExpiry": ""
     },
     {
-        "id": "9a9b49c00bbc3718",
+        "id": "7fe6336c25b0a2dc",
         "type": "ui_group",
         "name": "Connectivity",
-        "tab": "1f6c888a8253bf22",
+        "tab": "3996a0d4f8154139",
         "order": 1,
         "disp": true,
         "width": "6",
@@ -151,10 +143,10 @@
         "className": ""
     },
     {
-        "id": "30cd15cc669483d3",
+        "id": "4ba8ddf45198548c",
         "type": "ui_group",
         "name": "Manual Controls",
-        "tab": "1f6c888a8253bf22",
+        "tab": "3996a0d4f8154139",
         "order": 2,
         "disp": true,
         "width": "6",
@@ -162,7 +154,7 @@
         "className": ""
     },
     {
-        "id": "1f6c888a8253bf22",
+        "id": "3996a0d4f8154139",
         "type": "ui_tab",
         "name": "Home",
         "icon": "dashboard",
@@ -170,10 +162,10 @@
         "hidden": false
     },
     {
-        "id": "cf21b55ea0554e5a",
+        "id": "3b942b6d1aa5579f",
         "type": "ui_group",
         "name": "Sensors",
-        "tab": "1f6c888a8253bf22",
+        "tab": "3996a0d4f8154139",
         "order": 3,
         "disp": true,
         "width": "7",
@@ -181,10 +173,10 @@
         "className": ""
     },
     {
-        "id": "bea4e612c183209b",
+        "id": "6f41b7f56e2d8d5f",
         "type": "ui_group",
         "name": "Sensor Graphs",
-        "tab": "1f6c888a8253bf22",
+        "tab": "3996a0d4f8154139",
         "order": 4,
         "disp": true,
         "width": "6",
@@ -192,7 +184,7 @@
         "className": ""
     },
     {
-        "id": "4ccd9e2f76c12299",
+        "id": "a34367c74bc8da4b",
         "type": "serial-port",
         "serialport": "COM1",
         "serialbaud": "57600",
@@ -211,10 +203,10 @@
         "responsetimeout": "10000"
     },
     {
-        "id": "c4827098fb3ae492",
+        "id": "f54ed0b47e729cea",
         "type": "ui_group",
         "name": "Sensor Gauges",
-        "tab": "1f6c888a8253bf22",
+        "tab": "3996a0d4f8154139",
         "order": 5,
         "disp": true,
         "width": "6",
@@ -222,10 +214,10 @@
         "className": ""
     },
     {
-        "id": "8608eb41e1676e41",
+        "id": "d2cdb664f5f5cd38",
         "type": "ui_text",
-        "z": "ac84b5d652615ed1",
-        "group": "9a9b49c00bbc3718",
+        "z": "f0cbbdfebb30aea1",
+        "group": "7fe6336c25b0a2dc",
         "order": 0,
         "width": 0,
         "height": 0,
@@ -240,14 +232,14 @@
         "icon": "node-red/bridge.svg"
     },
     {
-        "id": "e87023616b9751c0",
+        "id": "e3779da9a0aedc5c",
         "type": "mqtt in",
-        "z": "ac84b5d652615ed1",
+        "z": "f0cbbdfebb30aea1",
         "name": "Water Machine LWT",
         "topic": "infob3it/036/WaterMachine/LWT",
         "qos": "1",
         "datatype": "auto-detect",
-        "broker": "8be8e3007bf6dba4",
+        "broker": "99a19b34aa77739d",
         "nl": false,
         "rap": true,
         "rh": 0,
@@ -256,14 +248,14 @@
         "y": 260,
         "wires": [
             [
-                "8608eb41e1676e41"
+                "d2cdb664f5f5cd38"
             ]
         ]
     },
     {
-        "id": "503fa4e45bbe624f",
+        "id": "0e7c4f16246d071c",
         "type": "comment",
-        "z": "ac84b5d652615ed1",
+        "z": "f0cbbdfebb30aea1",
         "name": "Thing Alive Cycle",
         "info": "",
         "x": 470,
@@ -271,9 +263,9 @@
         "wires": []
     },
     {
-        "id": "0a5af7153c91e8b1",
+        "id": "e39c6f85b33af4c2",
         "type": "mqtt out",
-        "z": "ac84b5d652615ed1",
+        "z": "f0cbbdfebb30aea1",
         "name": "Watering",
         "topic": "infob3it/036/WaterMachine/Controls/Watering",
         "qos": "0",
@@ -283,15 +275,15 @@
         "userProps": "",
         "correl": "",
         "expiry": "",
-        "broker": "8be8e3007bf6dba4",
+        "broker": "99a19b34aa77739d",
         "x": 1240,
         "y": 440,
         "wires": []
     },
     {
-        "id": "570189e8401eefe9",
+        "id": "eb019f30139b7839",
         "type": "comment",
-        "z": "ac84b5d652615ed1",
+        "z": "f0cbbdfebb30aea1",
         "name": "OUTPUT: infob3it/036/XXX",
         "info": "",
         "x": 490,
@@ -299,11 +291,11 @@
         "wires": []
     },
     {
-        "id": "b6922a3596171c15",
+        "id": "3ee0ba59a1222ea7",
         "type": "ui_button",
-        "z": "ac84b5d652615ed1",
+        "z": "f0cbbdfebb30aea1",
         "name": "Watering Button",
-        "group": "30cd15cc669483d3",
+        "group": "4ba8ddf45198548c",
         "order": 0,
         "width": "6",
         "height": "3",
@@ -322,16 +314,16 @@
         "y": 440,
         "wires": [
             [
-                "04f268ee2958c2c3",
-                "0a5af7153c91e8b1"
+                "b92f1d4c13e5f3f2",
+                "e39c6f85b33af4c2"
             ]
         ]
     },
     {
-        "id": "6c82d0e07077d86d",
+        "id": "5de44fa8a61d240f",
         "type": "ui_text",
-        "z": "ac84b5d652615ed1",
-        "group": "30cd15cc669483d3",
+        "z": "f0cbbdfebb30aea1",
+        "group": "4ba8ddf45198548c",
         "order": 1,
         "width": 0,
         "height": 0,
@@ -345,9 +337,9 @@
         "wires": []
     },
     {
-        "id": "04f268ee2958c2c3",
+        "id": "b92f1d4c13e5f3f2",
         "type": "trigger",
-        "z": "ac84b5d652615ed1",
+        "z": "f0cbbdfebb30aea1",
         "name": "",
         "op1": "",
         "op2": "0",
@@ -365,14 +357,14 @@
         "y": 420,
         "wires": [
             [
-                "0a5af7153c91e8b1"
+                "e39c6f85b33af4c2"
             ]
         ]
     },
     {
-        "id": "5510fc70b222aacf",
+        "id": "4fa273c340caf978",
         "type": "comment",
-        "z": "ac84b5d652615ed1",
+        "z": "f0cbbdfebb30aea1",
         "name": "Manual controls",
         "info": "",
         "x": 460,
@@ -380,13 +372,13 @@
         "wires": []
     },
     {
-        "id": "c2b24d271ef4b3f5",
+        "id": "33191aa2b860e8a0",
         "type": "ui_switch",
-        "z": "ac84b5d652615ed1",
+        "z": "f0cbbdfebb30aea1",
         "name": "Watering Switch",
         "label": "Watering Switch",
         "tooltip": "",
-        "group": "30cd15cc669483d3",
+        "group": "4ba8ddf45198548c",
         "order": 1,
         "width": 0,
         "height": 0,
@@ -405,23 +397,23 @@
         "offcolor": "",
         "animate": false,
         "className": "",
-        "x": 850,
+        "x": 840,
         "y": 480,
         "wires": [
             [
-                "0a5af7153c91e8b1"
+                "e39c6f85b33af4c2"
             ]
         ]
     },
     {
-        "id": "d9b5a95d641396e4",
+        "id": "1532b4635dd305c2",
         "type": "mqtt in",
-        "z": "ac84b5d652615ed1",
+        "z": "f0cbbdfebb30aea1",
         "name": "Watering",
         "topic": "infob3it/036/WaterMachine/Controls/Watering",
         "qos": "0",
         "datatype": "auto-detect",
-        "broker": "8be8e3007bf6dba4",
+        "broker": "99a19b34aa77739d",
         "nl": false,
         "rap": true,
         "rh": 0,
@@ -430,22 +422,22 @@
         "y": 500,
         "wires": [
             [
-                "2dc505f8c652a655",
-                "c2b24d271ef4b3f5",
-                "60cf60e0b23172ce",
-                "1c22fb4b3dc34813"
+                "9dcd715e8dd7582c",
+                "33191aa2b860e8a0",
+                "18116bec2d79fc02",
+                "f04d663f3f45a01c"
             ]
         ]
     },
     {
-        "id": "2c3e69039b33ea85",
+        "id": "6b27205c4686b53d",
         "type": "mqtt in",
-        "z": "ac84b5d652615ed1",
+        "z": "f0cbbdfebb30aea1",
         "name": "WaterButton",
         "topic": "infob3it/036/WaterMachine/Controls/WaterButton",
         "qos": "0",
         "datatype": "auto-detect",
-        "broker": "8be8e3007bf6dba4",
+        "broker": "99a19b34aa77739d",
         "nl": false,
         "rap": true,
         "rh": 0,
@@ -454,14 +446,14 @@
         "y": 440,
         "wires": [
             [
-                "b6922a3596171c15"
+                "3ee0ba59a1222ea7"
             ]
         ]
     },
     {
-        "id": "2dc505f8c652a655",
+        "id": "9dcd715e8dd7582c",
         "type": "debug",
-        "z": "ac84b5d652615ed1",
+        "z": "f0cbbdfebb30aea1",
         "name": "debug 2",
         "active": true,
         "tosidebar": true,
@@ -476,13 +468,13 @@
         "wires": []
     },
     {
-        "id": "6dd2d279f5681ee3",
+        "id": "76cb4d24718b2a36",
         "type": "ui_switch",
-        "z": "ac84b5d652615ed1",
+        "z": "f0cbbdfebb30aea1",
         "name": "Manual Switch",
         "label": "Manual Mode",
         "tooltip": "",
-        "group": "30cd15cc669483d3",
+        "group": "4ba8ddf45198548c",
         "order": 1,
         "width": 0,
         "height": 0,
@@ -505,19 +497,19 @@
         "y": 720,
         "wires": [
             [
-                "af362b06b90f3170"
+                "c9204783a8dd6664"
             ]
         ]
     },
     {
-        "id": "54430986200dba77",
+        "id": "7629b2e8f2e3d8d0",
         "type": "mqtt in",
-        "z": "ac84b5d652615ed1",
+        "z": "f0cbbdfebb30aea1",
         "name": "WaterMachine Manual",
         "topic": "infob3it/036/WaterMachine/Controls/Manual",
         "qos": "1",
         "datatype": "auto-detect",
-        "broker": "8be8e3007bf6dba4",
+        "broker": "99a19b34aa77739d",
         "nl": false,
         "rap": true,
         "rh": 0,
@@ -526,14 +518,14 @@
         "y": 720,
         "wires": [
             [
-                "8ed4975fb50b1137"
+                "4e3390d04e96f785"
             ]
         ]
     },
     {
-        "id": "8ed4975fb50b1137",
+        "id": "4e3390d04e96f785",
         "type": "function",
-        "z": "ac84b5d652615ed1",
+        "z": "f0cbbdfebb30aea1",
         "name": "IntToBoolean",
         "func": "return { payload: !! msg.payload };",
         "outputs": 1,
@@ -545,14 +537,14 @@
         "y": 720,
         "wires": [
             [
-                "6dd2d279f5681ee3"
+                "76cb4d24718b2a36"
             ]
         ]
     },
     {
-        "id": "af362b06b90f3170",
+        "id": "c9204783a8dd6664",
         "type": "function",
-        "z": "ac84b5d652615ed1",
+        "z": "f0cbbdfebb30aea1",
         "name": "BooleanToInt",
         "func": "return {payload: msg.payload ? 1 : 0};",
         "outputs": 1,
@@ -564,14 +556,14 @@
         "y": 720,
         "wires": [
             [
-                "ebfe06b43ae55ad3"
+                "fbeff36ae185ebaf"
             ]
         ]
     },
     {
-        "id": "ebfe06b43ae55ad3",
+        "id": "fbeff36ae185ebaf",
         "type": "mqtt out",
-        "z": "ac84b5d652615ed1",
+        "z": "f0cbbdfebb30aea1",
         "name": "Water Machine Manual",
         "topic": "infob3it/036/WaterMachine/Controls/Manual",
         "qos": "0",
@@ -581,15 +573,15 @@
         "userProps": "",
         "correl": "",
         "expiry": "",
-        "broker": "8be8e3007bf6dba4",
+        "broker": "99a19b34aa77739d",
         "x": 1310,
         "y": 720,
         "wires": []
     },
     {
-        "id": "1c22fb4b3dc34813",
+        "id": "f04d663f3f45a01c",
         "type": "trigger",
-        "z": "ac84b5d652615ed1",
+        "z": "f0cbbdfebb30aea1",
         "name": "timeOut 3m",
         "op1": "",
         "op2": "0",
@@ -600,21 +592,21 @@
         "overrideDelay": false,
         "units": "min",
         "reset": "0",
-        "bytopic": "all",
+        "bytopic": "topic",
         "topic": "topic",
         "outputs": 1,
         "x": 830,
         "y": 520,
         "wires": [
             [
-                "0a5af7153c91e8b1"
+                "e39c6f85b33af4c2"
             ]
         ]
     },
     {
-        "id": "8993962f0f7557a2",
+        "id": "164f12bb27c84554",
         "type": "comment",
-        "z": "ac84b5d652615ed1",
+        "z": "f0cbbdfebb30aea1",
         "name": "Sensors",
         "info": "",
         "x": 440,
@@ -622,14 +614,14 @@
         "wires": []
     },
     {
-        "id": "eeca10a1919e0e32",
+        "id": "90e319e3a51dafa6",
         "type": "mqtt in",
-        "z": "ac84b5d652615ed1",
+        "z": "f0cbbdfebb30aea1",
         "name": "WaterMachine Pressure",
         "topic": "infob3it/036/WaterMachine/Sensors/Pressure",
         "qos": "2",
         "datatype": "auto-detect",
-        "broker": "8be8e3007bf6dba4",
+        "broker": "99a19b34aa77739d",
         "nl": false,
         "rap": true,
         "rh": 0,
@@ -638,20 +630,20 @@
         "y": 1060,
         "wires": [
             [
-                "351a716bbce87f67",
-                "213212ae7c0b2bb2"
+                "08238dd09914a895",
+                "678aa816cea11304"
             ]
         ]
     },
     {
-        "id": "bd6bf157f5ab8851",
+        "id": "fa885ffd8f7fca5d",
         "type": "mqtt in",
-        "z": "ac84b5d652615ed1",
+        "z": "f0cbbdfebb30aea1",
         "name": "WaterMachine Temperature",
         "topic": "infob3it/036/WaterMachine/Sensors/Temperature",
         "qos": "2",
         "datatype": "auto-detect",
-        "broker": "8be8e3007bf6dba4",
+        "broker": "99a19b34aa77739d",
         "nl": false,
         "rap": true,
         "rh": 0,
@@ -660,16 +652,16 @@
         "y": 1140,
         "wires": [
             [
-                "fc2b1b27e6bdc731",
-                "471af97de069cdb0"
+                "2eb0e12976209da7",
+                "cec184c18c50770c"
             ]
         ]
     },
     {
-        "id": "351a716bbce87f67",
+        "id": "08238dd09914a895",
         "type": "ui_text",
-        "z": "ac84b5d652615ed1",
-        "group": "cf21b55ea0554e5a",
+        "z": "f0cbbdfebb30aea1",
+        "group": "3b942b6d1aa5579f",
         "order": 4,
         "width": 0,
         "height": 0,
@@ -683,11 +675,11 @@
         "wires": []
     },
     {
-        "id": "fc2b1b27e6bdc731",
+        "id": "2eb0e12976209da7",
         "type": "ui_chart",
-        "z": "ac84b5d652615ed1",
+        "z": "f0cbbdfebb30aea1",
         "name": "WaterMachine Temperature Graph",
-        "group": "bea4e612c183209b",
+        "group": "6f41b7f56e2d8d5f",
         "order": 6,
         "width": 0,
         "height": 0,
@@ -727,11 +719,11 @@
         ]
     },
     {
-        "id": "471af97de069cdb0",
+        "id": "cec184c18c50770c",
         "type": "ui_gauge",
-        "z": "ac84b5d652615ed1",
+        "z": "f0cbbdfebb30aea1",
         "name": "WaterMachine Temperature Gauge",
-        "group": "c4827098fb3ae492",
+        "group": "f54ed0b47e729cea",
         "order": 3,
         "width": 0,
         "height": 0,
@@ -755,9 +747,9 @@
         "wires": []
     },
     {
-        "id": "933f3efc648c5281",
+        "id": "34b1841e04fc9ed5",
         "type": "mqtt out",
-        "z": "ac84b5d652615ed1",
+        "z": "f0cbbdfebb30aea1",
         "name": "WaterMachine Sensors Verbose",
         "topic": "infob3it/036/WaterMachine/Sensors/Verbose",
         "qos": "0",
@@ -767,19 +759,19 @@
         "userProps": "",
         "correl": "",
         "expiry": "",
-        "broker": "8be8e3007bf6dba4",
+        "broker": "99a19b34aa77739d",
         "x": 1260,
         "y": 980,
         "wires": []
     },
     {
-        "id": "ee88e3a2e03dcff6",
+        "id": "2c34cc97d6bb526a",
         "type": "ui_switch",
-        "z": "ac84b5d652615ed1",
+        "z": "f0cbbdfebb30aea1",
         "name": "WaterMachine Sensors Verbose Retrieval",
         "label": "Sensors Verbose Retrieval",
         "tooltip": "",
-        "group": "cf21b55ea0554e5a",
+        "group": "3b942b6d1aa5579f",
         "order": 1,
         "width": "7",
         "height": "2",
@@ -802,14 +794,14 @@
         "y": 980,
         "wires": [
             [
-                "933f3efc648c5281"
+                "34b1841e04fc9ed5"
             ]
         ]
     },
     {
-        "id": "60cf60e0b23172ce",
+        "id": "18116bec2d79fc02",
         "type": "function",
-        "z": "ac84b5d652615ed1",
+        "z": "f0cbbdfebb30aea1",
         "name": "IntToBoolean",
         "func": "return { payload: !! msg.payload };",
         "outputs": 1,
@@ -821,19 +813,19 @@
         "y": 560,
         "wires": [
             [
-                "1efb980d5752bcaf"
+                "85249abf176f4fcb"
             ]
         ]
     },
     {
-        "id": "e2f0eeb23e1563ad",
+        "id": "2097de3297c20ca2",
         "type": "mqtt in",
-        "z": "ac84b5d652615ed1",
+        "z": "f0cbbdfebb30aea1",
         "name": "WaterMachine Sensors Verbose",
         "topic": "infob3it/036/WaterMachine/Sensors/Verbose",
         "qos": "1",
         "datatype": "auto-detect",
-        "broker": "8be8e3007bf6dba4",
+        "broker": "99a19b34aa77739d",
         "nl": false,
         "rap": true,
         "rh": 0,
@@ -842,16 +834,16 @@
         "y": 980,
         "wires": [
             [
-                "ee88e3a2e03dcff6"
+                "2c34cc97d6bb526a"
             ]
         ]
     },
     {
-        "id": "b91265b7b973645b",
+        "id": "97701235807a6b59",
         "type": "ui_button",
-        "z": "ac84b5d652615ed1",
+        "z": "f0cbbdfebb30aea1",
         "name": "Retrieve WaterMachine Sensors",
-        "group": "cf21b55ea0554e5a",
+        "group": "3b942b6d1aa5579f",
         "order": 2,
         "width": "7",
         "height": "3",
@@ -870,14 +862,14 @@
         "y": 1380,
         "wires": [
             [
-                "b628b9fa4197a0bf"
+                "cae4ba6fe0551425"
             ]
         ]
     },
     {
-        "id": "b628b9fa4197a0bf",
+        "id": "cae4ba6fe0551425",
         "type": "mqtt out",
-        "z": "ac84b5d652615ed1",
+        "z": "f0cbbdfebb30aea1",
         "name": "Single Retrieval",
         "topic": "infob3it/036/WaterMachine/Sensors/SingularRetrieval",
         "qos": "0",
@@ -887,20 +879,20 @@
         "userProps": "",
         "correl": "",
         "expiry": "",
-        "broker": "8be8e3007bf6dba4",
+        "broker": "99a19b34aa77739d",
         "x": 1210,
         "y": 1380,
         "wires": []
     },
     {
-        "id": "09f07d7461047876",
+        "id": "3f0f857b9e9c442c",
         "type": "mqtt in",
-        "z": "ac84b5d652615ed1",
+        "z": "f0cbbdfebb30aea1",
         "name": "WaterMachine Light",
         "topic": "infob3it/036/WaterMachine/Sensors/Light",
         "qos": "0",
         "datatype": "auto-detect",
-        "broker": "8be8e3007bf6dba4",
+        "broker": "99a19b34aa77739d",
         "nl": false,
         "rap": true,
         "rh": 0,
@@ -909,17 +901,17 @@
         "y": 1220,
         "wires": [
             [
-                "33fad53e98f3132b",
-                "b293a27e4d21582b"
+                "71a95d436cadfd9a",
+                "f9d52896ab503c0d"
             ]
         ]
     },
     {
-        "id": "33fad53e98f3132b",
+        "id": "71a95d436cadfd9a",
         "type": "ui_gauge",
-        "z": "ac84b5d652615ed1",
+        "z": "f0cbbdfebb30aea1",
         "name": "WaterMachine Light Gauge",
-        "group": "c4827098fb3ae492",
+        "group": "f54ed0b47e729cea",
         "order": 5,
         "width": 0,
         "height": 0,
@@ -943,14 +935,14 @@
         "wires": []
     },
     {
-        "id": "2bfd73a0253fc01f",
+        "id": "85a838528a0628c4",
         "type": "mqtt in",
-        "z": "ac84b5d652615ed1",
+        "z": "f0cbbdfebb30aea1",
         "name": "WaterMachine Soil",
         "topic": "infob3it/036/WaterMachine/Sensors/Soil",
         "qos": "0",
         "datatype": "auto-detect",
-        "broker": "8be8e3007bf6dba4",
+        "broker": "99a19b34aa77739d",
         "nl": false,
         "rap": true,
         "rh": 0,
@@ -959,17 +951,17 @@
         "y": 1300,
         "wires": [
             [
-                "487561274eaa1340",
-                "da005e1d05af9ca5"
+                "b5f5c75ac199e488",
+                "9405186439688c4f"
             ]
         ]
     },
     {
-        "id": "487561274eaa1340",
+        "id": "b5f5c75ac199e488",
         "type": "ui_gauge",
-        "z": "ac84b5d652615ed1",
+        "z": "f0cbbdfebb30aea1",
         "name": "WaterMachine Soil Gauge",
-        "group": "c4827098fb3ae492",
+        "group": "f54ed0b47e729cea",
         "order": 5,
         "width": 0,
         "height": 0,
@@ -993,11 +985,11 @@
         "wires": []
     },
     {
-        "id": "b293a27e4d21582b",
+        "id": "f9d52896ab503c0d",
         "type": "ui_chart",
-        "z": "ac84b5d652615ed1",
+        "z": "f0cbbdfebb30aea1",
         "name": "WaterMachine Light Graph",
-        "group": "bea4e612c183209b",
+        "group": "6f41b7f56e2d8d5f",
         "order": 6,
         "width": 0,
         "height": 0,
@@ -1037,11 +1029,11 @@
         ]
     },
     {
-        "id": "da005e1d05af9ca5",
+        "id": "9405186439688c4f",
         "type": "ui_chart",
-        "z": "ac84b5d652615ed1",
+        "z": "f0cbbdfebb30aea1",
         "name": "WaterMachine Soil Graph",
-        "group": "bea4e612c183209b",
+        "group": "6f41b7f56e2d8d5f",
         "order": 6,
         "width": 0,
         "height": 0,
@@ -1051,7 +1043,7 @@
         "xformat": "auto",
         "interpolate": "linear",
         "nodata": "Soil Most",
-        "dot": true,
+        "dot": false,
         "ymin": "",
         "ymax": "",
         "removeOlder": 1,
@@ -1081,11 +1073,11 @@
         ]
     },
     {
-        "id": "213212ae7c0b2bb2",
+        "id": "678aa816cea11304",
         "type": "ui_chart",
-        "z": "ac84b5d652615ed1",
+        "z": "f0cbbdfebb30aea1",
         "name": "WaterMachine Pressure Graph",
-        "group": "bea4e612c183209b",
+        "group": "6f41b7f56e2d8d5f",
         "order": 6,
         "width": 0,
         "height": 0,
@@ -1125,9 +1117,9 @@
         ]
     },
     {
-        "id": "095e79aa1b4f874b",
+        "id": "e1b61f9a44e9afe3",
         "type": "comment",
-        "z": "ac84b5d652615ed1",
+        "z": "f0cbbdfebb30aea1",
         "name": "Gesture based control",
         "info": "",
         "x": 480,
@@ -1135,24 +1127,24 @@
         "wires": []
     },
     {
-        "id": "a4675a43553d7af7",
+        "id": "6c8bc2e3e3164958",
         "type": "serial in",
-        "z": "ac84b5d652615ed1",
+        "z": "f0cbbdfebb30aea1",
         "name": "Arduino Gesture Input COM1",
-        "serial": "4ccd9e2f76c12299",
+        "serial": "a34367c74bc8da4b",
         "x": 510,
         "y": 1440,
         "wires": [
             [
-                "9b8516eda3b6e88a",
-                "a7dba583b323b7d3"
+                "60968ea3baa637c8",
+                "fb08d8505a5c6712"
             ]
         ]
     },
     {
-        "id": "9b8516eda3b6e88a",
+        "id": "60968ea3baa637c8",
         "type": "switch",
-        "z": "ac84b5d652615ed1",
+        "z": "f0cbbdfebb30aea1",
         "name": "Gesture Switcher",
         "property": "payload",
         "propertyType": "msg",
@@ -1175,17 +1167,17 @@
         "y": 1440,
         "wires": [
             [
-                "b628b9fa4197a0bf"
+                "cae4ba6fe0551425"
             ],
             [
-                "10ce6be353baca6b"
+                "f8fcf450a607d9a0"
             ]
         ]
     },
     {
-        "id": "10ce6be353baca6b",
+        "id": "f8fcf450a607d9a0",
         "type": "mqtt out",
-        "z": "ac84b5d652615ed1",
+        "z": "f0cbbdfebb30aea1",
         "name": "WaterButton",
         "topic": "infob3it/036/WaterMachine/Controls/WaterButton",
         "qos": "0",
@@ -1195,15 +1187,15 @@
         "userProps": "",
         "correl": "",
         "expiry": "",
-        "broker": "8be8e3007bf6dba4",
+        "broker": "99a19b34aa77739d",
         "x": 1190,
         "y": 1460,
         "wires": []
     },
     {
-        "id": "aa9f7ed2f5574058",
+        "id": "e64c7b5f7d8b1f14",
         "type": "inject",
-        "z": "ac84b5d652615ed1",
+        "z": "f0cbbdfebb30aea1",
         "name": "COM1 value = 0 (sensor)",
         "props": [
             {
@@ -1221,25 +1213,25 @@
         "y": 1600,
         "wires": [
             [
-                "efd6bc9e1a0b884b",
-                "5601183d0d0938c1"
+                "bb541ecb9d6f5cfa",
+                "7b31a3819bb4fb63"
             ]
         ]
     },
     {
-        "id": "efd6bc9e1a0b884b",
+        "id": "bb541ecb9d6f5cfa",
         "type": "serial out",
-        "z": "ac84b5d652615ed1",
+        "z": "f0cbbdfebb30aea1",
         "name": "Arduino emulated COM1",
-        "serial": "4ccd9e2f76c12299",
+        "serial": "a34367c74bc8da4b",
         "x": 820,
         "y": 1600,
         "wires": []
     },
     {
-        "id": "f6caba91496275df",
+        "id": "b6efb44289fa1b6b",
         "type": "comment",
-        "z": "ac84b5d652615ed1",
+        "z": "f0cbbdfebb30aea1",
         "name": "Mimic arduino",
         "info": "",
         "x": 440,
@@ -1247,9 +1239,9 @@
         "wires": []
     },
     {
-        "id": "50ab303572d2c020",
+        "id": "03ae2c5f4fc4976d",
         "type": "inject",
-        "z": "ac84b5d652615ed1",
+        "z": "f0cbbdfebb30aea1",
         "name": "COM1 value = 1 (water)",
         "props": [
             {
@@ -1267,15 +1259,15 @@
         "y": 1660,
         "wires": [
             [
-                "efd6bc9e1a0b884b",
-                "d64caaa6d3276876"
+                "bb541ecb9d6f5cfa",
+                "3389cd13df497a54"
             ]
         ]
     },
     {
-        "id": "5601183d0d0938c1",
+        "id": "7b31a3819bb4fb63",
         "type": "debug",
-        "z": "ac84b5d652615ed1",
+        "z": "f0cbbdfebb30aea1",
         "name": "debug 3",
         "active": true,
         "tosidebar": true,
@@ -1289,9 +1281,9 @@
         "wires": []
     },
     {
-        "id": "d64caaa6d3276876",
+        "id": "3389cd13df497a54",
         "type": "debug",
-        "z": "ac84b5d652615ed1",
+        "z": "f0cbbdfebb30aea1",
         "name": "debug 4",
         "active": true,
         "tosidebar": true,
@@ -1305,9 +1297,9 @@
         "wires": []
     },
     {
-        "id": "a7dba583b323b7d3",
+        "id": "fb08d8505a5c6712",
         "type": "debug",
-        "z": "ac84b5d652615ed1",
+        "z": "f0cbbdfebb30aea1",
         "name": "debug 5",
         "active": true,
         "tosidebar": true,
@@ -1321,9 +1313,9 @@
         "wires": []
     },
     {
-        "id": "1efb980d5752bcaf",
+        "id": "85249abf176f4fcb",
         "type": "function",
-        "z": "ac84b5d652615ed1",
+        "z": "f0cbbdfebb30aea1",
         "name": "BoolToCustomText",
         "func": "return { payload: msg.payload ? \"Yes\" : \"Nein\" };",
         "outputs": 1,
@@ -1335,7 +1327,7 @@
         "y": 560,
         "wires": [
             [
-                "6c82d0e07077d86d"
+                "5de44fa8a61d240f"
             ]
         ]
     }
