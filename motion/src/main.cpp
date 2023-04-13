@@ -33,12 +33,12 @@ struct MyData {
 MyData data;
 
 void serialShowSensor(){
-  Serial.write(0);
+  Serial.print(0);
   //Serial.println("sensor gesture completed"); 
 }
 
 void serialWaterGesture(){
-  Serial.write(1);
+  Serial.print(1);
   //Serial.println("water gesture completed");
 }
 
