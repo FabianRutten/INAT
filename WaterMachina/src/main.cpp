@@ -12,16 +12,14 @@ unsigned int calibratedMoist = 1023;
 unsigned int moistThreshold = 512;
 unsigned int measuredLDR  = 0;
 unsigned int calibratedLDR = 1023;
-// state
-// 0: default
-// 1: soil measurement
-// 2: LDR  measurement
-// 3: Watering
-byte state = 0;
-#define STATE_DEFAULT  0
-#define STATE_SOIL     1
-#define STATE_LDR      2
-#define STATE_WATERING 3
+
+#define DISPLAY_PERIOD 7000
+unsigned long displayTimer = 0;
+boolean printedWater = false;
+byte ui = 0;
+// 0 = bmp
+// 1 = analog
+// 2 = lastwatering
 
 #define SENSOR_VERBOSE_DELAY 1000
 unsigned long sensorVerboseTimer = 0;
@@ -40,9 +38,10 @@ boolean manual = false;
 
 // threshold when the soil should we watered
 
-unsigned int waterDelay = 5000;
+unsigned int waterDelay = 10000;
 unsigned long waterTimer = 0;
 boolean watering = false;
+unsigned long lastWatering = 0;
 
 
 // END VARIABLES
@@ -258,16 +257,16 @@ void displayBMPData(){
 void startWater(){
   if (!watering) {
     servoDown();
-    state = 3;
+    printedWater = false;
     Serial.println("water started");
     watering = true;
+    lastWatering = currentTime;
   }
 }
 
 void endWater(){
   if (watering) {
     servoUp();
-    state = 0;
     Serial.println("water stopped");
     watering = false;
   }
@@ -366,7 +365,7 @@ void displayMQTT(char* topic, byte* payload, unsigned int length) {
 void callback(char* topic, byte* payload, unsigned int length)
 {
   // handle received message
-  displayMQTT(topic,payload, length);
+  //displayMQTT(topic,payload, length);
   if (!(strcmp(topic,TOPIC_WATERING))) {
     topicWaterHandler(extractBooleanPayload(payload));
   }
@@ -401,15 +400,15 @@ void sub(int subNum, const char* topic) {
 }
 
 void setSubscriptions() {
-  const int amount = 7;
+  const int amount = 6;
   const char* topicToSub [amount] = {
     TOPIC_WATERING,
     TOPIC_MANUAL,
     TOPIC_SENSORS_SINGULAR_RETRIEVAL,
     TOPIC_SENSORS_VERBOSE,
     TOPIC_SENSORS_CALIBRATE_SOIL,
-    TOPIC_SENSORS_CALIBRATE_LIGHT,
-    TOPIC_DELAY
+    TOPIC_SENSORS_CALIBRATE_LIGHT
+    //,TOPIC_DELAY
   };
 
   for (size_t i = 0; i < amount; i++)
@@ -783,6 +782,62 @@ void periodicServoAttach() {
   }
 }
 
+void displayAnalog(){
+  display.clearDisplay();
+  display.setCursor(0, 5);
+  display.println("Analog values");
+  display.println(" ");
+  display.print("Soil moisture = ");
+  display.print(measuredSoil);
+  display.println("%");
+  display.print("LDR level = ");
+  display.println(measuredLDR);
+  display.display();
+}
+int millisToMinutes(unsigned long time){
+  return ((time/1000)/60);
+}
+
+void displayLastWatering(){
+  display.clearDisplay();
+  display.setCursor(0, 5);
+  display.println("time since last watering");
+  display.println(" ");
+  display.print(millisToMinutes(lastWatering));
+  display.println("min");
+  display.display();
+}
+
+void rollOverUI(){
+  ui++;
+  if (ui > 2) {
+    ui = 0;
+  }
+}
+
+void displayingLoop() {
+  if(watering && !printedWater) {
+    printWater();
+    printedWater = true;
+    return;
+  }
+  if (currentTime - displayTimer >= DISPLAY_PERIOD) {
+    switch (ui) {
+      case 0:
+        displayBMPData();
+        break;
+      case 1:
+        displayAnalog();
+        break;
+      case 2:
+        displayLastWatering();
+        break;
+    }
+    displayTimer = currentTime;
+    rollOverUI();
+  }
+}
+
 void updateTime(){
   currentTime = millis();
 }
@@ -856,6 +911,8 @@ void loop() {
   automaticLoop();
 
   periodicServoAttach();
+
+  displayingLoop();
 
   if (!pubClient.connected() && WiFi.isConnected()) {
     reconnect();

@@ -110,7 +110,7 @@
         "name": "UU MQTT",
         "broker": "mqtt.uu.nl",
         "port": "1883",
-        "clientid": "node-red-with-random-client-id",
+        "clientid": "node-red-FABIAN",
         "autoConnect": true,
         "usetls": false,
         "protocolVersion": "4",
@@ -269,7 +269,7 @@
         "name": "Watering",
         "topic": "infob3it/036/WaterMachine/Controls/Watering",
         "qos": "0",
-        "retain": "",
+        "retain": "true",
         "respTopic": "",
         "contentType": "",
         "userProps": "",
@@ -1136,8 +1136,7 @@
         "y": 1440,
         "wires": [
             [
-                "60968ea3baa637c8",
-                "fb08d8505a5c6712"
+                "312e202299e8a924"
             ]
         ]
     },
@@ -1163,7 +1162,7 @@
         "checkall": "false",
         "repair": false,
         "outputs": 2,
-        "x": 770,
+        "x": 830,
         "y": 1440,
         "wires": [
             [
@@ -1188,128 +1187,8 @@
         "correl": "",
         "expiry": "",
         "broker": "99a19b34aa77739d",
-        "x": 1190,
+        "x": 1210,
         "y": 1460,
-        "wires": []
-    },
-    {
-        "id": "e64c7b5f7d8b1f14",
-        "type": "inject",
-        "z": "f0cbbdfebb30aea1",
-        "name": "COM1 value = 0 (sensor)",
-        "props": [
-            {
-                "p": "payload"
-            }
-        ],
-        "repeat": "",
-        "crontab": "",
-        "once": false,
-        "onceDelay": 0.1,
-        "topic": "",
-        "payload": "0",
-        "payloadType": "num",
-        "x": 490,
-        "y": 1600,
-        "wires": [
-            [
-                "bb541ecb9d6f5cfa",
-                "7b31a3819bb4fb63"
-            ]
-        ]
-    },
-    {
-        "id": "bb541ecb9d6f5cfa",
-        "type": "serial out",
-        "z": "f0cbbdfebb30aea1",
-        "name": "Arduino emulated COM1",
-        "serial": "a34367c74bc8da4b",
-        "x": 820,
-        "y": 1600,
-        "wires": []
-    },
-    {
-        "id": "b6efb44289fa1b6b",
-        "type": "comment",
-        "z": "f0cbbdfebb30aea1",
-        "name": "Mimic arduino",
-        "info": "",
-        "x": 440,
-        "y": 1540,
-        "wires": []
-    },
-    {
-        "id": "03ae2c5f4fc4976d",
-        "type": "inject",
-        "z": "f0cbbdfebb30aea1",
-        "name": "COM1 value = 1 (water)",
-        "props": [
-            {
-                "p": "payload"
-            }
-        ],
-        "repeat": "",
-        "crontab": "",
-        "once": false,
-        "onceDelay": 0.1,
-        "topic": "",
-        "payload": "1",
-        "payloadType": "num",
-        "x": 490,
-        "y": 1660,
-        "wires": [
-            [
-                "bb541ecb9d6f5cfa",
-                "3389cd13df497a54"
-            ]
-        ]
-    },
-    {
-        "id": "7b31a3819bb4fb63",
-        "type": "debug",
-        "z": "f0cbbdfebb30aea1",
-        "name": "debug 3",
-        "active": true,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": false,
-        "complete": "false",
-        "statusVal": "",
-        "statusType": "auto",
-        "x": 760,
-        "y": 1560,
-        "wires": []
-    },
-    {
-        "id": "3389cd13df497a54",
-        "type": "debug",
-        "z": "f0cbbdfebb30aea1",
-        "name": "debug 4",
-        "active": true,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": false,
-        "complete": "false",
-        "statusVal": "",
-        "statusType": "auto",
-        "x": 760,
-        "y": 1640,
-        "wires": []
-    },
-    {
-        "id": "fb08d8505a5c6712",
-        "type": "debug",
-        "z": "f0cbbdfebb30aea1",
-        "name": "debug 5",
-        "active": true,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": false,
-        "complete": "false",
-        "statusVal": "",
-        "statusType": "auto",
-        "x": 740,
-        "y": 1480,
         "wires": []
     },
     {
@@ -1328,6 +1207,154 @@
         "wires": [
             [
                 "5de44fa8a61d240f"
+            ]
+        ]
+    },
+    {
+        "id": "c30c579b23080bf7",
+        "type": "ui_button",
+        "z": "f0cbbdfebb30aea1",
+        "name": "Water Machine Soil Calibration",
+        "group": "3b942b6d1aa5579f",
+        "order": 3,
+        "width": 0,
+        "height": 0,
+        "passthru": false,
+        "label": "Soil Moist Calibration",
+        "tooltip": "",
+        "color": "orange",
+        "bgcolor": "",
+        "className": "",
+        "icon": "",
+        "payload": "1",
+        "payloadType": "num",
+        "topic": "topic",
+        "topicType": "msg",
+        "x": 830,
+        "y": 920,
+        "wires": [
+            [
+                "554a6896a8cb3be9"
+            ]
+        ]
+    },
+    {
+        "id": "554a6896a8cb3be9",
+        "type": "mqtt out",
+        "z": "f0cbbdfebb30aea1",
+        "name": "WaterMachine Calibrate Moist",
+        "topic": "infob3it/036/WaterMachine/Sensors/Calibration/Soil",
+        "qos": "0",
+        "retain": "false",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "99a19b34aa77739d",
+        "x": 1270,
+        "y": 920,
+        "wires": []
+    },
+    {
+        "id": "d4e140339dc6be1a",
+        "type": "ui_slider",
+        "z": "f0cbbdfebb30aea1",
+        "name": "WaterMachine Delay Slider",
+        "label": "Watering Duration: {{value}}",
+        "tooltip": "",
+        "group": "7fe6336c25b0a2dc",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "passthru": false,
+        "outs": "end",
+        "topic": "topic",
+        "topicType": "msg",
+        "min": "1",
+        "max": "30",
+        "step": 1,
+        "className": "",
+        "x": 820,
+        "y": 340,
+        "wires": [
+            [
+                "8e1157ad8252aa5b",
+                "bc9761a2873afe51"
+            ]
+        ]
+    },
+    {
+        "id": "8e1157ad8252aa5b",
+        "type": "mqtt out",
+        "z": "f0cbbdfebb30aea1",
+        "name": "WaterMachine Delay",
+        "topic": "infob3it/036/WaterMachine/Delay",
+        "qos": "0",
+        "retain": "true",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "99a19b34aa77739d",
+        "x": 1180,
+        "y": 340,
+        "wires": []
+    },
+    {
+        "id": "16c75cb2f20d91b4",
+        "type": "mqtt in",
+        "z": "f0cbbdfebb30aea1",
+        "name": "WaterMachine Delay",
+        "topic": "infob3it/036/WaterMachine/Delay",
+        "qos": "0",
+        "datatype": "auto-detect",
+        "broker": "99a19b34aa77739d",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 490,
+        "y": 340,
+        "wires": [
+            [
+                "d4e140339dc6be1a"
+            ]
+        ]
+    },
+    {
+        "id": "bc9761a2873afe51",
+        "type": "debug",
+        "z": "f0cbbdfebb30aea1",
+        "name": "debug 6",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1060,
+        "y": 280,
+        "wires": []
+    },
+    {
+        "id": "312e202299e8a924",
+        "type": "function",
+        "z": "f0cbbdfebb30aea1",
+        "name": "parseToInt->payload",
+        "func": "return { payload: parseInt([msg.payload[0]]) };\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 680,
+        "y": 1500,
+        "wires": [
+            [
+                "60968ea3baa637c8"
             ]
         ]
     }
