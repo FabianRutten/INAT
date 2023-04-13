@@ -34,7 +34,7 @@ MyData data;
 
 void serialShowSensor(){
   Serial.write(0);
-  //Serial.println("sensor gesture completed");
+  //Serial.println("sensor gesture completed"); 
 }
 
 void serialWaterGesture(){
