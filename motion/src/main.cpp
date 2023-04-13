@@ -9,14 +9,22 @@ int16_t gx, gy, gz;
 float yaw, pitch, roll;
 
 //handeling state for the gyroscope
-byte state;
-#define STATE_INACTIVE = 0
-#define STATE_ACTIVE = 1
-#define STATE_IN_USE = 2
+#define STATE_BASE_STATE 0
+#define STATE_WATER_MOTION 1
+#define STATE_SHOW_SENSORS_MOTION 2
+#define STATE_CHAOTIC 3 //for when it's not sure what movement to do
 
-#define SENSOR_GESTURE_SENT = 0
-#define WATER_GESTURE_SENT = 1
+byte currentState = 0;
+byte stateToActUpon = 0;
 
+bool isThresholdReached = false;
+bool isBackFromThreshold = false;
+
+//to be serially written 
+#define SENSOR_GESTURE_SENT 0
+#define WATER_GESTURE_SENT 1
+
+//thanks to Eva Imbens for informing me about the use of a struct here. (tuple does not go brr)
 struct MyData {
   int X; //standard is ~134 deg
   int Y; //standard is ~129 deg
@@ -24,20 +32,47 @@ struct MyData {
 
 MyData data;
 
-void changeState(int xAngle, int yAngle) {
-  //change state based on an inpt angle
-  /*
-  if angle meets a threshold, change state
-  moet nog even testen hoe dat gaat met state vasthouden
-
-  NOTE: have an independent variable that is just 0 and 1, thjs gets changed when this function is called. 
-  work this out tomorrow
-  "0" staat gelijk aan sensor gesture
-  "1" staat gelijk aan water gesture
-  */
+void serialShowSensor(){
+  Serial.write(0);
+  //Serial.println("sensor gesture completed");
 }
 
+void serialWaterGesture(){
+  Serial.write(1);
+  //Serial.println("water gesture completed");
+}
 
+byte getState(int xAngle, int yAngle){
+  if(yAngle > 160 || yAngle < 20){
+    return STATE_WATER_MOTION;
+  } 
+  if(xAngle < 20 || xAngle > 160){
+    return STATE_SHOW_SENSORS_MOTION;
+  }
+  if((yAngle > 160 || yAngle < 20) && (xAngle < 20 || xAngle > 160)){
+    return STATE_CHAOTIC;
+  }
+  else{
+    return STATE_BASE_STATE;
+  }
+}
+
+void checkMotionThreshold(byte state){
+  //if the gesture is not precise enough we don't want to check motion threshold
+  if(state == STATE_CHAOTIC){
+    return;
+  }
+  if (state == STATE_WATER_MOTION || state == STATE_SHOW_SENSORS_MOTION){
+    isThresholdReached = true;
+    stateToActUpon = state;
+  } 
+}
+
+void checkStasisAfterMotion(byte state){
+  if(state == STATE_BASE_STATE && isThresholdReached){
+    isBackFromThreshold = true;
+  }
+}
 
 void setup()
 {
@@ -52,34 +87,32 @@ void loop()
 {
   mpu.getMotion6(&ax, &ay, &az, &gx, &gy, &gz);
   
-  data.X = map(ax, -17000, 17000, -180, 180 ); // X axis data
-  data.Y = map(ay, -17000, 17000, -180, 180);  // Y axis data
-  //delay(500);
-  Serial.print("Axis X = ");
-  Serial.print(data.X);
-  Serial.print("  ");
-  Serial.print("Axis Y = ");
-  Serial.println(data.Y);
-  if (data.Y < 80) { //gesture : down 
-    //Serial.print("true");
-    //Serial.print("gesture 1");
-    //digitalWrite(LED_BUILTIN, HIGH);
-  }
-  if (data.Y > 145) {//gesture : up
-    //Serial.print("false");
-    //digitalWrite(LED_BUILTIN, LOW);
-    //Serial.print("gesture 2");
-  }
-  if (data.X > 155) {//gesture : left
-    //Serial.print("gesture 3");
-    //digitalWrite(7, HIGH);
-  }
-  if (data.X < 100) {//gesture : right
-    //Serial.print("gesture 4");
-    //digitalWrite(7, LOW);
-  }
-  if (data.X > 100 && data.X < 170 && data.Y > 80 && data.Y < 130) { //gesture : little bit down
-    //Serial.print("gesture 5");
-  }
+
+  data.X = map(ax, -17000, 17000, 0, 180 ); // X axis data
+  data.Y = map(ay, -17000, 17000, 0, 180);  // Y axis data
+  
+  //get new/current state
+  byte state = getState(data.X, data.Y);
+  //Serial.print("current state = ");
+  //Serial.println(state);
+
+  //adapt the two booleans based on current state
+  checkMotionThreshold(state);
+  checkStasisAfterMotion(state);
+
+  //serially write if the gesture is made
+  if(stateToActUpon == STATE_WATER_MOTION && isBackFromThreshold){
+    isThresholdReached = false;
+    isBackFromThreshold = false;
+    stateToActUpon = STATE_BASE_STATE;
+    serialWaterGesture();
+  } 
+  if(stateToActUpon == STATE_SHOW_SENSORS_MOTION && isBackFromThreshold){
+    isThresholdReached = false;
+    isBackFromThreshold = false;
+    stateToActUpon = STATE_BASE_STATE;
+    serialShowSensor();
+  } 
+
   delay(500);
 }
