@@ -701,13 +701,13 @@ void publishLDR() {
 
 
 
-double soilPercentile(double value) {
+double soilPercentile(unsigned int value) {
   return 100 * (1+value) / (calibratedMoist +1);
 }
 
 void endPublishSoil() {
   soilMeasurementActive = false;
-  double value = analogRead(ANALOG_PIN);
+  unsigned int value = analogRead(ANALOG_PIN);
   measuredSoil = value;
   if (soilCalibrate) {
     soilCalibrate = false;
